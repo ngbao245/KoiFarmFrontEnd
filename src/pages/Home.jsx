@@ -18,15 +18,25 @@ export const Home = () => {
         <section className="news">
           <h2>Tin tức cá koi - Tin tức Koi Shop</h2>
           <p>
-            Koi Shop không chỉ là nơi cung cấp các giống cá Koi hàng đầu thế giới, mà chúng tôi còn cung cấp thông tin hữu ích và các bài viết chuyên sâu cho người nuôi cá.
+            Koi Shop không chỉ là nơi cung cấp các giống cá Koi hàng đầu thế
+            giới, mà chúng tôi còn cung cấp thông tin hữu ích và các bài viết
+            chuyên sâu cho người nuôi cá.
           </p>
         </section>
 
         <section className="best-sellers">
           <h2>Bán chạy</h2>
           <div className="product-list">
-            <ProductItem image="koi1.jpg" name="Koi Ki Bekkou" price="1.000.000 VND" />
-            <ProductItem image="koi2.jpg" name="Koi Ki Bekkou" price="1.000.000 VND" />
+            <ProductItem
+              image="koi1.jpg"
+              name="Koi Ki Bekkou"
+              price="1.000.000 VND"
+            />
+            <ProductItem
+              image="koi2.jpg"
+              name="Koi Ki Bekkou"
+              price="1.000.000 VND"
+            />
             {/* Add more ProductItem components as needed */}
           </div>
         </section>
