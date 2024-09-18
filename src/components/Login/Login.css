@@ -1,0 +1,134 @@
+/* Ensure the body and html take full height */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Center the App div */
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  margin: 0;
+
+  /* Background Image */
+  background: lightblue url("/public/assets/background.png") no-repeat fixed center;
+}
+
+/* Style the login container */
+.login-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 850px;
+  padding: 40px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+}
+
+/* Left section (Title) */
+.login-title {
+  flex: 1;
+  text-align: left;
+  padding-right: 40px;
+}
+
+.login-title h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+/* Right section (Form and button) */
+form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-right: 25px;
+}
+
+form > div {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  height: 45px;
+}
+
+/* Adjust button size and alignment */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-top: 10px;
+}
+
+button {
+  padding: 10px 20px; /* Reduced padding */
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  border-radius: 6px; /* Slightly reduced border-radius */
+  font-size: 16px; /* Reduced font size */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #d90000; /* Darker red on hover */
+}
+
+p {
+  text-align: left;
+  margin: 0; /* No extra margin around the text */
+}
+
+a {
+  color: #c70025;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Add flexbox for better alignment of the button and text */
+.link-button-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px; /* Added spacing between text and button */
+}
+
+.link-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.link-section p {
+  margin: 3px 0;
+  font-size: 14px;
+}
