@@ -8,12 +8,13 @@ export const Home = () => {
     <>
       <Header />
       <main>
-        <section className="banner">
-          <div className="banner-content">
-            <h1>Koi</h1>
-            <p>Cá Koi của bạn - Tiền của chúng tôi</p>
-          </div>
-        </section>
+        <div className="banner_home">
+          <img
+            src="./public/assets/final.png"
+            style={{ width: "100%", height: "100vh" }}
+            alt="Banner"
+          />
+        </div>
 
         <section className="news">
           <h2>Tin tức cá koi - Tin tức Koi Shop</h2>
