@@ -1,6 +1,4 @@
 import React from "react";
-// import { Button } from "bootstrap";
-// import { Badge } from "react-bootstrap";
 import logo from "../../../public/assets/icon.png";
 import logo1 from "../../../public/assets/image 9.png";
 import search from "../../../public/icons/Search.png";
@@ -17,41 +15,9 @@ export const Header = () => {
     setChoose(e.target.value);
   };
 
-  // console.log(choose);
   return (
-    // <>
-    //   <header>
-    //     <div className="menu-toggle">&#9776; DANH MỤC KOI</div>
-    //     <div className="logo">KOI SHOP</div>
-    //     <nav className="nav">
-    //       <ul>
-    //         <li>
-    //           <a href="#home">TRANG CHỦ</a>
-    //         </li>
-    //         <li>
-    //           <a href="#about">GIỚI THIỆU</a>
-    //         </li>
-    //         <li>
-    //           <a href="#news">TIN TỨC</a>
-    //         </li>
-    //         <li>
-    //           <a href="#contact">LIÊN HỆ</a>
-    //         </li>
-    //       </ul>
-    //     </nav>
-    //     <div className="search-bar">
-    //       <input type="text" placeholder="Tìm kiếm 'cá' phù hợp với bạn..." />
-    //       <button>&#x1F50D;</button>
-    //     </div>
-    //     <div className="login-cart">
-    //       <button>Đăng Nhập</button>
-    //       <div className="cart">&#128722;</div>
-    //     </div>
-    //   </header>
-    // </>
-
     <div className="header">
-      <div className="w-100 border border-primary">
+      <div className="w-100">
         <div
           className="d-flex p-3 flex-row justify-content-center gap-2 align-items-center justify-content-evenly"
           style={{ background: "#C70025" }}
