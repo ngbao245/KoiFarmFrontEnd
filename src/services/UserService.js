@@ -8,4 +8,8 @@ const signin = (email, password) => {
   return axios.post("Auth/signin", { email, password });
 };
 
-export { fetchAllUser, signin };
+const signup = (data) => {
+  return axios.post("Auth/signup", data);
+};
+
+export { fetchAllUser, signin, signup };

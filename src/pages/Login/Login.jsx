@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button } from "react-bootstrap";
 import { signin } from "../../services/UserService";
+import { UserContext } from "../../context/UserContext";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const { loginContext } = useContext(UserContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +17,6 @@ const Login = () => {
 
   const handleLogin = async () => {
     console.log("Button clicked");
-    // event.preventDefault();
     if (!(email && password)) {
       toast.error("Email and Password are required!");
       return;
@@ -24,9 +25,9 @@ const Login = () => {
     setIsLoading(true);
     try {
       let res = await signin(email.trim(), password.trim());
-      if (res && res.token) {
+      if (res && res.data.token) {
         console.log("ahihi");
-        // loginContext(email, res.token);
+        loginContext(email, res.data.token);
         navigate("/");
         toast.success("Login successful!");
       }
@@ -84,7 +85,15 @@ const Login = () => {
           <div className="link-button-wrapper">
             <div className="link-section">
               <p>
-                Chưa có tài khoản? <a href="#">Đăng Ký Ngay</a>
+                Chưa có tài khoản?{" "}
+                <a
+                  className="primary cursor-pointer"
+                  onClick={() => {
+                    navigate("/register");
+                  }}
+                >
+                  Đăng Ký Ngay
+                </a>
               </p>
               <p>
                 <a href="#">Quên mật khẩu</a>
