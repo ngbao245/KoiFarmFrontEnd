@@ -16,7 +16,8 @@ body {
   margin: 0;
 
   /* Background Image */
-  background: lightblue url("/public/assets/background.png") no-repeat fixed center;
+  background: lightblue url("/public/assets/background.png") no-repeat fixed
+    center;
 }
 
 /* Style the login container */
@@ -44,7 +45,7 @@ body {
 }
 
 /* Right section (Form and button) */
-form {
+.form {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -52,7 +53,7 @@ form {
   margin-right: 25px;
 }
 
-form > div {
+.form > div {
   width: 100%;
   margin-bottom: 20px;
 }
@@ -66,6 +67,7 @@ label {
 }
 
 input[type="email"],
+input[type="text"],
 input[type="password"] {
   width: 100%;
   padding: 12px 15px;
