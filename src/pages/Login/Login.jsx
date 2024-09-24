@@ -24,15 +24,13 @@ const Login = () => {
     setIsLoading(true);
     try {
       let res = await signin(email.trim(), password.trim());
-      console.log(res);
-      if (res) {
-        console.log("Login successful", res);
+      if (res && res.token) {
+        console.log("ahihi");
+        // loginContext(email, res.token);
+        navigate("/");
         toast.success("Login successful!");
-        // You can navigate to another page on successful login
-        navigate("/admin");
       }
     } catch (error) {
-      console.log("Login failed", error);
       toast.error("Login failed!");
     } finally {
       setIsLoading(false);

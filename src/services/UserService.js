@@ -4,8 +4,8 @@ const fetchAllUser = () => {
   return axios.get("User/get-all-users");
 };
 
-const signin = () => {
-  return axios.post("Auth/signin");
+const signin = (email, password) => {
+  return axios.post("Auth/signin", { email, password });
 };
 
 export { fetchAllUser, signin };
