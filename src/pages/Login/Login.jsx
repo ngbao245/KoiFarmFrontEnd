@@ -26,10 +26,11 @@ const Login = () => {
     try {
       let res = await signin(email.trim(), password.trim());
       if (res && res.data.token) {
-        console.log("ahihi");
         loginContext(email, res.data.token);
         navigate("/");
         toast.success("Login successful!");
+      } else {
+        throw error
       }
     } catch (error) {
       toast.error("Login failed!");

@@ -1,0 +1,84 @@
+.koi-background {
+  background-image: url("nguyenhoangbao"); /* Your pond background */
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: multiply;
+  filter: brightness(0.9);
+}
+
+.non-clickable {
+  pointer-events: none; /* This makes all elements except NavLink non-clickable */
+}
+
+.koi-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.koi-fish-center {
+  width: 80px;
+  height: auto;
+  animation: float 3s ease-in-out infinite;
+}
+
+.koi-fish-four {
+  height: auto;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.koi-title {
+  font-family: "Pacifico", cursive;
+  color: #c70025; /* Main theme color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.koi-number {
+  color: #c70025; /* Use theme color for the numbers */
+}
+
+.koi-water-text {
+  color: #c70025;
+}
+
+.koi-description {
+  color: #666; /* Standard grey for description */
+}
+
+.koi-btn {
+  background: linear-gradient(135deg, #c70025, #ba7784); /* Your theme colors */
+  color: #f1f1f1; /* Light theme color for button text */
+  border: none;
+  padding: 15px 50px;
+  font-size: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.koi-btn:hover {
+  background: linear-gradient(
+    135deg,
+    #ba7784,
+    #c70025
+  ); /* Darker hover gradient */
+  transform: scale(1.05);
+  text-decoration: none;
+}
+
+.koi-btn:active {
+  transform: scale(1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow effect on click */
+}

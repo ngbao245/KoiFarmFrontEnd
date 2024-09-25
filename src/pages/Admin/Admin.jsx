@@ -2,7 +2,7 @@ import { useState } from "react";
 import { fetchAllUser } from "../../services/UserService";
 import { useEffect } from "react";
 
-const admin = () => {
+const Admin = () => {
   const { user, setUser } = useState([]);
   const getUser = async () => {
     let res = await fetchAllUser();
@@ -19,4 +19,4 @@ const admin = () => {
     </>
   );
 };
-export default admin;
+export default Admin;

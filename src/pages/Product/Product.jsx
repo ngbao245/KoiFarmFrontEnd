@@ -1,8 +1,7 @@
-const product = () => {
-  return (
-    <>
-      <h1>product page</h1>
-    </>
-  );
+import React from "react";
+
+const Product = () => {
+  return <div>Product</div>;
 };
-export default product;
+
+export default Product;
