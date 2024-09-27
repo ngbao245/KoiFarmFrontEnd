@@ -1,17 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 import ModalAddNew from "../../components/ModalAddNew";
-import Papa from "papaparse"; // Assuming you're using papaparse for CSV import
+import Papa from "papaparse";
 import { toast } from "react-toastify";
-import "./Admin.css"; // Make sure this file includes required styles
+import "./Admin.css";
+import AdminHeader from "../../layouts/header/AdminHeader";
+import { fetchAllStaff } from "../../services/UserService";
 
 const Admin = () => {
   const [listStaffs, setListStaffs] = useState([]);
   const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
   const [dataExport, setDataExport] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [fetchAgain, setFetchAgain] = useState(false);
 
-  // Simulating CSV import handling with PapaParse
+  useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        const response = await fetchAllStaff();
+        if (response && response.data) {
+          setListStaffs(response.data);
+        } else {
+          toast.error("Unexpected data format received");
+        }
+      } catch (error) {
+        toast.error("Failed to fetch staff members");
+      }
+    };
+    fetchStaff();
+  }, [fetchAgain]);
+
+  // Handle CSV import
   const handleImportCSV = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -34,16 +53,23 @@ const Admin = () => {
     }
   };
 
-  // Export staff list to CSV
   const getUsersExport = () => {
     const exportData = listStaffs.map((staff) => ({
       Name: staff.name,
       Email: staff.email,
-      Position: staff.position,
+      Address: staff.address,
+      Phone: staff.phone,
+      RoleId: staff.roleId,
     }));
     setDataExport([
-      ["Name", "Email", "Position"], // CSV headers
-      ...exportData.map((staff) => [staff.Name, staff.Email, staff.Position]),
+      ["Name", "Email", "Address", "Phone", "Role ID"],
+      ...exportData.map((staff) => [
+        staff.Name,
+        staff.Email,
+        staff.Address,
+        staff.Phone,
+        staff.RoleId,
+      ]),
     ]);
   };
 
@@ -52,21 +78,24 @@ const Admin = () => {
   };
 
   const handleUpdateTable = (staff) => {
-    setListStaffs([staff, ...listStaffs]);
+    setFetchAgain((prev) => !prev); // Toggle fetchAgain to refetch staff data
+    setIsShowModalAddNew(false); // Close the modal after adding
   };
 
-  // Searching staff members
+  // Search functionality
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
 
-  // Filtering staff based on the search term
-  const filteredStaffs = listStaffs.filter((staff) =>
-    staff.email.toLowerCase().includes(searchTerm)
-  );
+  const filteredStaffs = Array.isArray(listStaffs)
+    ? listStaffs.filter((staff) =>
+        staff.email.toLowerCase().includes(searchTerm)
+      )
+    : [];
 
   return (
     <>
+      <AdminHeader />
       <div className="container">
         <div className="my-3 add-new d-sm-flex">
           <span>
@@ -116,18 +145,34 @@ const Admin = () => {
           />
         </div>
 
-        {/* Display filtered staff members */}
-        <div className="staff-list">
-          {filteredStaffs.length > 0 ? (
-            filteredStaffs.map((staff, index) => (
-              <div key={index} className="staff-item">
-                {staff.name} - {staff.email} - {staff.position}
-              </div>
-            ))
-          ) : (
-            <div>No staff found</div>
-          )}
-        </div>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Phone</th>
+              <th>Role ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredStaffs.length > 0 ? (
+              filteredStaffs.map((staff) => (
+                <tr key={staff.id}>
+                  <td>{staff.name}</td>
+                  <td>{staff.email}</td>
+                  <td>{staff.address}</td>
+                  <td>{staff.phone}</td>
+                  <td>{staff.roleId}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5">No staff found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
         <ModalAddNew
           show={isShowModalAddNew}

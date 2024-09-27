@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
-import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { signin } from "../../services/UserService";
 import { UserContext } from "../../context/UserContext";
+import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const Login = () => {
         navigate("/");
         toast.success("Login successful!");
       } else {
-        throw error
+        throw error;
       }
     } catch (error) {
       toast.error("Login failed!");
@@ -46,72 +46,74 @@ const Login = () => {
   };
 
   return (
-    <div className="login">
-      <div className="login-container">
-        <div className="login-title">
-          <h2>Đăng nhập</h2>
-          <p>Chào mừng bạn quay trở lại!</p>
-        </div>
-
-        <div className="form">
-          <div>
-            <label>Email/ SĐT</label>
-            <input
-              type="text"
-              placeholder="Vui lòng nhập email hoặc SĐT của bạn"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(event) => handlePressEnter(event)}
-            />
-          </div>
-          <div>
-            <label>Mật Khẩu</label>
-            <input
-              type={isShowPassword === true ? "password" : "text"}
-              placeholder="Vui lòng nhập mật khẩu"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={(event) => handlePressEnter(event)}
-            />
-            <i
-              className={
-                isShowPassword === true
-                  ? "fa-solid fa-eye"
-                  : "fa-solid fa-eye-slash"
-              }
-              onClick={() => setIsShowPassword(!isShowPassword)}
-            ></i>
+    <div className="pg-Login">
+      <div className="login">
+        <div className="login-container">
+          <div className="login-title">
+            <h2>Đăng nhập</h2>
+            <p>Chào mừng bạn quay trở lại!</p>
           </div>
 
-          <div className="link-button-wrapper">
-            <div className="link-section">
-              <p>
-                Chưa có tài khoản?{" "}
-                <a
-                  className="primary cursor-pointer"
-                  onClick={() => {
-                    navigate("/register");
-                  }}
-                >
-                  Đăng Ký Ngay
-                </a>
-              </p>
-              <p>
-                <a href="#">Quên mật khẩu</a>
-              </p>
+          <div className="form">
+            <div>
+              <label>Email/ SĐT</label>
+              <input
+                type="text"
+                placeholder="Vui lòng nhập email hoặc SĐT của bạn"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(event) => handlePressEnter(event)}
+              />
             </div>
-            <button
-              type="button"
-              className={email && password ? "" : "empty"}
-              disabled={!(email && password)}
-              onClick={() => handleLogin()}
-            >
-              {isLoading ? (
-                <i className="fas fa-spinner fa-spin"></i>
-              ) : (
-                "Đăng nhập"
-              )}
-            </button>
+            <div>
+              <label>Mật Khẩu</label>
+              <input
+                type={isShowPassword === true ? "password" : "text"}
+                placeholder="Vui lòng nhập mật khẩu"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(event) => handlePressEnter(event)}
+              />
+              <i
+                className={
+                  isShowPassword === true
+                    ? "fa-solid fa-eye"
+                    : "fa-solid fa-eye-slash"
+                }
+                onClick={() => setIsShowPassword(!isShowPassword)}
+              ></i>
+            </div>
+
+            <div className="link-button-wrapper">
+              <div className="link-section">
+                <p>
+                  Chưa có tài khoản?{" "}
+                  <a
+                    className="primary cursor-pointer"
+                    onClick={() => {
+                      navigate("/register");
+                    }}
+                  >
+                    Đăng Ký Ngay
+                  </a>
+                </p>
+                <p>
+                  <a href="#">Quên mật khẩu</a>
+                </p>
+              </div>
+              <button
+                type="button"
+                className={email && password ? "" : "empty"}
+                disabled={!(email && password)}
+                onClick={() => handleLogin()}
+              >
+                {isLoading ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Đăng nhập"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>

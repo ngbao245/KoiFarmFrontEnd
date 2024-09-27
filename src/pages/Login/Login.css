@@ -1,4 +1,3 @@
-/* Ensure the body and html take full height */
 html,
 body {
   height: 100%;
@@ -6,22 +5,19 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* Center the App div */
-.login {
+.pg-Login .login {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full viewport height */
-  width: 100vw; /* Full viewport width */
+  height: 100vh;
+  width: 100vw;
   margin: 0;
 
-  /* Background Image */
   background: lightblue url("/public/assets/background.png") no-repeat fixed
     center;
 }
 
-/* Style the login container */
-.login-container {
+.pg-Login .login-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -32,20 +28,19 @@ body {
   border-radius: 30px;
 }
 
-/* Left section (Title) */
-.login-title {
+.pg-Login .login-title {
   flex: 1;
   text-align: left;
   padding-right: 40px;
 }
 
-.login-title h2 {
+.pg-Login .login-title h2 {
   font-size: 36px;
   margin-bottom: 20px;
 }
 
 /* Right section (Form and button) */
-.form {
+.pg-Login .form {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -53,12 +48,12 @@ body {
   margin-right: 25px;
 }
 
-.form > div {
+.pg-Login .form > div {
   width: 100%;
   margin-bottom: 20px;
 }
 
-label {
+.pg-Login label {
   display: block;
   font-size: 14px;
   font-weight: bold;
@@ -66,9 +61,9 @@ label {
   text-align: left;
 }
 
-input[type="email"],
-input[type="text"],
-input[type="password"] {
+.pg-Login input[type="email"],
+.pg-Login input[type="text"],
+.pg-Login input[type="password"] {
   width: 100%;
   padding: 12px 15px;
   border: 1px solid #ccc;
@@ -78,7 +73,7 @@ input[type="password"] {
 }
 
 /* Adjust button size and alignment */
-.button-container {
+.pg-Login .button-container {
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -86,7 +81,7 @@ input[type="password"] {
   margin-top: 10px;
 }
 
-button {
+.pg-Login button {
   padding: 10px 20px; /* Reduced padding */
   background-color: #ff0000;
   color: white;
@@ -97,61 +92,61 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+.pg-Login button:hover {
   background-color: none; /* Darker red on hover */
 }
 
-button:not(.empty) {
+.pg-Login button:not(.empty) {
   background: #ff0000;
 }
 
-button:not(.empty):hover {
+.pg-Login button:not(.empty):hover {
   background: #ff0000;
 }
 
-button:not(.empty):active {
+.pg-Login button:not(.empty):active {
   background: #ff0000;
 }
 
-p {
+.pg-Login p {
   text-align: left;
   margin: 0; /* No extra margin around the text */
 }
 
-a {
+.pg-Login a {
   color: #c70025;
   text-decoration: none;
   font-weight: bold;
 }
 
-a:hover {
+.pg-Login a:hover {
   text-decoration: underline;
 }
 
 /* Add flexbox for better alignment of the button and text */
-.link-button-wrapper {
+.pg-Login .link-button-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 20px; /* Added spacing between text and button */
 }
 
-.link-section {
+.pg-Login .link-section {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.link-section p {
+.pg-Login .link-section p {
   margin: 3px 0;
   font-size: 14px;
 }
 
-.cursor-pointer {
+.pg-Login .cursor-pointer {
   cursor: pointer;
 }
 
-.empty {
+.pg-Login .empty {
   color: #16182357;
   background: #1618230f;
   cursor: not-allowed;

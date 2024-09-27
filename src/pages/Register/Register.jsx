@@ -55,7 +55,7 @@ const Register = () => {
         navigate("/");
         toast.success("Signin successful!");
       }
-    }
+    } else toast.error(res.data);
   };
 
   return (

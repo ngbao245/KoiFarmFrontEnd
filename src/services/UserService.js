@@ -8,12 +8,12 @@ const signup = (data) => {
   return axios.post("Auth/signup", data);
 };
 
-const fetchAllUser = () => {
-  return axios.get("User/get-all-users");
+const fetchAllStaff = () => {
+  return axios.get(`User/users-by-2`);
 };
 
 const postCreateStaff = (data) => {
   return axios.post("/User/create-user-staff", data);
 };
 
-export { fetchAllUser, signin, signup, postCreateStaff };
+export { fetchAllStaff, signin, signup, postCreateStaff };
