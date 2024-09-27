@@ -16,4 +16,8 @@ const postCreateStaff = (data) => {
   return axios.post("/User/create-user-staff", data);
 };
 
-export { fetchAllStaff, signin, signup, postCreateStaff };
+const deleteStaff = (id) => {
+  return axios.delete(`/User/delete-user/${id}`);
+};
+
+export { fetchAllStaff, signin, signup, postCreateStaff, deleteStaff };

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import "./Admin.css";
 import AdminHeader from "../../layouts/header/AdminHeader";
 import { fetchAllStaff } from "../../services/UserService";
+import ModalConfirm from "../../components/ModalConfirm";
 
 const Admin = () => {
   const [listStaffs, setListStaffs] = useState([]);
@@ -13,6 +14,8 @@ const Admin = () => {
   const [dataExport, setDataExport] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [fetchAgain, setFetchAgain] = useState(false);
+  const [isShowModalConfirm, setIsShowModalConfirm] = useState(false);
+  const [dataUserDelete, setDataUserDelete] = useState(null);
 
   useEffect(() => {
     const fetchStaff = async () => {
@@ -73,7 +76,7 @@ const Admin = () => {
     ]);
   };
 
-  const handleClose = () => {
+  const handleCloseAddNew = () => {
     setIsShowModalAddNew(false);
   };
 
@@ -82,7 +85,6 @@ const Admin = () => {
     setIsShowModalAddNew(false); // Close the modal after adding
   };
 
-  // Search functionality
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
@@ -92,6 +94,21 @@ const Admin = () => {
         staff.email.toLowerCase().includes(searchTerm)
       )
     : [];
+
+  // Open the delete confirmation modal and pass the user to delete
+  const handleDelete = (staff) => {
+    setDataUserDelete(staff); // Set the staff to be deleted
+    setIsShowModalConfirm(true); // Show confirmation modal
+  };
+
+  // Handle actual deletion from modal and update the staff list
+  const handleDeleteUserFromModal = (deletedStaff) => {
+    setListStaffs(listStaffs.filter((staff) => staff.id !== deletedStaff.id));
+  };
+
+  const handleCloseConfirm = () => {
+    setIsShowModalConfirm(false); // Close the modal without deleting
+  };
 
   return (
     <>
@@ -145,7 +162,7 @@ const Admin = () => {
           />
         </div>
 
-        <table className="table table-striped">
+        <table className="table table-striped text-center">
           <thead>
             <tr>
               <th>Name</th>
@@ -153,6 +170,7 @@ const Admin = () => {
               <th>Address</th>
               <th>Phone</th>
               <th>Role ID</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -164,11 +182,19 @@ const Admin = () => {
                   <td>{staff.address}</td>
                   <td>{staff.phone}</td>
                   <td>{staff.roleId}</td>
+                  <td>
+                    <button
+                      className="btn btn-danger mx-3"
+                      onClick={() => handleDelete(staff)}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5">No staff found</td>
+                <td colSpan="6">No staff found</td>
               </tr>
             )}
           </tbody>
@@ -176,8 +202,15 @@ const Admin = () => {
 
         <ModalAddNew
           show={isShowModalAddNew}
-          handleClose={handleClose}
+          handleClose={handleCloseAddNew}
           handleUpdateTable={handleUpdateTable}
+        />
+
+        <ModalConfirm
+          show={isShowModalConfirm}
+          handleClose={handleCloseConfirm}
+          dataUserDelete={dataUserDelete}
+          handleDeleteUserFromModal={handleDeleteUserFromModal}
         />
       </div>
     </>
