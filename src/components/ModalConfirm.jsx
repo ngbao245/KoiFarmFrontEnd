@@ -3,21 +3,21 @@ import { deleteStaff } from "../services/UserService";
 import { toast } from "react-toastify";
 
 const ModalConfirm = (props) => {
-  const { show, handleClose, dataUserDelete, handleDeleteUserFromModal } =
+  const { show, handleClose, dataStaffDelete, handleDeleteStaffFromModal } =
     props;
 
   const confirmDelete = async () => {
     try {
-      let res = await deleteStaff(dataUserDelete.id);
+      let res = await deleteStaff(dataStaffDelete.id);
       if (res && res.statusCode === 200) {
-        toast.success("Delete user succeeded!");
-        handleDeleteUserFromModal(dataUserDelete); // Update list in Admin component
+        toast.success("Delete staff succeeded!");
+        handleDeleteStaffFromModal(dataStaffDelete); // Update list in Admin component
         handleClose(); // Close the modal
       } else {
-        toast.error("Delete user failed!");
+        toast.error("Delete staff failed!");
       }
     } catch (error) {
-      toast.error("Delete user error!");
+      toast.error("Delete staff error!");
     }
   };
 
@@ -30,12 +30,12 @@ const ModalConfirm = (props) => {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Delete User</Modal.Title>
+          <Modal.Title>Delete Staff</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
-            This action can't be undone! Do you want to delete this user? <br />
-            <b>Email: {dataUserDelete?.email} </b>
+            This action can't be undone! Do you want to delete this staff? <br />
+            <b>Email: {dataStaffDelete?.email} </b>
           </div>
         </Modal.Body>
         <Modal.Footer>

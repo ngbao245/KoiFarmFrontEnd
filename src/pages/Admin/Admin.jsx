@@ -15,7 +15,7 @@ const Admin = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [fetchAgain, setFetchAgain] = useState(false);
   const [isShowModalConfirm, setIsShowModalConfirm] = useState(false);
-  const [dataUserDelete, setDataUserDelete] = useState(null);
+  const [dataStaffDelete, setDataStaffDelete] = useState(null);
 
   useEffect(() => {
     const fetchStaff = async () => {
@@ -56,7 +56,7 @@ const Admin = () => {
     }
   };
 
-  const getUsersExport = () => {
+  const getStaffsExport = () => {
     const exportData = listStaffs.map((staff) => ({
       Name: staff.name,
       Email: staff.email,
@@ -95,14 +95,12 @@ const Admin = () => {
       )
     : [];
 
-  // Open the delete confirmation modal and pass the user to delete
   const handleDelete = (staff) => {
-    setDataUserDelete(staff); // Set the staff to be deleted
-    setIsShowModalConfirm(true); // Show confirmation modal
+    setDataStaffDelete(staff);
+    setIsShowModalConfirm(true);
   };
 
-  // Handle actual deletion from modal and update the staff list
-  const handleDeleteUserFromModal = (deletedStaff) => {
+  const handleDeleteStaffFromModal = (deletedStaff) => {
     setListStaffs(listStaffs.filter((staff) => staff.id !== deletedStaff.id));
   };
 
@@ -137,7 +135,7 @@ const Admin = () => {
               className="btn btn-success"
               data={dataExport}
               asyncOnClick={true}
-              onClick={getUsersExport}
+              onClick={getStaffsExport}
             >
               <i className="fa-solid fa-file-export px-1"></i>
               <span className="px-1">Export</span>
@@ -156,7 +154,7 @@ const Admin = () => {
         <div className="col-12 col-sm-4 my-3">
           <input
             className="form-control"
-            placeholder="Search user by email..."
+            placeholder="Search staff by email..."
             value={searchTerm}
             onChange={handleSearch}
           />
@@ -209,8 +207,8 @@ const Admin = () => {
         <ModalConfirm
           show={isShowModalConfirm}
           handleClose={handleCloseConfirm}
-          dataUserDelete={dataUserDelete}
-          handleDeleteUserFromModal={handleDeleteUserFromModal}
+          dataStaffDelete={dataStaffDelete}
+          handleDeleteStaffFromModal={handleDeleteStaffFromModal}
         />
       </div>
     </>

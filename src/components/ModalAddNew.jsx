@@ -7,11 +7,10 @@ const ModalAddNew = (props) => {
   const { show, handleClose, handleUpdateTable } = props;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
 
-  const handleSaveUser = async () => {
+  const handleSaveStaff = async () => {
     if (!name || !email || !address || !phone) {
       toast.error("All fields are required!");
       return;
@@ -106,7 +105,7 @@ const ModalAddNew = (props) => {
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSaveUser}>
+        <Button variant="primary" onClick={handleSaveStaff}>
           Save Changes
         </Button>
       </Modal.Footer>
