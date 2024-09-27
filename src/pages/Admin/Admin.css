@@ -1,0 +1,25 @@
+.sort-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sort-header i {
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.app-container .add-new {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-container .group-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.customize-table {
+  width: inherit;
+  overflow-x: auto;
+}
