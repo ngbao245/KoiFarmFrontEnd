@@ -3,7 +3,10 @@ import React, { createContext } from "react";
 const UserContext = createContext({ email: "", auth: false });
 
 const UserProvider = ({ children }) => {
-  const [user, setUser] = React.useState({ email: "", auth: false });
+  const [user, setUser] = React.useState({
+    email: localStorage.getItem("email") || "",
+    auth: !!localStorage.getItem("token"),
+  });
 
   const loginContext = (email, token) => {
     setUser({

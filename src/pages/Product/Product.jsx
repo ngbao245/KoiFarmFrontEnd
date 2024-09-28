@@ -1,7 +1,12 @@
 import React from "react";
+import AdminHeader from "../../layouts/header/AdminHeader";
 
 const Product = () => {
-  return <div>Product</div>;
+  return (
+    <>
+      <AdminHeader />
+    </>
+  );
 };
 
 export default Product;

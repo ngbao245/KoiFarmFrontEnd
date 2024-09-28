@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import "./NotFoundRoute.css"; // Import the CSS file
+import koiIcon from "../../public/assets/icon.png"; // Correctly import the image
 
 const NotFoundRoute = () => {
   return (
@@ -15,7 +16,7 @@ const NotFoundRoute = () => {
                       4
                     </span>
                     <img
-                      src="./public/assets/icon.png"
+                      src={koiIcon}
                       alt="Koi fish"
                       className="koi-fish-center"
                     />
@@ -29,7 +30,7 @@ const NotFoundRoute = () => {
                 </h3>
                 <p className="mb-5 koi-description text-center">
                   The page you're looking for swam away with the koi fish.
-                </p>{" "}
+                </p>
                 <NavLink
                   className="btn text-light koi-btn btn-lg rounded-pill px-5 fs-4 m-0"
                   to="/"

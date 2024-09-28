@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -18,10 +18,16 @@ const AdminHeader = (props) => {
     toast.success("Logout Success");
   };
 
+  useEffect(() => {
+    if (!user || !user.auth) {
+      navigate("/*");
+    }
+  }, [user, navigate]);
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <NavLink className="navbar-brand" to="/">
+        <NavLink className="navbar-brand" to="#">
           <i
             className="fa-solid fa-user-tie"
             style={{ marginRight: "10px" }}
@@ -34,18 +40,30 @@ const AdminHeader = (props) => {
           {((user && user.auth) || window.location.pathname === "/") && (
             <>
               <Nav className="me-auto">
-                <NavLink className="nav-link" to="/">
-                  Home
+                <NavLink
+                  className="nav-link"
+                  to="/admin"
+                  disabled={!user || !user.auth}
+                >
+                  Staff Management
                 </NavLink>
-                <NavLink className="nav-link" to="/users">
-                  Manage
+                <NavLink
+                  className="nav-link"
+                  to="/product"
+                  disabled={!user || !user.auth}
+                >
+                  Product
                 </NavLink>
               </Nav>
               <Nav>
                 {user && user.email && (
                   <span className="nav-link">Welcome: {user.email}</span>
                 )}
-                <NavDropdown title="Settings" id="basic-nav-dropdown">
+                <NavDropdown
+                  title="Settings"
+                  id="basic-nav-dropdown"
+                  disabled={!user || !user.auth}
+                >
                   {user && user.auth === true ? (
                     <NavDropdown.Item onClick={() => handleLogout()}>
                       Logout
