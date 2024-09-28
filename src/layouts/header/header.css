@@ -1,0 +1,35 @@
+.dropdown-wrapper {
+  position: relative;
+}
+
+.dropdown-wrapper .dropdown-menu {
+  display: block;
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  width: 250px;
+  margin-top: 10px;
+  left: 0;
+  z-index: 1000;
+  border: none; /* Remove border to use Bootstrap shadow */
+}
+
+.dropdown-wrapper:hover .dropdown-menu {
+  display: block; /* Show on hover */
+}
+
+.dropdown-item {
+  padding: 10px 20px;
+  background: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa; /* Bootstrap light gray */
+  color: #c70025; /* Accent color */
+}
+
+.dropdown-menu {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-radius: 0.25rem; /* Rounded corners for modern look */
+}

@@ -22,7 +22,10 @@ const AdminHeader = (props) => {
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
         <NavLink className="navbar-brand" to="/">
-          <i className="fa-solid fa-user-tie" style={{ marginRight: "10px" }}></i>
+          <i
+            className="fa-solid fa-user-tie"
+            style={{ marginRight: "10px" }}
+          ></i>
           <span> Admin Dashboard</span>
         </NavLink>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

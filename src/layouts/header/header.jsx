@@ -4,15 +4,55 @@ import logo1 from "../../../public/assets/image 9.png";
 import search from "../../../public/icons/Search.png";
 import cart from "../../../public/icons/Shopping Cart.png";
 import list from "../../../public/icons/Group 201.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import "./header.css";
+
 export const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [choose, setChoose] = React.useState("");
+  const [choose, setChoose] = React.useState("home");
+  const [showDropdown, setShowDropdown] = React.useState(false);
+  const [hoverTimeout, setHoverTimeout] = React.useState(null);
 
   const handleChoose = (e) => {
     e.preventDefault();
-    setChoose(e.target.value);
+    const value = e.target.value;
+    setChoose(value);
+
+    if (value === "cate") {
+      setShowDropdown(!showDropdown);
+    } else {
+      setShowDropdown(false);
+    }
+
+    if (value === "home") {
+      navigate("/");
+    }
+    if (value === "info") {
+      navigate("/info");
+    }
+    if (value === "news") {
+      navigate("/news");
+    }
+    if (value === "contact") {
+      navigate("/contact");
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+    setShowDropdown(true);
+  };
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setShowDropdown(false);
+    }, 100);
+    setHoverTimeout(timeout);
   };
 
   return (
@@ -68,34 +108,74 @@ export const Header = () => {
           </div>
         </div>
         <div
-          className="h-50 text-white fs-5 d-flex flex-row gap-2 align-items-center justify-content-evenly "
-          style={{ background: "#281713", listStyle: "none", marginLeft: -80 }}
+          className="h-50 text-white fs-5 d-flex flex-row gap-2 align-items-center justify-content-center"
+          style={{
+            background: "#281713",
+            listStyle: "none",
+          }}
         >
-          <button
-            className="d-flex flex-row gap-3 justify-content-center"
-            style={{
-              background: choose === "cate" ? "#C70025" : "#281713",
-              width: 250,
-            }}
-            value={"cate"}
-            onClick={handleChoose}
+          <div
+            className="dropdown-wrapper"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           >
-            <img
-              className=""
-              src={list}
+            <button
+              className="d-flex flex-row justify-content-center user-select-none"
               style={{
-                width: 20,
-                height: 20,
-                marginTop: 5,
+                background: "#C70025",
+                width: 250,
               }}
-            />
-            DANH MỤC KOI
-          </button>
+              value={"cate"}
+            >
+              <img
+                className="showDropdown user-select-none"
+                src={list}
+                style={{
+                  width: 20,
+                  height: 20,
+                  marginTop: 5,
+                }}
+              />
+              DANH MỤC KOI
+            </button>
+
+            {showDropdown && (
+              <div className="dropdown-menu bg-white shadow">
+                <ul className="list-unstyled p-0 m-0">
+                  <li
+                    className="dropdown-item"
+                    onClick={() => navigate("/koi/sanke")}
+                  >
+                    Sanke
+                  </li>
+                  <li
+                    className="dropdown-item"
+                    onClick={() => navigate("/koi/showa")}
+                  >
+                    Showa
+                  </li>
+                  <li
+                    className="dropdown-item"
+                    onClick={() => navigate("/koi/kohaku")}
+                  >
+                    Kohaku
+                  </li>
+                  <li
+                    className="dropdown-item"
+                    onClick={() => navigate("/koi/tancho")}
+                  >
+                    Tancho
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+
           <button
             className="d-flex flex-row justify-content-center"
             value={"home"}
             style={{
-              background: choose === "home" ? "#C70025" : "#281713",
+              background: location.pathname === "/" ? "#C70025" : "#281713",
               width: 250,
             }}
             onClick={handleChoose}
@@ -104,9 +184,9 @@ export const Header = () => {
           </button>
           <button
             className="d-flex flex-row justify-content-center"
-            value={"intro"}
+            value={"info"}
             style={{
-              background: choose === "intro" ? "#C70025" : "#281713",
+              background: location.pathname === "/info" ? "#C70025" : "#281713",
               width: 250,
             }}
             onClick={handleChoose}
@@ -117,7 +197,7 @@ export const Header = () => {
             className="d-flex flex-row justify-content-center"
             value={"news"}
             style={{
-              background: choose === "news" ? "#C70025" : "#281713",
+              background: location.pathname === "/news" ? "#C70025" : "#281713",
               width: 250,
             }}
             onClick={handleChoose}
@@ -128,7 +208,8 @@ export const Header = () => {
             className="d-flex flex-row justify-content-center"
             value={"contact"}
             style={{
-              background: choose === "contact" ? "#C70025" : "#281713",
+              background:
+                location.pathname === "/contact" ? "#C70025" : "#281713",
               width: 250,
             }}
             onClick={handleChoose}
