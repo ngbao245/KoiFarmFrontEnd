@@ -32,13 +32,13 @@ const Contact = () => {
 
       <div className="contact-container">
         <main className="contact-content animated user-select-none">
-          <h1 className="contact-title">Get in Touch</h1>
+          <h1 className="contact-title">Liên hệ & Trợ giúp</h1>
           <article className="contact-frame" id="form">
             <section className="contact-info">
-              <h2>Contact Information</h2>
+              <h2>Thông tin liên hệ</h2>
               <p className="text-light">
-                Have questions or need assistance? Reach out to us using the
-                form or our contact details below.
+                Có thắc mắc hoặc cần hỗ trợ? Hãy liên hệ với chúng tôi bằng cách
+                sử dụng hoặc thông tin liên hệ của chúng tôi bên dưới.
               </p>
               <ul>
                 <li>
@@ -57,7 +57,7 @@ const Contact = () => {
             <section className="contact-form">
               <form className="contact-form" onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="name">Name</label>
+                  <label htmlFor="name">Tên</label>
                   <input
                     type="text"
                     id="name"
@@ -65,7 +65,7 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    placeholder="Your full name"
+                    placeholder="Họ và tên"
                   />
                 </div>
                 <div className="form-group">
@@ -77,18 +77,18 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="Your email address"
+                    placeholder="Địa chỉ email của bạn"
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="message">Message</label>
+                  <label htmlFor="message">Nhập nội dung</label>
                   <textarea
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    placeholder="How can we help you?"
+                    placeholder="Chúng tôi có thể giúp gì cho bạn?"
                   ></textarea>
                 </div>
                 <button type="submit" className="submit-btn">

@@ -1,6 +1,7 @@
 .info-container {
   font-family: sans-serif;
   background-color: #f1f1f1;
+  padding-bottom: 4rem;
 }
 
 .info-container h2 {
@@ -18,12 +19,11 @@
 }
 
 .info-content {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
 .info-title {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 4rem;
   font-size: 3.5rem;

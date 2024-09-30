@@ -32,7 +32,6 @@ const Info = () => {
       <div className="info-container">
         <main className="info-content animated user-select-none">
           <h1 className="info-title">Về Công Ty Chúng Tôi</h1>
-
           <section className="info-section">
             <h2 className="text-center">Sứ Mệnh Của Chúng Tôi</h2>
             <br />
