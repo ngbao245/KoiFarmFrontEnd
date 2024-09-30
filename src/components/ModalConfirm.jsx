@@ -11,8 +11,8 @@ const ModalConfirm = (props) => {
       let res = await deleteStaff(dataStaffDelete.id);
       if (res && res.statusCode === 200) {
         toast.success("Delete staff succeeded!");
-        handleDeleteStaffFromModal(dataStaffDelete); // Update list in Admin component
-        handleClose(); // Close the modal
+        handleDeleteStaffFromModal(dataStaffDelete);
+        handleClose();
       } else {
         toast.error("Delete staff failed!");
       }
@@ -34,7 +34,8 @@ const ModalConfirm = (props) => {
         </Modal.Header>
         <Modal.Body>
           <div>
-            This action can't be undone! Do you want to delete this staff? <br />
+            This action can't be undone! Do you want to delete this staff?{" "}
+            <br />
             <b>Email: {dataStaffDelete?.email} </b>
           </div>
         </Modal.Body>

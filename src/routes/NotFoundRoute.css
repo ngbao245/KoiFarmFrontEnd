@@ -6,7 +6,7 @@
 }
 
 .non-clickable {
-  pointer-events: none; /* This makes all elements except NavLink non-clickable */
+  pointer-events: none; 
 }
 
 .koi-wrapper {

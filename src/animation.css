@@ -25,3 +25,8 @@
 .animated-slideInUp {
   animation: slideInUp 0.5s ease-in-out;
 }
+
+.animated {
+  animation: fadeIn 0.5s ease-in-out;
+  animation: slideInUp 0.5s ease-in-out;
+}

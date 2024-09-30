@@ -7,9 +7,7 @@ const News = () => {
   const [featuredNews, setFeaturedNews] = useState(null);
 
   useEffect(() => {
-    // Simulating fetching news data
     const fetchNews = async () => {
-      // Replace this with actual API call
       const mockNews = [
         {
           id: 1,
