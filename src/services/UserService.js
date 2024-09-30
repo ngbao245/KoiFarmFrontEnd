@@ -9,7 +9,7 @@ const signup = (data) => {
 };
 
 const fetchAllStaff = () => {
-  return axios.get(`User/users-by-2`);
+  return axios.get("User/get-users-by-role/2");
 };
 
 const postCreateStaff = (data) => {

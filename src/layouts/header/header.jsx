@@ -76,7 +76,7 @@ export const Header = () => {
               style={{ width: 500, height: 50 }}
             >
               <input
-                className="w-100 ps-3"
+                className="w-100 ps-3 rounded border border-0"
                 type="text"
                 placeholder='Tìm kiếm "chú cá" phù hợp với bạn...'
               />

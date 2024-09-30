@@ -16,7 +16,6 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    console.log("Button clicked");
     if (!(email && password)) {
       toast.error("Email and Password are required!");
       return;
@@ -26,11 +25,19 @@ const Login = () => {
     try {
       let res = await signin(email.trim(), password.trim());
       if (res && res.data.token) {
+        const { roleId } = res.data.user;
+
         loginContext(email, res.data.token);
-        navigate("/");
+        if (roleId === "0") {
+          navigate("/");
+        } else if (roleId === "1") {
+          navigate("/admin");
+        } else if (roleId === "2") {
+          navigate("/product");
+        }
         toast.success("Login successful!");
       } else {
-        throw error;
+        throw new Error("Login failed!");
       }
     } catch (error) {
       toast.error("Login failed!");

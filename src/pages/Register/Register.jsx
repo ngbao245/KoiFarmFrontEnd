@@ -35,9 +35,23 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !(
+        formData.lastName &&
+        formData.firstName &&
+        formData.Email &&
+        formData.address &&
+        formData.password &&
+        formData.confirmPassword
+      )
+    ) {
+      toast.error("All fields are required!");
+      return;
+    }
     if (formData.password === formData.confirmPassword) {
     } else {
       toast.error("Password not match!");
+      return;
     }
 
     let res = await signup({

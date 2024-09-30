@@ -1,0 +1,119 @@
+.info-page {
+  font-family: "Roboto", sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+.info-section {
+  margin-bottom: 5rem;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 3rem;
+  transition: transform 0.3s ease;
+}
+
+.info-section:hover {
+  transform: translateY(-5px);
+}
+
+h2 {
+  font-size: 2.2rem;
+  color: #2b6cb0;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #4a5568;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+}
+
+.team-member {
+  text-align: center;
+  background-color: #edf2f7;
+  padding: 2rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.team-member:hover {
+  background-color: #e2e8f0;
+  transform: translateY(-10px);
+}
+
+.member-image {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 1.5rem;
+  overflow: hidden;
+  border-radius: 50%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.team-member img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.team-member:hover img {
+  transform: scale(1.1);
+}
+
+.team-member h3 {
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+  color: #2d3748;
+}
+
+.about-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.about-item {
+  display: flex;
+  align-items: center;
+  background-color: #edf2f7;
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.about-item:hover {
+  background-color: #e2e8f0;
+  transform: translateY(-5px);
+}
+
+.about-item i {
+  font-size: 2rem;
+  color: #319795;
+  margin-right: 1.5rem;
+}
+
+.about-item p {
+  margin: 0;
+  text-align: left;
+}
+
+.info-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.info-title {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}

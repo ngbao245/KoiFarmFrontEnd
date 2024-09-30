@@ -52,12 +52,14 @@ const AdminHeader = (props) => {
                   to="/product"
                   disabled={!user || !user.auth}
                 >
-                  Product
+                  Product Item
                 </NavLink>
               </Nav>
               <Nav>
                 {user && user.email && (
-                  <span className="nav-link">Welcome: {user.email}</span>
+                  <span className="nav-link">
+                    Welcome: <span className="fw-bold"> {user.email}</span>
+                  </span>
                 )}
                 <NavDropdown
                   title="Settings"
