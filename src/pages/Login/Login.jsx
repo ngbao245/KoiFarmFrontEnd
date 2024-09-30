@@ -33,7 +33,7 @@ const Login = () => {
         } else if (roleId === "1") {
           navigate("/admin");
         } else if (roleId === "2") {
-          navigate("/product");
+          navigate("/admin-product");
         }
         toast.success("Login successful!");
       } else {

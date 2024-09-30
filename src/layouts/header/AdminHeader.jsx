@@ -49,7 +49,7 @@ const AdminHeader = (props) => {
                 </NavLink>
                 <NavLink
                   className="nav-link"
-                  to="/product"
+                  to="/admin-product"
                   disabled={!user || !user.auth}
                 >
                   Product Item

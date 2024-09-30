@@ -20,11 +20,11 @@ export const Header = () => {
     const value = e.target.value;
     setChoose(value);
 
-    if (value === "cate") {
-      setShowDropdown(!showDropdown);
-    } else {
-      setShowDropdown(false);
-    }
+    // if (value === "product") {
+    //   setShowDropdown(!showDropdown);
+    // } else {
+    //   setShowDropdown(false);
+    // }
 
     if (value === "home") {
       navigate("/");
@@ -37,6 +37,9 @@ export const Header = () => {
     }
     if (value === "contact") {
       navigate("/contact");
+    }
+    if (value === "product") {
+      navigate("/product");
     }
   };
 
@@ -62,7 +65,11 @@ export const Header = () => {
           className="d-flex p-3 flex-row justify-content-center gap-2 align-items-center justify-content-evenly"
           style={{ background: "#C70025" }}
         >
-          <div className="d-flex flex-row gap-1 align-items-center">
+          <div
+            className="d-flex flex-row gap-1 align-items-center"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/")}
+          >
             <img
               className=" mb-2"
               src={logo}
@@ -125,7 +132,8 @@ export const Header = () => {
                 background: "#C70025",
                 width: 250,
               }}
-              value={"cate"}
+              value={"product"}
+              onClick={handleChoose}
             >
               <img
                 className="showDropdown user-select-none"

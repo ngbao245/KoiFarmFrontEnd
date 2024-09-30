@@ -9,6 +9,7 @@ import NotFoundRoute from "./NotFoundRoute";
 import Info from "../pages/Info/Info";
 import News from "../pages/News/News";
 import Contact from "../pages/Contact/Contact";
+import AdminProduct from "../pages/Product/AdminProduct";
 
 const AppRoutes = () => {
   return (
@@ -22,6 +23,7 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
 
         <Route path="/admin" element={<Admin />} />
+        <Route path="/admin-product" element={<AdminProduct />} />
 
         <Route path="/product" element={<Product />} />
         <Route path="/register" element={<Register />} />
