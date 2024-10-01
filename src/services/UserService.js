@@ -8,6 +8,10 @@ const signup = (data) => {
   return axios.post("Auth/signup", data);
 };
 
+const deleteAccount = (id) => {
+  return axios.delete(`User/delete-user/${id}`);
+};
+
 const fetchAllStaff = () => {
   return axios.get("User/get-users-by-role/2");
 };
@@ -20,4 +24,11 @@ const deleteStaff = (id) => {
   return axios.delete(`/User/delete-user/${id}`);
 };
 
-export { fetchAllStaff, signin, signup, postCreateStaff, deleteStaff };
+export {
+  signin,
+  signup,
+  deleteAccount,
+  fetchAllStaff,
+  postCreateStaff,
+  deleteStaff,
+};
