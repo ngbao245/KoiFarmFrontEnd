@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import AdminHeader from "../../layouts/header/AdminHeader";
 import { CSVLink } from "react-csv";
+import ModalAddProductItem from "../../components/ModalAddProductItem";
+import Papa from "papaparse"; // Ensure you import this for CSV parsing
+import { toast } from "react-toastify"; // Make sure to import toast for notifications
 
 const AdminProduct = () => {
   const [dataExport, setDataExport] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [listStaffs, setListStaffs] = useState([]); // Add this to manage staff list
+  const [showModalAddProduct, setShowModalAddProduct] = useState(false); // Manage product modal state
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
 
-  const getProductExport = () => {};
+  const getProductExport = () => {
+    // Implement your data export logic here
+  };
 
   const handleImportCSV = (event) => {
     const file = event.target.files[0];
@@ -34,6 +41,15 @@ const AdminProduct = () => {
     }
   };
 
+  const handleOpenModal = () => setShowModalAddProduct(true); // Open modal for adding product
+  const handleCloseModal = () => setShowModalAddProduct(false); // Close modal
+
+  const handleSubmitProduct = (formData) => {
+    console.log("New product data:", formData);
+    toast.success("Product added successfully!");
+    handleCloseModal(); // Close modal after submission
+  };
+
   return (
     <>
       <AdminHeader />
@@ -52,7 +68,7 @@ const AdminProduct = () => {
                 id="import"
                 type="file"
                 hidden
-                onChange={(event) => handleImportCSV(event)}
+                onChange={handleImportCSV}
               />
             </div>
 
@@ -69,7 +85,7 @@ const AdminProduct = () => {
 
             <button
               className="btn btn-primary"
-              onClick={() => setIsShowModalAddNew(true)}
+              onClick={handleOpenModal} // Open modal for adding product
             >
               <i className="fa-solid fa-circle-plus px-1"></i>
               <span className="px-1">Add new</span>
@@ -85,6 +101,13 @@ const AdminProduct = () => {
             onChange={handleSearch}
           />
         </div>
+
+        {/* Modal for adding new product */}
+        <ModalAddProductItem
+          isOpen={showModalAddProduct}
+          onClose={handleCloseModal}
+          onSubmit={handleSubmitProduct} // Submit handler for new product
+        />
       </div>
     </>
   );

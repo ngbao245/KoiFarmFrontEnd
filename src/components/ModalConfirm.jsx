@@ -10,7 +10,7 @@ const ModalConfirm = (props) => {
     try {
       let res = await deleteStaff(dataStaffDelete.id);
       if (res && res.statusCode === 200) {
-        toast.success("Delete staff succeeded!");
+        toast.success(`Delete staff ${dataStaffDelete.name} succeeded!`);
         handleDeleteStaffFromModal(dataStaffDelete);
         handleClose();
       } else {

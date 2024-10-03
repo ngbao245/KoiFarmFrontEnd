@@ -7,6 +7,7 @@ import "./Admin.css";
 import AdminHeader from "../../layouts/header/AdminHeader";
 import { fetchAllStaff } from "../../services/UserService";
 import ModalConfirm from "../../components/ModalConfirm";
+import HintBox from "../../components/HintBox";
 
 const Admin = () => {
   const [listStaffs, setListStaffs] = useState([]);
@@ -22,7 +23,7 @@ const Admin = () => {
       try {
         const response = await fetchAllStaff();
         if (response && response.data) {
-          setListStaffs(response.data);
+          setListStaffs(response.data.entities);
         } else {
           toast.error("Unexpected data format received");
         }
@@ -105,7 +106,7 @@ const Admin = () => {
   };
 
   const handleCloseConfirm = () => {
-    setIsShowModalConfirm(false); // Close the modal without deleting
+    setIsShowModalConfirm(false);
   };
 
   return (
@@ -160,6 +161,8 @@ const Admin = () => {
           />
         </div>
 
+        <HintBox />
+
         <table className="table table-striped text-center">
           <thead>
             <tr>
@@ -191,9 +194,19 @@ const Admin = () => {
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan="6">No staff found</td>
-              </tr>
+              <>
+                <tr>
+                  <td colSpan="6">No staff found</td>
+                </tr>
+                <tr>
+                  <td colSpan="6">
+                    <i
+                      className="fa-regular fa-folder-open"
+                      style={{ fontSize: "30px", opacity: 0.2 }}
+                    ></i>
+                  </td>
+                </tr>
+              </>
             )}
           </tbody>
         </table>

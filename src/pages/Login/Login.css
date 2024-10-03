@@ -39,7 +39,6 @@ body {
   margin-bottom: 20px;
 }
 
-/* Right section (Form and button) */
 .pg-Login .form {
   flex: 1;
   display: flex;
@@ -72,7 +71,6 @@ body {
   height: 45px;
 }
 
-/* Adjust button size and alignment */
 .pg-Login .button-container {
   display: flex;
   justify-content: space-between;
@@ -82,18 +80,18 @@ body {
 }
 
 .pg-Login button {
-  padding: 10px 20px; /* Reduced padding */
+  padding: 10px 20px;
   background-color: #ff0000;
   color: white;
   border: none;
-  border-radius: 6px; /* Slightly reduced border-radius */
-  font-size: 16px; /* Reduced font size */
+  border-radius: 6px;
+  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .pg-Login button:hover {
-  background-color: none; /* Darker red on hover */
+  background-color: none;
 }
 
 .pg-Login button:not(.empty) {
@@ -110,7 +108,7 @@ body {
 
 .pg-Login p {
   text-align: left;
-  margin: 0; /* No extra margin around the text */
+  margin: 0; 
 }
 
 .pg-Login a {
@@ -123,12 +121,11 @@ body {
   text-decoration: underline;
 }
 
-/* Add flexbox for better alignment of the button and text */
 .pg-Login .link-button-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px; /* Added spacing between text and button */
+  margin-top: 20px; 
 }
 
 .pg-Login .link-section {

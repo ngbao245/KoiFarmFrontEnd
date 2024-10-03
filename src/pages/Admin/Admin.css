@@ -24,3 +24,6 @@
   overflow-x: auto;
 }
 
+td {
+  vertical-align: middle;
+}
