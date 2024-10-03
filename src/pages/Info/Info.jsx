@@ -5,6 +5,7 @@ import "../../animation.css";
 import ceoImage from "../../../public/assets/ceo.jpg";
 import ctoImage from "../../../public/assets/cto.jpg";
 import cfoImage from "../../../public/assets/cfo.jpg";
+import { Footer } from "../../layouts/footer/footer";
 
 const Info = () => {
   const teamMembers = [
@@ -87,6 +88,7 @@ const Info = () => {
           </section>
         </main>
       </div>
+      <Footer />
     </>
   );
 };

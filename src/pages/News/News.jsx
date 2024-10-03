@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Header } from "../../layouts/header/header";
 import "./News.css";
+import "../../animation.css";
+import { Footer } from "../../layouts/footer/footer";
 
 const News = () => {
   const [news, setNews] = useState([]);
@@ -87,6 +89,7 @@ const News = () => {
           </section>
         </main>
       </div>
+      <Footer />
     </>
   );
 };

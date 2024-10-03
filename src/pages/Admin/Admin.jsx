@@ -34,7 +34,6 @@ const Admin = () => {
     fetchStaff();
   }, [fetchAgain]);
 
-  // Handle CSV import
   const handleImportCSV = (event) => {
     const file = event.target.files[0];
     if (file) {
