@@ -18,6 +18,7 @@ const Product = () => {
     setIsLoading(true);
     try {
       const response = await fetchAllProducts();
+      console.log(response);
       if (response && response.data) {
         setListProducts(response.data);
       } else {

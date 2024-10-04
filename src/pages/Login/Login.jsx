@@ -55,7 +55,7 @@ const Login = () => {
   return (
     <div className="pg-Login">
       <div className="login">
-        <div className="login-container">
+        <div className="login-container animated">
           <div className="login-title">
             <h2>Đăng nhập</h2>
             <p>Chào mừng bạn quay trở lại!</p>

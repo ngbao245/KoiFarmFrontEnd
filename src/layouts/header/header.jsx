@@ -12,9 +12,9 @@ export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [choose, setChoose] = React.useState("home");
-  const [showDropdown, setShowDropdown] = React.useState(false);
-  const [hoverTimeout, setHoverTimeout] = React.useState(null);
+  const [choose, setChoose] = useState("home");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [hoverTimeout, setHoverTimeout] = useState(null);
   const [listProducts, setListProducts] = useState([]);
 
   useEffect(() => {
@@ -149,34 +149,31 @@ export const Header = () => {
                 width: 20,
                 height: 20,
                 marginTop: 5,
+                marginRight: 10,
               }}
             />
             DANH MỤC KOI
           </button>
 
-          <div className="dropdown-wrapper">
+          <div className="dropdown-menu">
             {showDropdown && (
-              <div className="dropdown-menu bg-white shadow">
-                <div className="container">
-                  <div className="row">
-                    {listProducts.map((product) => (
-                      <div className="col-4" key={product.id}>
-                        <li
-                          className="dropdown-item"
-                          onClick={() =>
-                            navigate(
-                              `/koi/${product.name
-                                .toLowerCase()
-                                .replace(/\s+/g, "")}`
-                            )
-                          }
-                        >
-                          {product.name}
-                        </li>
-                      </div>
-                    ))}
+              <div className="row row-cols-4">
+                {listProducts.map((product) => (
+                  <div className="dropdown-grid" key={product.id}>
+                    <li
+                      className="dropdown-item"
+                      onClick={() =>
+                        navigate(
+                          `/koi/${product.name
+                            .toLowerCase()
+                            .replace(/\s+/g, "")}`
+                        )
+                      }
+                    >
+                      {product.name}
+                    </li>
                   </div>
-                </div>
+                ))}
               </div>
             )}
           </div>
