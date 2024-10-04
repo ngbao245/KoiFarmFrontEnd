@@ -5,10 +5,13 @@ import "../../animation.css";
 import { fetchAllProducts } from "../../services/ProductService";
 import { toast } from "react-toastify";
 import { Footer } from "../../layouts/footer/footer";
+import defaultImage from "../../../public/assets/post2.jpg";
+import { useNavigate } from "react-router-dom";
 
 const Product = () => {
   const [listProducts, setListProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProduct();
@@ -18,7 +21,7 @@ const Product = () => {
     setIsLoading(true);
     try {
       const response = await fetchAllProducts();
-      console.log(response);
+      console.log(response.data);
       if (response && response.data) {
         setListProducts(response.data);
       } else {
@@ -29,6 +32,12 @@ const Product = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleProductClick = (product) => {
+    navigate(`/koi/${product.name.toLowerCase().replace(/\s+/g, "")}`, {
+      state: { product },
+    });
   };
 
   return (
@@ -43,13 +52,14 @@ const Product = () => {
             <div className="product-grid">
               {listProducts.length > 0 ? (
                 listProducts.map((product) => (
-                  <div key={product.id} className="product-card">
+                  <div
+                    key={product.id}
+                    className="product-card"
+                    onClick={() => handleProductClick(product)}
+                  >
                     <div className="product-image-container">
                       <img
-                        src={
-                          product.imageUrl ||
-                          "https://picsum.photos/800/400?random"
-                        }
+                        src={product.imageUrl || defaultImage}
                         alt={product.name}
                         className="product-image"
                       />
@@ -60,6 +70,11 @@ const Product = () => {
                         Quantity: {product.quantity}
                       </p>
                       <button className="product-button">Learn More</button>
+                    </div>
+                    <div className="product-overlay">
+                      <p className="product-description">
+                        {product.description}
+                      </p>
                     </div>
                   </div>
                 ))
