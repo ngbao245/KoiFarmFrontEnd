@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { Footer } from "../../layouts/footer/footer";
 import defaultImage from "../../../public/assets/post2.jpg";
 import { useNavigate } from "react-router-dom";
+import { getProdItemByProdId } from "../../services/ProductItemService";
 
 const Product = () => {
   const [listProducts, setListProducts] = useState([]);
@@ -34,10 +35,17 @@ const Product = () => {
     }
   };
 
-  const handleProductClick = (product) => {
-    navigate(`/koi/${product.name.toLowerCase().replace(/\s+/g, "")}`, {
-      state: { product },
-    });
+  const handleProductClick = async (product) => {
+    try {
+      const response = await getProdItemByProdId(product.id);
+      console.log(response.data);
+
+      navigate(`/koi/${product.name.toLowerCase().replace(/\s+/g, "")}`, {
+        state: { response: response.data },
+      });
+    } catch (error) {
+      console.error("Error fetching product item:", error);
+    }
   };
 
   return (
