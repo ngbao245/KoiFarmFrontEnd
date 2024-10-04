@@ -157,7 +157,7 @@ export const Header = () => {
 
           <div className="dropdown-menu">
             {showDropdown && (
-              <div className="row row-cols-4">
+              <div className="dropdown-row row row-cols-4">
                 {listProducts.map((product) => (
                   <div className="dropdown-grid" key={product.id}>
                     <li
