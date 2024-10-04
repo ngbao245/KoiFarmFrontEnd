@@ -1,11 +1,11 @@
 import React from "react";
-import { useLocation, useNavigate  } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
 
 const ProductItem = () => {
   const location = useLocation();
-  const { response: productItems  } = location.state || {};
+  const { response: productItems, productName  } = location.state || {};
 
   const navigate = useNavigate();
 
@@ -15,14 +15,14 @@ const ProductItem = () => {
 
   const handleViewDetails = (productId) => {
     // Navigate to the product detail page, passing the productId
-    navigate(`/product-item-detail/${productId}`);
+    navigate(`/koi/${productName.toLowerCase().replace(/\s+/g, "")}/${productId}`);
   };
 
   return (
     <>
       <Header />
       <div style={{ padding: "20px" }}>
-        <h1>Product Items</h1>
+        <h1>Product: {productName}</h1>
         <div
           style={{
             display: "grid",

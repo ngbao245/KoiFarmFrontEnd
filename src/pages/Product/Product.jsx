@@ -41,7 +41,7 @@ const Product = () => {
       console.log(response.data);
 
       navigate(`/koi/${product.name.toLowerCase().replace(/\s+/g, "")}`, {
-        state: { response: response.data },
+        state: { response: response.data, productName: product.name },
       });
     } catch (error) {
       console.error("Error fetching product item:", error);

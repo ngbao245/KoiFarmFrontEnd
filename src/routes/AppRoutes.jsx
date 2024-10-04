@@ -31,7 +31,7 @@ const AppRoutes = () => {
         <Route path="/product" element={<Product />} />
 
         <Route path="/koi/:productName" element={<ProductItem />} />
-        <Route path="/product-item-detail/:id" element={<ProductItemDetail />} />
+        <Route path="/koi/:productName/:id" element={<ProductItemDetail />} />
 
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>
