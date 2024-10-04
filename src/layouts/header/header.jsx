@@ -7,6 +7,7 @@ import list from "../../../public/icons/Group 201.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./header.css";
 import { fetchAllProducts } from "../../services/ProductService";
+import { getProdItemByProdId } from "../../services/ProductItemService";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -67,6 +68,19 @@ export const Header = () => {
       setShowDropdown(false);
     }, 150);
     setHoverTimeout(timeout);
+  };
+
+  const handleProductClick = async (product) => {
+    try {
+      const response = await getProdItemByProdId(product.id);
+      console.log(response.data);
+
+      navigate(`/koi/${product.name.toLowerCase().replace(/\s+/g, "")}`, {
+        state: { response: response.data },
+      });
+    } catch (error) {
+      console.error("Error fetching product item:", error);
+    }
   };
 
   return (
@@ -162,13 +176,7 @@ export const Header = () => {
                   <div className="dropdown-grid" key={product.id}>
                     <li
                       className="dropdown-item"
-                      onClick={() =>
-                        navigate(
-                          `/koi/${product.name
-                            .toLowerCase()
-                            .replace(/\s+/g, "")}`
-                        )
-                      }
+                      onClick={() => handleProductClick(product)}
                     >
                       {product.name}
                     </li>
