@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import './ModalAddProductItem.css';
+import { createProdItem } from '../services/ProductItemService'
+import { toast } from 'react-toastify';
 
 const ModalAddProductItem = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
-    name: '', price: 0, category: '', origin: '', sex: '', age: 0,
+    name: '', price: 1, category: '', origin: '', sex: '', age: 0,
     size: '', species: '', personality: '', foodAmount: '', waterTemp: '',
-    mineralContent: '', ph: '', imageUrl: '', quantity: 1, type: ''
+    mineralContent: '', ph: '', imageUrl: '', quantity: 1, type: '', productId: ''
   });
 
   const handleChange = (e) => {
@@ -16,10 +18,28 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    onClose();
+    
+    try {
+      // Make API call to create product
+      const res = await createProdItem(formData);
+
+      if (res && res.data && res.data.productId) {
+        toast.success('Product created successfully!');
+        setFormData({
+          name: '', price: 1, category: '', origin: '', sex: '', age: 0,
+          size: '', species: '', personality: '', foodAmount: '', waterTemp: '',
+          mineralContent: '', ph: '', imageUrl: '', quantity: 1, type: '', productId: ''
+        }); // Reset form data
+        onSubmit(res.data); // Pass the newly created product back to parent (if needed)
+        onClose(); // Close the modal
+      } else {
+        toast.error('Error while creating the product.');
+      }
+    } catch (error) {
+      toast.error('An error occurred. Please try again.');
+    }
   };
 
   if (!isOpen) return null;
@@ -50,6 +70,9 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit }) => {
                 
                 <label htmlFor="quantity">Quantity:</label>
                 <input id="quantity" type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
+              
+                <label htmlFor="productId">ProductId:</label>
+                <input id="productId" name="productId" value={formData.productId} onChange={handleChange} required />  
               </div>
 
               <div className="form-group">

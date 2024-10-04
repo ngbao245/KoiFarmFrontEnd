@@ -12,8 +12,8 @@ const getProdItemByProdId = (prodId) => {
   return axios.get(`ProductItem/get-product-item-by-product/${prodId}`);
 };
 
-const createProdItem = () => {
-  return axios.post("ProductItem/create-product-item");
+const createProdItem = (data) => {
+  return axios.post("ProductItem/create-product-item" , data);
 };
 
 const updateProdItem = (id) => {
