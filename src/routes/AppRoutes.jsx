@@ -11,6 +11,7 @@ import News from "../pages/News/News";
 import Contact from "../pages/Contact/Contact";
 import AdminProduct from "../pages/Product/AdminProduct";
 import ProductItem from "../pages/ProductItem/ProductItem";
+import ProductItemDetail from "../pages/ProductItem/ProductItemDetail";
 
 const AppRoutes = () => {
   return (
@@ -30,6 +31,7 @@ const AppRoutes = () => {
         <Route path="/product" element={<Product />} />
 
         <Route path="/koi/:productName" element={<ProductItem />} />
+        <Route path="/product-item-detail/:id" element={<ProductItemDetail />} />
 
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>

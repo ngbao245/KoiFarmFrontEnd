@@ -1,15 +1,22 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate  } from "react-router-dom";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
 
 const ProductItem = () => {
   const location = useLocation();
-  const { response: productItems } = location.state || {};
+  const { response: productItems  } = location.state || {};
+
+  const navigate = useNavigate();
 
   if (!productItems || productItems.length === 0) {
     return <div>No products found</div>;
   }
+
+  const handleViewDetails = (productId) => {
+    // Navigate to the product detail page, passing the productId
+    navigate(`/product-item-detail/${productId}`);
+  };
 
   return (
     <>
@@ -44,6 +51,7 @@ const ProductItem = () => {
               <p>Age: {item.age} years</p>
               <p>Size: {item.size}</p>
               <button
+                onClick={() => handleViewDetails(item.id)}
                 style={{
                   padding: "10px",
                   backgroundColor: "#C70025",
