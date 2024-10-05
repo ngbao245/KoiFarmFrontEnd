@@ -87,7 +87,15 @@ const Register = () => {
             alignItems: "center",
           }}
         >
-          <Container className="animated"
+          <div className="back-arrow">
+            <i
+              className="fa-solid fa-arrow-left cursor-pointer"
+              onClick={() => navigate(-1)}
+            ></i>
+          </div>
+
+          <Container
+            className="animated"
             style={{
               backgroundColor: "white",
               padding: "40px",
@@ -183,7 +191,7 @@ const Register = () => {
                               borderRadius: "8px",
                               fontSize: "16px",
                               height: "50px",
-                              width: "70%", // Shorter text field
+                              width: "70%",
                             }}
                           />
                         </div>
@@ -195,6 +203,18 @@ const Register = () => {
                           marginTop: "20px",
                         }}
                       >
+                        <Button
+                          onClick={() => navigate(-1)}
+                          style={{
+                            backgroundColor: "#6d6d6d",
+                            borderColor: "#6d6d6d",
+                            padding: "12px 30px",
+                            fontSize: "16px",
+                            marginRight: "10px",
+                          }}
+                        >
+                          Quay lại
+                        </Button>
                         <Button
                           onClick={handleNext}
                           style={{

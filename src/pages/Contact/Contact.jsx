@@ -34,7 +34,7 @@ const Contact = () => {
 
       <div className="contact-container">
         <main className="contact-content animated user-select-none">
-          <h1 className="contact-title">Liên hệ & Trợ giúp</h1>
+          <h1 className="contact-title">Liên hệ với chúng tôi</h1>
           <article className="contact-frame" id="form">
             <section className="contact-info">
               <h2>Thông tin liên hệ</h2>

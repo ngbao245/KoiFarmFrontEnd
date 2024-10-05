@@ -41,6 +41,7 @@ body {
   background: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 30px;
+  position: relative;
 }
 
 .pg-Login .login-title {
@@ -163,4 +164,29 @@ body {
   background: #1618230f;
   cursor: not-allowed;
   border: none;
+}
+
+.pg-Login .fa-arrow-left {
+  color: #c70025;
+  cursor: pointer;
+}
+
+.pg-Login .fa-arrow-left:hover {
+  color: #ff0000;
+}
+
+.back-arrow {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.back-arrow i {
+  font-size: 24px;
+  color: #333 !important;
+  transition: color 0.3s ease;
+}
+
+.back-arrow i:hover {
+  color: #007bff !important;
 }

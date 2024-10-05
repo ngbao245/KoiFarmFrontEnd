@@ -14,6 +14,7 @@ import ProductItem from "../pages/ProductItem/ProductItem";
 import ProductItemDetail from "../pages/ProductItem/ProductItemDetail";
 import Cloudinary from "../Cloudinary";
 import Cart from "../pages/Cart/Cart";
+import Payment from "../pages/Payment/Payment";
 
 const AppRoutes = () => {
   return (
@@ -38,6 +39,8 @@ const AppRoutes = () => {
         <Route path="/cart/:userName" element={<Cart />} />
 
         <Route path="/test" element={<Cloudinary />} />
+
+        <Route path="payment/success" element={<Payment />} />
 
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>

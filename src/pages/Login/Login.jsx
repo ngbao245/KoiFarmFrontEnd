@@ -55,6 +55,13 @@ const Login = () => {
   return (
     <div className="pg-Login">
       <div className="login">
+        <div className="back-arrow">
+          <i
+            className="fa-solid fa-arrow-left cursor-pointer"
+            onClick={() => navigate(-1)}
+          ></i>
+        </div>
+
         <div className="login-container animated">
           <div className="login-title">
             <h2>Đăng nhập</h2>
