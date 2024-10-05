@@ -12,9 +12,24 @@ body {
   height: 100vh;
   width: 100vw;
   margin: 0;
+  position: relative;
+  font-family: sans-serif;
+  padding-bottom: 3.2rem;
+}
 
-  background: lightblue url("/public/assets/background.png") no-repeat fixed
-    center;
+.pg-Login .login::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("/public/assets/backgroundUpscale.png") no-repeat center
+    center fixed;
+  background-size: cover;
+  filter: blur(5px);
+  z-index: -1;
+  opacity: 0.7;
 }
 
 .pg-Login .login-container {
@@ -108,7 +123,7 @@ body {
 
 .pg-Login p {
   text-align: left;
-  margin: 0; 
+  margin: 0;
 }
 
 .pg-Login a {
@@ -125,7 +140,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px; 
+  margin-top: 20px;
 }
 
 .pg-Login .link-section {

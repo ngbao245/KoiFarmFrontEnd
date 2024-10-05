@@ -1,7 +1,7 @@
 :root {
-  --primary-color: #1a365d;
+  --primary-color: #c70025;
   --secondary-color: #8c6954;
-  --accent-color: #ffffff;
+  --accent-color: #f1f1f1;
   --background-color: #f5f1ee;
   --text-color: #1a365d;
   --light-text-color: #6c5f5a;
@@ -10,9 +10,25 @@
 }
 
 .contact-container {
+  position: relative;
   font-family: sans-serif;
-  background-color: #f1f1f1;
+  /* background-color: #f1f1f1; */
   padding-bottom: 4rem;
+}
+
+.contact-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("/public/assets/backgroundUpscale.png") no-repeat center
+    center fixed;
+  background-size: cover;
+  filter: blur(5px);
+  z-index: -1;
+  opacity: 0.7;
 }
 
 .contact-content {
@@ -33,7 +49,7 @@
 
 .contact-frame {
   display: flex;
-  background-color: #ffffff;
+  background-color: #f1f1f1;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(40, 23, 19, 0.1);
 }
@@ -41,7 +57,7 @@
 .contact-info {
   flex: 0.75;
   background-color: var(--primary-color);
-  color: #ffffff;
+  color: #f1f1f1;
   padding: 3rem;
   display: flex;
   flex-direction: column;
@@ -53,6 +69,7 @@
   margin-bottom: 2rem;
   font-size: 1.8rem;
   font-weight: 600;
+  /* color: #f1f1f1; */
   color: #ffffff;
 }
 
@@ -87,6 +104,13 @@
 
 .form-group {
   margin-bottom: 2rem;
+  color: #ffffff;
+  color: #f1f1f1;
+  /* color: #ffffff; */
+}
+
+.form-group label{
+  color: #000000;
 }
 
 .form-group input,
