@@ -14,7 +14,7 @@ const Contact = () => {
   useEffect(() => {
     const formElement = document.getElementById("form");
     if (formElement) {
-      window.scrollBy(0, 320);
+      window.scrollBy(0, 280);
     }
   }, []);
 

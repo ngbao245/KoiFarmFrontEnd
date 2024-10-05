@@ -12,6 +12,7 @@ import Contact from "../pages/Contact/Contact";
 import AdminProduct from "../pages/Product/AdminProduct";
 import ProductItem from "../pages/ProductItem/ProductItem";
 import ProductItemDetail from "../pages/ProductItem/ProductItemDetail";
+import Cloudinary from "../Cloudinary";
 
 const AppRoutes = () => {
   return (
@@ -32,6 +33,8 @@ const AppRoutes = () => {
 
         <Route path="/koi/:productName" element={<ProductItem />} />
         <Route path="/koi/:productName/:id" element={<ProductItemDetail />} />
+
+        <Route path="/test" element={<Cloudinary />} />
 
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>
