@@ -45,21 +45,22 @@ const Order = () => {
 
     try {
       const response = await createOrder(cartData.cartId);
-
-      console.log(
-        "Full Order creation response:",
-        JSON.stringify(response, null, 2)
-      );
-
+    
+      // Log the full response
+      console.log("Full Order creation response:", JSON.stringify(response, null, 2));
+    
       if (response.data) {
         console.log("response.data:", JSON.stringify(response.data, null, 2));
-
+    
+        // Extracting data assuming two possible structures
         const orderData = response.data.data || response.data;
-
+    
+        // Check if orderData has orderId
         if (orderData && orderData.orderId) {
           toast.success("Order created successfully!");
           setOrderData(orderData);
-
+    
+          // Handle payment
           if (paymentMethod === "bank") {
             const paymentResponse = await createPayment({
               orderDescription: "Thanh toán đơn hàng",
@@ -67,16 +68,18 @@ const Order = () => {
               name: "Your Name",
               orderId: orderData.orderId,
             });
-
+    
             window.location.href = paymentResponse.data;
           } else {
             toast.success("Your order has been placed with Cash on Delivery!");
           }
         } else {
+          // If orderId is missing
           console.error("Order ID missing in response:", orderData);
           toast.error("Error creating order: Missing order ID.");
         }
       } else {
+        // If response structure is invalid
         console.error("Invalid response structure:", response);
         toast.error("Error creating order: Invalid response structure.");
       }
@@ -86,6 +89,7 @@ const Order = () => {
     } finally {
       setIsSubmitting(false);
     }
+    
   };
 
   const calculateTotal = () => {
@@ -145,7 +149,7 @@ const Order = () => {
                 }}
               />
               <div style={{ flex: "1" }}>
-                <h3 style={{ margin: "0 0 5px" }}>{item.name}</h3>
+                <h5 style={{ margin: "0 0 5px" }}>{item.productName}</h5>
                 <p style={{ margin: "0", fontSize: "14px", color: "#666" }}>
                   Số lượng: {item.quantity}
                 </p>
