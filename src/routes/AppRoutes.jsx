@@ -15,6 +15,8 @@ import ProductItemDetail from "../pages/ProductItem/ProductItemDetail";
 import Cloudinary from "../Cloudinary";
 import Cart from "../pages/Cart/Cart";
 import Payment from "../pages/Payment/Payment";
+import Order from "../pages/Order/Order";
+import PaymentFailed from "../pages/Payment/PaymentFailed";
 
 const AppRoutes = () => {
   return (
@@ -40,7 +42,12 @@ const AppRoutes = () => {
 
         <Route path="/test" element={<Cloudinary />} />
 
-        <Route path="payment/success" element={<Payment />} />
+        <Route path="payment-success" element={<Payment />} />
+
+        <Route path="payment-failed" element={<PaymentFailed />} />
+
+        
+        <Route path="order" element={<Order />} />
 
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>
