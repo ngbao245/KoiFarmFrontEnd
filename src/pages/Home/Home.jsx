@@ -2,6 +2,7 @@
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
 import "./Home.css";
+import "../../styles/animation.css";
 import fish from "../../../public/assets/img_sec1.png";
 
 export const Home = () => {

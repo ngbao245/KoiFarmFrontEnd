@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "./HintBox.css"; // Create this CSS file for styling
+import { useState } from "react";
+import "./HintBox.css";
 
 const HintBox = () => {
   const [isVisible, setIsVisible] = useState(true);

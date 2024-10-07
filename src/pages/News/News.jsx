@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Header } from "../../layouts/header/header";
 import "./News.css";
-import "../../animation.css";
+import "../../styles/animation.css";
 import { Footer } from "../../layouts/footer/footer";
 
 const News = () => {

@@ -2,9 +2,10 @@ import React, { useContext, useState } from "react";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { signin, signup } from "../../services/UserService";
 import { toast } from "react-toastify";
-import { UserContext } from "../../context/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
+import "../../styles/animation.css";
 
 const Register = () => {
   const { loginContext } = useContext(UserContext);

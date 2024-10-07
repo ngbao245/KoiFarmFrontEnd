@@ -6,9 +6,9 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useContext } from "react";
-import { UserContext } from "../../context/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 
-const AdminHeader = (props) => {
+const AdminHeader = () => {
   const { logout, user } = useContext(UserContext);
   const navigate = useNavigate();
 

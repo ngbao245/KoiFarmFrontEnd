@@ -1,7 +1,7 @@
 import React from "react";
 import { Header } from "../../layouts/header/header";
 import "./Info.css";
-import "../../animation.css";
+import "../../styles/animation.css";
 import ceoImage from "../../../public/assets/ceo.jpg";
 import ctoImage from "../../../public/assets/cto.jpg";
 import cfoImage from "../../../public/assets/cfo.jpg";

@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
-import { getProdItemById } from "../../services/ProductItemService"
+import { getProdItemById } from "../../services/ProductItemService";
+import { addToCart } from "../../services/CartService";
+import { toast } from "react-toastify";
 
 const ProductItemDetail = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [productItem, setProductItem] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductItem = async () => {
@@ -25,15 +28,38 @@ const ProductItemDetail = () => {
     return <div>Loading...</div>;
   }
 
+  const handleAddToCart = async (quantity, itemId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng của bạn");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await addToCart(quantity, itemId, token);
+      console.log(response);
+      if (response.data && response.data.cartId) {
+        toast.success(`Đã thêm ${productItem.name} vào giỏ hàng`);
+      } else {
+        toast.error("Sản phẩm đã hết hàng");
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   return (
     <>
       <Header />
-      <div 
-      style={{ 
-        padding: "50px", 
-        display: "flex", 
-        gap: "20px", 
-        marginLeft: 300}}>
+      <div
+        style={{
+          padding: "50px",
+          display: "flex",
+          gap: "20px",
+          marginLeft: 300,
+        }}
+      >
         <div style={{ width: "50%" }}>
           <img
             src={productItem.imageUrl}
@@ -43,10 +69,14 @@ const ProductItemDetail = () => {
         </div>
         <div style={{ width: "50%" }}>
           <h1>Tên: {productItem.name}</h1>
-          <p style={{
-            color: 'red',
-            fontSize: 30
-          }}>Giá: {productItem.price} VND</p>
+          <p
+            style={{
+              color: "red",
+              fontSize: 30,
+            }}
+          >
+            Giá: {productItem.price} VND
+          </p>
           <ul>
             <li>Giới tính: {productItem.sex}</li>
             <li>Tuổi: {productItem.age} tuổi</li>
@@ -79,6 +109,9 @@ const ProductItemDetail = () => {
                 border: "none",
                 borderRadius: "5px",
                 cursor: "pointer",
+              }}
+              onClick={() => {
+                handleAddToCart(1, productItem.id);
               }}
             >
               Thêm vào Giỏ

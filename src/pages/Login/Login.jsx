@@ -2,8 +2,9 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { signin } from "../../services/UserService";
-import { UserContext } from "../../context/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 import "./Login.css";
+import "../../styles/animation.css";
 
 const Login = () => {
   const navigate = useNavigate();

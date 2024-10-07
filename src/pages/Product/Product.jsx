@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Header } from "../../layouts/header/header";
 import "./Product.css";
-import "../../animation.css";
+import "../../styles/animation.css";
 import { fetchAllProducts } from "../../services/ProductService";
 import { toast } from "react-toastify";
 import { Footer } from "../../layouts/footer/footer";

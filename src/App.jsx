@@ -1,15 +1,12 @@
-import "./App.css";
 import { Bounce, ToastContainer } from "react-toastify";
-import { Container } from "react-bootstrap";
 import AppRoutes from "./routes/AppRoutes";
+import "./styles/App.css";
 
 function App() {
   return (
     <>
       <div className="app-container">
-        {/* <Container> */}
         <AppRoutes />
-        {/* </Container> */}
       </div>
 
       <ToastContainer

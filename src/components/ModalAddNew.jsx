@@ -3,8 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 import { postCreateStaff } from "../services/UserService";
 import { toast } from "react-toastify";
 
-const ModalAddNew = (props) => {
-  const { show, handleClose, handleUpdateTable } = props;
+const ModalAddNew = ({ show, handleClose, handleUpdateTable }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");

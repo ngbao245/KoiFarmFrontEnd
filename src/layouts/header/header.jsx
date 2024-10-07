@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./header.css";
 import { fetchAllProducts } from "../../services/ProductService";
 import { getProdItemByProdId } from "../../services/ProductItemService";
+import { toast } from "react-toastify";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -83,6 +84,16 @@ export const Header = () => {
     }
   };
 
+  const handleClickCart = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để xem sản phẩm trong giỏ hàng của bạn");
+      navigate("/login");
+    } else {
+      navigate("/cart");
+    }
+  };
+
   return (
     <div className="w-100">
       <div
@@ -129,6 +140,9 @@ export const Header = () => {
           <button
             className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-black text-white"
             style={{ width: 50, height: 50 }}
+            onClick={() => {
+              handleClickCart();
+            }}
           >
             <img src={cart} style={{ width: 20, height: 20 }} />
           </button>
