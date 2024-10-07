@@ -22,7 +22,6 @@ const Product = () => {
     setIsLoading(true);
     try {
       const response = await fetchAllProducts();
-      console.log(response.data);
       if (response && response.data) {
         setListProducts(response.data);
       } else {
@@ -38,7 +37,6 @@ const Product = () => {
   const handleProductClick = async (product) => {
     try {
       const response = await getProdItemByProdId(product.id);
-      console.log(response.data);
 
       navigate(`/koi/${product.name.toLowerCase().replace(/\s+/g, "")}`, {
         state: { response: response.data, productName: product.name },

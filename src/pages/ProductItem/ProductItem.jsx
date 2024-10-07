@@ -5,7 +5,7 @@ import { Footer } from "../../layouts/footer/footer";
 
 const ProductItem = () => {
   const location = useLocation();
-  const { response: productItems, productName  } = location.state || {};
+  const { response: productItems, productName  } = location.state || {}; //cú pháp đổi tên
 
   const navigate = useNavigate();
 
@@ -14,7 +14,6 @@ const ProductItem = () => {
   }
 
   const handleViewDetails = (productId) => {
-    // Navigate to the product detail page, passing the productId
     navigate(`/koi/${productName.toLowerCase().replace(/\s+/g, "")}/${productId}`);
   };
 
