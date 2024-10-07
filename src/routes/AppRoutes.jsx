@@ -38,7 +38,7 @@ const AppRoutes = () => {
         <Route path="/koi/:productName" element={<ProductItem />} />
         <Route path="/koi/:productName/:id" element={<ProductItemDetail />} />
 
-        <Route path="/cart/:userName" element={<Cart />} />
+        <Route path="/cart" element={<Cart />} />
 
         <Route path="/test" element={<Cloudinary />} />
 

@@ -98,7 +98,7 @@ const Order = () => {
   };
 
   if (!cartData) {
-    return <div>Loading cart data...</div>; // Handle loading state
+    return <div>Loading cart data...</div>; 
   }
 
   return (
@@ -111,7 +111,6 @@ const Order = () => {
         margin: "0 auto",
       }}
     >
-      {/* Order Items Section */}
       <div
         style={{
           flex: "1",
