@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { UserContext } from "../../contexts/UserContext";
 
 export const Header = () => {
-  const { user } = useContext(UserContext);
+  const { logout, user } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -105,6 +105,12 @@ export const Header = () => {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+    toast.success("Logout Success");
+  };
+
   return (
     <>
       <div className="nav-container">
@@ -125,7 +131,7 @@ export const Header = () => {
             </div>
           </div>
 
-          <div className="d-flex flex-row gap-4 ">
+          {/* <div className="d-flex flex-row gap-4 ">
             <button
               className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-white text-black  "
               style={{ width: 150, height: 50 }}
@@ -144,64 +150,66 @@ export const Header = () => {
             >
               <img src={cart} style={{ width: 20, height: 20 }} />
             </button>
-          </div>
+          </div> */}
 
           {/* update  */}
 
-          {/* <div className="d-flex flex-row gap-4 ">
-          {user && user.auth ? ( 
-            <>
-              <div className="d-flex flex-row gap-2 align-items-center">
-                 
-                <span>
-                  Welcome: <span className="fw-bold">{user.email}</span>
-                </span>
-                <div>
-                  <button
-                    className="dropdown-toggle"
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      color: "white",
-                    }}
-                    onClick={handleClickNav}
-                  >
-                    Settings
-                  </button>
-                  {showUserDropdown && (
-                    <div>
-                      <button className="nav-btn" onClick={handleClickCart}>Cart</button>
-                      <button className="nav-btn"
-                        onClick={() => {
-                          console.log("logout");
-                        }}
-                      >
-                        Logout
-                      </button>
-                    </div>
-                  )}
+          <div className="d-flex flex-row gap-4 ">
+            {user && user.auth ? (
+              <>
+                <div className="nav-info user-select-none">
+                  <span>
+                    Welcome: <span className="fw-bold">{user.email}</span>
+                  </span>
+                  <div>
+                    <button
+                      className="dropdown-toggle"
+                      onClick={handleClickNav}
+                    >
+                      Settings
+                    </button>
+                    {showUserDropdown && (
+                      <div>
+                        <button className="nav-btn" onClick={handleClickCart}>
+                          Cart
+                        </button>
+                        <button className="nav-btn" onClick={handleLogout}>
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <button
-                className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-black text-white"
-                style={{ width: 50, height: 50 }}
-                onClick={handleClickCart}
-              >
-                <img src={cart} style={{ width: 20, height: 20 }} />
-              </button>
-            </>
-          ) : (
-            <button
-              className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-white text-black"
-              style={{ width: 150, height: 50 }}
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Đăng Nhập
-            </button>
-          )}
-        </div> */}
+                <button
+                  className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-black text-white"
+                  style={{ width: 50, height: 50 }}
+                  onClick={handleClickCart}
+                >
+                  <img src={cart} style={{ width: 20, height: 20 }} />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-white text-black"
+                  style={{ width: 150, height: 50 }}
+                  onClick={() => {
+                    navigate("/login");
+                  }}
+                >
+                  Đăng Nhập
+                </button>
+
+                <button
+                  className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-black text-white"
+                  style={{ width: 50, height: 50 }}
+                  onClick={handleClickCart}
+                >
+                  <img src={cart} style={{ width: 20, height: 20 }} />
+                </button>
+              </>
+            )}
+          </div>
 
           {/*  */}
         </div>
@@ -219,7 +227,7 @@ export const Header = () => {
 
             <div className="dropdown-menu">
               {showDropdown && (
-                <div className="dropdown-row row row-cols-4">
+                <div className="row dropdown-row row-cols-4">
                   {listProducts.map((product) => (
                     <div className="dropdown-grid" key={product.id}>
                       <li

@@ -67,7 +67,7 @@ const AdminHeader = () => {
                   disabled={!user || !user.auth}
                 >
                   {user && user.auth === true ? (
-                    <NavDropdown.Item onClick={() => handleLogout()}>
+                    <NavDropdown.Item onClick={handleLogout}>
                       Logout
                     </NavDropdown.Item>
                   ) : (

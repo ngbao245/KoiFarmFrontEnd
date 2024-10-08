@@ -1,23 +1,24 @@
 .nav-container {
   width: 100%;
+  flex-direction: column;
+  background-color: #281713;
 }
 
 .nav-content {
   display: flex;
   padding: 1rem;
   flex-direction: row;
-  justify-content: center;
-  gap: 0.5rem;
+  justify-content: space-between;
   align-items: center;
-  justify-content: space-evenly;
+  gap: 0.5rem;
   background: #c70025;
 }
 
 .nav-logo {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
   align-items: center;
+  gap: 0.5rem;
   cursor: pointer;
 }
 
@@ -33,9 +34,9 @@
 
 .nav-search-grid {
   display: flex;
+  align-items: center;
   flex-direction: row;
   gap: 0.25rem;
-  align-items: center;
 }
 
 .nav-search-bar {
@@ -137,4 +138,18 @@
   color: #ffffff !important;
   padding-left: 30px !important;
   font-weight: bold !important;
+}
+
+.nav-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  color: #f1f1f1;
+}
+
+.dropdown-toggle {
+  border: 0;
+  color: #f1f1f1;
+  background: transparent !important;
 }
