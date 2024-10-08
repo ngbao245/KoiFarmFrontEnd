@@ -12,7 +12,7 @@ const addToCart = (quantity, productItemId, token) => {
 
 const getCart = () => {
   const token = localStorage.getItem("token");
-  
+
   if (!token) {
     throw new Error("No token found! Please log in again.");
   }
@@ -23,8 +23,22 @@ const getCart = () => {
   });
 };
 
-const updateCartItem = (cartId, prodItemId) => {
-  return axios.put(`Cart/update-cart-item/${cartId}/${prodItemId}`);
+const updateCartItem = (cartId, prodItemId, quantity) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return axios.put(
+    `Cart/update-cart-item/${cartId}/${prodItemId}`,
+    JSON.stringify(quantity),
+    {
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
 
 const removeFromCart = (cartId) => {

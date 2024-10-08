@@ -3,13 +3,15 @@ import { getCart, updateCartItem } from "../../services/CartService";
 import { getProdItemById } from "../../services/ProductItemService";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
-
 import "./Cart.css";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
+  const [cart, setCart] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCartItems();
@@ -17,108 +19,148 @@ const Cart = () => {
 
   const fetchCartItems = async () => {
     setIsLoading(true);
-    setError(null);
     try {
-      const response = await getCart(); // Fetch cart items
+      const response = await getCart();
       const { items } = response.data;
+      setCart(response.data);
 
-      // Fetch product details (like image URL) for each cart item
       const updatedItems = await Promise.all(
         items.map(async (item) => {
           const productResponse = await getProdItemById(item.productItemId);
-          const productData = productResponse.data;
-          return { ...item, imageUrl: productData.imageUrl }; // Assign image URL from product API
+          return { ...item, imageUrl: productResponse.data.imageUrl };
         })
       );
 
       setCartItems(updatedItems);
     } catch (error) {
-      console.error("Error fetching cart items:", error);
-      setError("Failed to load cart items. Please try again later.");
+      toast.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleQuantityChange = async (productItemId, newQuantity) => {
-    if (newQuantity < 1) return;
+  const handleQuantityChange = async (cartId, item, newQuantity) => {
+    if (newQuantity === 0 && !window.confirm("Are you sure you want to remove this item from the cart?")) return;
 
     try {
-      await updateCartItem(productItemId, newQuantity); // Update quantity in cart
-      setCartItems((prevItems) =>
-        prevItems.map((item) =>
-          item.productItemId === productItemId
-            ? { ...item, quantity: newQuantity }
-            : item
-        )
-      );
+      const response = await updateCartItem(cartId, item.productItemId, newQuantity);
+      if (response.statusCode == 200) {
+        if (newQuantity === 0) {
+          setCartItems((prevItems) => prevItems.filter((i) => i.productItemId !== item.productItemId));
+          //Linq: Where(item => item.productItemId !== productItemId)
+          toast.success(`Item ${item.productName} removed from cart`);
+        } else {
+          setCartItems((prevItems) =>
+            prevItems.map((i) =>
+              i.productItemId === item.productItemId
+                ? { ...i, quantity: newQuantity } : i
+            )
+          );
+        }
+      } else {
+        toast.error(response.data.messageError);
+      }
     } catch (error) {
-      console.error("Error updating cart item:", error);
-      alert("Failed to update cart. Please try again.");
+      toast.error(error);
     }
   };
 
   const calculateTotal = () => {
     return cartItems
       .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toLocaleString(); // Formats with commas
+      .toLocaleString();
   };
 
   const handleCheckout = () => {
-    console.log("Proceeding to checkout");
-    // Implement checkout logic here
+    navigate("/order");
+  };
+
+  const handleContinue = () => {
+    navigate("/product");
   };
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
       <Header />
       <div className="cart-container">
-        <main className="cart-content">
-          <h1 className="cart-title">tin tức về cá koi</h1>
+        <main className="cart-content animated user-select-none">
+          <h1 className="cart-title">Your Shopping Cart</h1>
           <div className="cart-grid">
             {cartItems.length === 0 ? (
               <p>Your cart is empty.</p>
             ) : (
               <>
                 <table className="cart-table">
-                  <thead className="table-header">
+                  <thead>
                     <tr>
-                      <th>Tên Sản Phẩm</th>
-                      <th>Giá</th>
-                      <th>Số Lượng</th>
-                      <th>Tổng</th>
+                      <th></th>
+                      <th>Product Name</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Total</th>
                     </tr>
                   </thead>
-                  <tbody className="table-body">
+                  <tbody>
                     {cartItems.map((item) => (
                       <tr key={item.productItemId}>
-                        <td className="product-info">
+                        <td>
                           <img
                             src={item.imageUrl}
                             alt={item.productName}
                             className="product-image"
                           />
-                          <span>{item.productName}</span>
                         </td>
-                        <td>{item.price.toLocaleString()} VND</td>
-                        <td>
-                          <input
-                            type="number"
-                            min="1"
-                            value={item.quantity}
-                            onChange={(e) =>
-                              handleQuantityChange(
-                                item.productItemId,
-                                parseInt(e.target.value)
-                              )
-                            }
-                            className="quantity-input"
-                          />
+                        <td style={{ fontWeight: "bold" }}>
+                          {item.productName}
+                        </td>
+                        <td className="price">
+                          {item.price.toLocaleString()} VND
                         </td>
                         <td>
+                          <div className="quantity-control">
+                            <button
+                              className="quantity-btn"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  cart.cartId,
+                                  item,
+                                  item.quantity - 1
+                                )
+                              }
+                            >
+                              -
+                            </button>
+                            <input
+                              type="number"
+                              min="1"
+                              value={item.quantity}
+                              onChange={(e) =>
+                                handleQuantityChange(
+                                  cart.cartId,
+                                  item,
+                                  parseInt(e.target.value)
+                                )
+                              }
+                              className="quantity-input"
+                              readOnly
+                            />
+                            <button
+                              className="quantity-btn"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  cart.cartId,
+                                  item,
+                                  item.quantity + 1
+                                )
+                              }
+                            >
+                              +
+                            </button>
+                          </div>
+                        </td>
+                        <td className="price">
                           {(item.price * item.quantity).toLocaleString()} VND
                         </td>
                       </tr>
@@ -127,19 +169,21 @@ const Cart = () => {
                 </table>
 
                 <div className="order-summary">
-                  <h2>Đặt Hàng</h2>
+                  <h2>Order Summary</h2>
                   <p>
-                    Phí ship: <span>Free ship đơn hàng trên 1.500.000 VND</span>
+                    Shipping: <span>Free</span>
                   </p>
                   <p>
-                    VAT: <span>Không tính phí</span>
+                    VAT: <span>Not applicable</span>
                   </p>
-                  <h3>Tổng: {calculateTotal()} VND</h3>
+                  <h3>Total: {calculateTotal()} VND</h3>
                   <div className="order-actions">
                     <button className="checkout-btn" onClick={handleCheckout}>
-                      Tiến Hành Thanh Toán
+                      Proceed to Checkout
                     </button>
-                    <button className="continue-btn">Tiếp Tục Mua Hàng</button>
+                    <button className="continue-btn" onClick={handleContinue}>
+                      Continue Shopping
+                    </button>
                   </div>
                 </div>
               </>

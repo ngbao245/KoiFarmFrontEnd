@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import AdminHeader from "../../layouts/header/AdminHeader";
 import { CSVLink } from "react-csv";
 import ModalAddProductItem from "../../components/ModalAddProductItem";
-import Papa from "papaparse";  
+import Papa from "papaparse";
 import { toast } from "react-toastify";
-import { fetchAllProdItem } from "../../services/ProductItemService";  
-import '../Admin/Admin.css';
+import { fetchAllProdItem } from "../../services/ProductItemService";
+import "../Admin/Admin.css";
 
 const AdminProduct = () => {
   const [dataExport, setDataExport] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [listProductItems, setListProductItems] = useState([]);  
-  const [showModalAddProduct, setShowModalAddProduct] = useState(false); 
+  const [listProductItems, setListProductItems] = useState([]);
+  const [showModalAddProduct, setShowModalAddProduct] = useState(false);
   const [fetchAgain, setFetchAgain] = useState(false);
 
   const [pageIndex, setPageIndex] = useState(1);
@@ -22,8 +22,8 @@ const AdminProduct = () => {
     try {
       const response = await fetchAllProdItem(pageIndex, pageSize, searchQuery);
       if (response && response.data && response.data.entities) {
-        setListProductItems(response.data.entities); // Extract product items from entities
-        setTotalPages(response.data.totalPages); // Set total pages for pagination
+        setListProductItems(response.data.entities);
+        setTotalPages(response.data.totalPages);
       } else {
         toast.error("Unexpected data format received");
       }
@@ -33,16 +33,15 @@ const AdminProduct = () => {
   };
 
   useEffect(() => {
-    fetchProductItems(searchTerm); // Fetch products when the component mounts or when fetchAgain changes
+    fetchProductItems(searchTerm);
   }, [fetchAgain, pageIndex, pageSize, searchTerm]);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
-    setPageIndex(1); // Reset to first page when searching
+    setPageIndex(1);
   };
 
-  const getProductExport = () => {
-  };
+  const getProductExport = () => {};
 
   const handleImportCSV = (event) => {
     const file = event.target.files[0];
@@ -75,20 +74,17 @@ const AdminProduct = () => {
     setShowModalAddProduct(false);
   };
 
-  // Handle adding a new product item
   const handleSubmitProduct = (newProduct) => {
-    setFetchAgain((prev) => !prev); // Trigger re-fetch to update the product list
-    handleCloseAddNew(); // Close the modal
+    setFetchAgain((prev) => !prev);
+    handleCloseAddNew();
   };
 
-  // Handle pagination change
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      setPageIndex(newPage); // Update page index for pagination
+      setPageIndex(newPage);
     }
   };
 
-  // Filtered list based on search term
   const filteredProductItems = Array.isArray(listProductItems)
     ? listProductItems.filter((item) =>
         item.name.toLowerCase().includes(searchTerm)
@@ -146,44 +142,6 @@ const AdminProduct = () => {
             onChange={handleSearch}
           />
         </div>
-
-        {/* <div className="customize-table">
-          <table className="table table-striped text-center">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Sex</th>
-                <th>Age</th>
-                <th>Size</th>
-                <th>Quantity</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProductItems.length > 0 ? (
-                filteredProductItems.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>{item.price}</td>
-                    <td>{item.category}</td>
-                    <td>{item.sex}</td>
-                    <td>{item.age}</td>
-                    <td>{item.size}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.type}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8">No product items found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div> */}
-
         <div className="customize-table">
           <table className="table table-striped text-center">
             <thead>
@@ -226,7 +184,6 @@ const AdminProduct = () => {
                     <td>{item.quantity}</td>
                     <td>{item.type}</td>
                     <td>{item.productId}</td>
-
                   </tr>
                 ))
               ) : (
@@ -239,17 +196,19 @@ const AdminProduct = () => {
         </div>
 
         <div className="pagination-controls">
-          <button 
-            className="btn btn-secondary" 
-            disabled={pageIndex === 1} 
+          <button
+            className="btn btn-secondary"
+            disabled={pageIndex === 1}
             onClick={() => handlePageChange(pageIndex - 1)}
           >
             Previous
           </button>
-          <span className="px-3">Page {pageIndex} of {totalPages}</span>
-          <button 
-            className="btn btn-secondary" 
-            disabled={pageIndex === totalPages} 
+          <span className="px-3">
+            Page {pageIndex} of {totalPages}
+          </span>
+          <button
+            className="btn btn-secondary"
+            disabled={pageIndex === totalPages}
             onClick={() => handlePageChange(pageIndex + 1)}
           >
             Next
