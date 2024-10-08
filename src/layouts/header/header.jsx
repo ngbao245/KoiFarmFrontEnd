@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import logo from "../../../public/assets/icon.png";
 import logo1 from "../../../public/assets/image 9.png";
 import search from "../../../public/icons/Search.png";
@@ -15,6 +15,7 @@ export const Header = () => {
   const { logout, user } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const dropdownRef = useRef(null);
 
   const [choose, setChoose] = useState("home");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -33,9 +34,20 @@ export const Header = () => {
         console.error("Error fetching products:", error);
       }
     };
-
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowUserDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   const handleChoose = (e) => {
     e.preventDefault();
@@ -98,11 +110,7 @@ export const Header = () => {
   };
 
   const handleClickNav = () => {
-    if (showUserDropdown) {
-      setShowUserDropdown(false);
-    } else {
-      setShowUserDropdown(true);
-    }
+    setShowUserDropdown((prev) => !prev);
   };
 
   const handleLogout = () => {
@@ -131,29 +139,6 @@ export const Header = () => {
             </div>
           </div>
 
-          {/* <div className="d-flex flex-row gap-4 ">
-            <button
-              className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-white text-black  "
-              style={{ width: 150, height: 50 }}
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Đăng Nhập
-            </button>
-            <button
-              className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-black text-white"
-              style={{ width: 50, height: 50 }}
-              onClick={() => {
-                handleClickCart();
-              }}
-            >
-              <img src={cart} style={{ width: 20, height: 20 }} />
-            </button>
-          </div> */}
-
-          {/* update  */}
-
           <div className="d-flex flex-row gap-4 ">
             {user && user.auth ? (
               <>
@@ -161,7 +146,7 @@ export const Header = () => {
                   <span>
                     Welcome: <span className="fw-bold">{user.email}</span>
                   </span>
-                  <div>
+                  <div ref={dropdownRef}>
                     <button
                       className="dropdown-toggle"
                       onClick={handleClickNav}
@@ -169,7 +154,7 @@ export const Header = () => {
                       Settings
                     </button>
                     {showUserDropdown && (
-                      <div>
+                      <div className="dropdown-link">
                         <button className="nav-btn" onClick={handleClickCart}>
                           Cart
                         </button>
@@ -210,8 +195,6 @@ export const Header = () => {
               </>
             )}
           </div>
-
-          {/*  */}
         </div>
 
         <div className="dropdown-wrapper">
