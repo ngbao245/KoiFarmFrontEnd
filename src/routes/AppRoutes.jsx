@@ -39,15 +39,12 @@ const AppRoutes = () => {
         <Route path="/koi/:productName/:id" element={<ProductItemDetail />} />
 
         <Route path="/cart" element={<Cart />} />
+        <Route path="order" element={<Order />} />
 
         <Route path="/test" element={<Cloudinary />} />
 
         <Route path="payment-success" element={<Payment />} />
-
         <Route path="payment-failed" element={<PaymentFailed />} />
-
-        
-        <Route path="order" element={<Order />} />
 
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>

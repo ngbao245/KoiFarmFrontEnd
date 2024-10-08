@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -7,10 +7,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
+import "./adminHeader.css"
 
 const AdminHeader = () => {
   const { logout, user } = useContext(UserContext);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null); // Create a ref for the dropdown
+  const [showUserDropdown, setShowUserDropdown] = useState(false); // State for dropdown visibility
 
   const handleLogout = () => {
     logout();
@@ -23,6 +26,18 @@ const AdminHeader = () => {
       navigate("/*");
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowUserDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
@@ -61,21 +76,25 @@ const AdminHeader = () => {
                     Welcome: <span className="fw-bold"> {user.email}</span>
                   </span>
                 )}
-                <NavDropdown
-                  title="Settings"
-                  id="basic-nav-dropdown"
-                  disabled={!user || !user.auth}
-                >
-                  {user && user.auth === true ? (
-                    <NavDropdown.Item onClick={handleLogout}>
-                      Logout
-                    </NavDropdown.Item>
-                  ) : (
-                    <NavLink className="dropdown-item" to="/login">
-                      Login
-                    </NavLink>
-                  )}
-                </NavDropdown>
+                <div ref={dropdownRef}>
+                  <NavDropdown
+                    title="Settings"
+                    id="basic-nav-dropdown"
+                    show={showUserDropdown}
+                    onClick={() => setShowUserDropdown((prev) => !prev)}
+                    disabled={!user || !user.auth}
+                  >
+                    {user && user.auth === true ? (
+                      <NavDropdown.Item onClick={handleLogout}>
+                        Logout
+                      </NavDropdown.Item>
+                    ) : (
+                      <NavLink className="dropdown-item" to="/login">
+                        Login
+                      </NavLink>
+                    )}
+                  </NavDropdown>
+                </div>
               </Nav>
             </>
           )}

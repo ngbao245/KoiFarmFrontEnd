@@ -1,0 +1,157 @@
+/* adminHeader.css .admin-header {
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #000;
+  font-size: 1.2rem;
+}
+
+.nav-link:disabled {
+  color: #aaa;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.welcome-message {
+  margin-right: 10px;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0) !important;
+}
+
+.dropdown-menu {
+  position: absolute;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  margin-top: 5px;
+  background: rgba(255, 255, 255, 0) !important;
+}
+
+.dropdown-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0) !important;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0) !important;
+} */
+
+.admin-header {
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #000;
+  font-size: 1.2rem;
+}
+
+.nav-link:disabled {
+  color: #aaa;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.welcome-message {
+  margin-right: 10px;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  border-radius: 6px;
+  margin-top: 5px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  visibility: hidden;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.dropdown-item {
+  padding: 10px 20px !important;
+  cursor: pointer;
+  transition: none;
+  background-color: #ffffff !important;
+  border: solid 2px black !important;
+  width: 80% !important;
+}
+
+.dropdown-item:hover {
+  background-color: #ffffff !important;
+  color: rgb(0, 0, 0) !important;
+  padding: 10px 20px !important;
+  font-weight: normal !important;
+  border: solid 2px black !important;
+  width: 80% !important;
+}
