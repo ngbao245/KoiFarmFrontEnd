@@ -1,4 +1,4 @@
-/* General Reset */
+General Reset
 * {
   margin: 0;
   padding: 0;
@@ -130,6 +130,16 @@ body {
     width: 100%;
     max-width: 200px;
   }
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none !important;
+  color: black;
 }
 
 button {

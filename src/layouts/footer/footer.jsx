@@ -42,9 +42,9 @@ export const Footer = () => {
           <img
             src={logo}
             alt="Koi Shop Logo"
-            style={{ width: 100, height: 100 }}
+            style={{ width: 80, height: 80 }}
           />
-          <img src={logo1} style={{ width: 230, height: 80 }} />
+          <img src={logo1} style={{ width: 210, height: 60 }} />
           <p className="mt-3 fw-semibold">
             Địa chỉ: Tây Hồ, Hà Nội
             <br />

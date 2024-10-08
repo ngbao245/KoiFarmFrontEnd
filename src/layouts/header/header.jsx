@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import logo from "../../../public/assets/icon.png";
 import logo1 from "../../../public/assets/image 9.png";
 import search from "../../../public/icons/Search.png";
@@ -9,13 +9,16 @@ import "./header.css";
 import { fetchAllProducts } from "../../services/ProductService";
 import { getProdItemByProdId } from "../../services/ProductItemService";
 import { toast } from "react-toastify";
+import { UserContext } from "../../contexts/UserContext";
 
 export const Header = () => {
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
 
   const [choose, setChoose] = useState("home");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [listProducts, setListProducts] = useState([]);
 
@@ -94,159 +97,191 @@ export const Header = () => {
     }
   };
 
+  const handleClickNav = () => {
+    if (showUserDropdown) {
+      setShowUserDropdown(false);
+    } else {
+      setShowUserDropdown(true);
+    }
+  };
+
   return (
-    <div className="w-100">
-      <div
-        className="d-flex p-3 flex-row justify-content-center gap-2 align-items-center justify-content-evenly"
-        style={{ background: "#C70025" }}
-      >
-        <div
-          className="d-flex flex-row gap-1 align-items-center"
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/")}
-        >
-          <img className=" mb-2" src={logo} style={{ width: 50, height: 50 }} />
-          <img className="" src={logo1} style={{ width: 115, height: 40 }} />
-        </div>
-        <div className="d-flex flex-row gap-1 align-items-center">
-          <div
-            className="d-flex flex-row border border border-0 rounded "
-            style={{ width: 500, height: 50 }}
-          >
-            <input
-              className="w-100 ps-3 rounded border border-0"
-              type="text"
-              placeholder='Tìm kiếm "chú cá" phù hợp với bạn...'
-            />
+    <>
+      <div className="nav-container">
+        <div className="nav-content">
+          <div className="nav-logo" onClick={() => navigate("/")}>
+            <img src={logo} className="logo-image" alt="#" />
+            <img src={logo1} className="logo1-image" alt="#" />
+          </div>
+          <div className="nav-search-grid">
+            <div className="nav-search-bar">
+              <input
+                type="text"
+                placeholder='Tìm kiếm "chú cá" phù hợp với bạn...'
+              />
+            </div>
+            <div className="nav-search-btn">
+              <img src={search} />
+            </div>
           </div>
 
-          <div
-            className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-white "
-            style={{ width: 50, height: 50 }}
-          >
-            <img src={search} style={{ width: 20, height: 20 }} />
+          <div className="d-flex flex-row gap-4 ">
+            <button
+              className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-white text-black  "
+              style={{ width: 150, height: 50 }}
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Đăng Nhập
+            </button>
+            <button
+              className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-black text-white"
+              style={{ width: 50, height: 50 }}
+              onClick={() => {
+                handleClickCart();
+              }}
+            >
+              <img src={cart} style={{ width: 20, height: 20 }} />
+            </button>
           </div>
-        </div>
-        <div className="d-flex flex-row gap-4 ">
-          <button
-            className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-white text-black  "
-            style={{ width: 150, height: 50 }}
-            onClick={() => {
-              navigate("/login");
-            }}
-          >
-            Đăng Nhập
-          </button>
-          <button
-            className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-black text-white"
-            style={{ width: 50, height: 50 }}
-            onClick={() => {
-              handleClickCart();
-            }}
-          >
-            <img src={cart} style={{ width: 20, height: 20 }} />
-          </button>
-        </div>
-      </div>
 
-      <div
-        className="h-50 text-white fs-5 d-flex flex-row gap-2 align-items-center justify-content-center"
-        style={{
-          background: "#281713",
-          listStyle: "none",
-        }}
-      >
-        <div
-          className="dropdown-wrapper"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+          {/* update  */}
+
+          {/* <div className="d-flex flex-row gap-4 ">
+          {user && user.auth ? ( 
+            <>
+              <div className="d-flex flex-row gap-2 align-items-center">
+                 
+                <span>
+                  Welcome: <span className="fw-bold">{user.email}</span>
+                </span>
+                <div>
+                  <button
+                    className="dropdown-toggle"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "white",
+                    }}
+                    onClick={handleClickNav}
+                  >
+                    Settings
+                  </button>
+                  {showUserDropdown && (
+                    <div>
+                      <button className="nav-btn" onClick={handleClickCart}>Cart</button>
+                      <button className="nav-btn"
+                        onClick={() => {
+                          console.log("logout");
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <button
+                className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-black text-white"
+                style={{ width: 50, height: 50 }}
+                onClick={handleClickCart}
+              >
+                <img src={cart} style={{ width: 20, height: 20 }} />
+              </button>
+            </>
+          ) : (
+            <button
+              className="d-flex flex-row border border-0 rounded align-items-center justify-content-center bg-white text-black"
+              style={{ width: 150, height: 50 }}
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Đăng Nhập
+            </button>
+          )}
+        </div> */}
+
+          {/*  */}
+        </div>
+
+        <div className="dropdown-wrapper">
+          <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <button
+              className="dropdown-btn user-select-none"
+              value={"product"}
+              onClick={handleChoose}
+            >
+              <img className="icon user-select-none" src={list} />
+              DANH MỤC KOI
+            </button>
+
+            <div className="dropdown-menu">
+              {showDropdown && (
+                <div className="dropdown-row row row-cols-4">
+                  {listProducts.map((product) => (
+                    <div className="dropdown-grid" key={product.id}>
+                      <li
+                        className="dropdown-item"
+                        onClick={() => handleProductClick(product)}
+                      >
+                        {product.name}
+                      </li>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
           <button
-            className="d-flex flex-row justify-content-center user-select-none"
+            className="d-flex flex-row justify-content-center"
+            value={"home"}
             style={{
-              background: "#C70025",
+              background: location.pathname === "/" ? "#C70025" : "#281713",
               width: 250,
             }}
-            value={"product"}
             onClick={handleChoose}
           >
-            <img
-              className="user-select-none"
-              src={list}
-              style={{
-                width: 20,
-                height: 20,
-                marginTop: 5,
-                marginRight: 10,
-              }}
-            />
-            DANH MỤC KOI
+            TRANG CHỦ
           </button>
-
-          <div className="dropdown-menu">
-            {showDropdown && (
-              <div className="dropdown-row row row-cols-4">
-                {listProducts.map((product) => (
-                  <div className="dropdown-grid" key={product.id}>
-                    <li
-                      className="dropdown-item"
-                      onClick={() => handleProductClick(product)}
-                    >
-                      {product.name}
-                    </li>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <button
+            className="d-flex flex-row justify-content-center"
+            value={"info"}
+            style={{
+              background: location.pathname === "/info" ? "#C70025" : "#281713",
+              width: 250,
+            }}
+            onClick={handleChoose}
+          >
+            GIỚI THIỆU
+          </button>
+          <button
+            className="d-flex flex-row justify-content-center"
+            value={"news"}
+            style={{
+              background: location.pathname === "/news" ? "#C70025" : "#281713",
+              width: 250,
+            }}
+            onClick={handleChoose}
+          >
+            TIN TỨC
+          </button>
+          <button
+            className="d-flex flex-row justify-content-center"
+            value={"contact"}
+            style={{
+              background:
+                location.pathname === "/contact" ? "#C70025" : "#281713",
+              width: 250,
+            }}
+            onClick={handleChoose}
+          >
+            LIÊN HỆ
+          </button>
         </div>
-
-        <button
-          className="d-flex flex-row justify-content-center"
-          value={"home"}
-          style={{
-            background: location.pathname === "/" ? "#C70025" : "#281713",
-            width: 250,
-          }}
-          onClick={handleChoose}
-        >
-          TRANG CHỦ
-        </button>
-        <button
-          className="d-flex flex-row justify-content-center"
-          value={"info"}
-          style={{
-            background: location.pathname === "/info" ? "#C70025" : "#281713",
-            width: 250,
-          }}
-          onClick={handleChoose}
-        >
-          GIỚI THIỆU
-        </button>
-        <button
-          className="d-flex flex-row justify-content-center"
-          value={"news"}
-          style={{
-            background: location.pathname === "/news" ? "#C70025" : "#281713",
-            width: 250,
-          }}
-          onClick={handleChoose}
-        >
-          TIN TỨC
-        </button>
-        <button
-          className="d-flex flex-row justify-content-center"
-          value={"contact"}
-          style={{
-            background:
-              location.pathname === "/contact" ? "#C70025" : "#281713",
-            width: 250,
-          }}
-          onClick={handleChoose}
-        >
-          LIÊN HỆ
-        </button>
       </div>
-    </div>
+    </>
   );
 };
