@@ -26,3 +26,7 @@ input::-ms-reveal,
 input::-ms-clear {
   display: none;
 }
+
+textarea {
+  resize: none !important;
+}

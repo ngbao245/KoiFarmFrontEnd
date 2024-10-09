@@ -1,0 +1,142 @@
+.payment-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(
+    100vh - 200px
+  ); /* Adjust based on your header and footer height */
+  background-color: #f8f9fa;
+}
+
+.payment-content {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+}
+
+.payment-status-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  text-align: center;
+}
+
+.success-icon {
+  width: 250px;
+  height: 250px;
+}
+
+.payment-status {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.payment-status.success {
+  color: #28a745;
+}
+
+.payment-status.failed {
+  color: #dc3545;
+}
+
+.payment-details {
+  margin-bottom: 1.5rem;
+}
+
+.payment-details p {
+  margin: 0.5rem 0;
+}
+
+.thank-you-message {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+}
+
+.payment-failed-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+
+.payment-failed-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.payment-failed-title {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+}
+
+.payment-failed-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.payment-failed-message {
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.payment-failed-details {
+  background-color: #f1f1f1;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.go-back-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.go-back-button:hover {
+  background-color: #2980b9;
+}
