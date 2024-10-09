@@ -139,16 +139,22 @@
   padding: 10px 20px !important;
   cursor: pointer;
   transition: none;
-  background-color: #ffffff !important;
-  border: solid 2px black !important;
+  background: rgba(255, 255, 255, 0.867) !important;
+  border-radius: 6px;
+  border: solid 2px rgba(0, 0, 0, 0) !important;
   width: 80% !important;
+  border-radius: 6px;
+  border: solid 2px black !important;
 }
 
 .admin-header-container .dropdown-item:hover {
-  background-color: #ffffff !important;
   color: rgb(0, 0, 0) !important;
   padding: 10px 20px !important;
   font-weight: normal !important;
   border: solid 2px black !important;
+  border-radius: 6px;
+  border: solid 2px rgba(0, 0, 0, 0) !important;
   width: 80% !important;
+  border-radius: 6px;
+  border: solid 2px #900909 !important;
 }

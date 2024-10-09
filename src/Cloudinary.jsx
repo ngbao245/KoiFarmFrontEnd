@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Header } from "./layouts/header/header";
+import { uploadImageCloudinary } from "./services/CloudinaryService";
 
 const Cloudinary = () => {
   const [profileImage, setProfileImage] = useState("");
@@ -34,16 +35,16 @@ const Cloudinary = () => {
         image.append("api_key", api_key);
         image.append("folder", folder);
 
-        const response = await fetch(
-          `https://api.cloudinary.com/v1_1/koi-farm-shop/image/upload`,
-          {
-            method: "POST",
-            body: image,
-          }
-        );
-        const imgData = await response.json();
-        console.log(imgData);
-        imageUrl = imgData.url;
+        // const response = await fetch(
+        //   `https://api.cloudinary.com/v1_1/koi-farm-shop/image/upload`,
+        //   {
+        //     method: "POST",
+        //     body: image,
+        //   }
+        // );
+
+        const response = await uploadImageCloudinary(image);
+        imageUrl = response.data.secure_url;  //url image
         console.log(imageUrl);
         setImageReview(null);
         console.log("Uploaded Image URL:", imageUrl);

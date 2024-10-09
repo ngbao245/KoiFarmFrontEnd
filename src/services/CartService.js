@@ -25,6 +25,7 @@ const getCart = () => {
 
 const updateCartItem = (cartId, prodItemId, quantity) => {
   const token = localStorage.getItem("token");
+  
   if (!token) {
     throw new Error("No token found! Please log in again.");
   }

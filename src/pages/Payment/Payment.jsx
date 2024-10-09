@@ -24,8 +24,8 @@ const Payment = () => {
               Payment {status === 'success' ? 'Successful' : 'Successful'}
             </h1>
             <div className="payment-details">
-              {/* <p><strong>Order ID:</strong> {orderId}</p>
-              <p><strong>Payment ID:</strong> {paymentId}</p> */}
+              <p><strong>Order ID:</strong> {orderId}</p>
+              <p><strong>Payment ID:</strong> {paymentId}</p>
             </div>
             <p className="thank-you-message">
               Thank you for your purchase! We've sent a confirmation email with your order details.
