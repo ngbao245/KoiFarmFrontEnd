@@ -1,0 +1,43 @@
+.tick-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.tick-ircle {
+  stroke-dasharray: 597;
+  stroke-dashoffset: 597;
+}
+
+.tick {
+  stroke-dasharray: 175;
+  stroke-dashoffset: 175;
+}
+
+.animate .tick-circle {
+  animation: circle 1.1s ease-in-out forwards;
+}
+
+.animate .tick {
+  animation: tick 1.1s ease-out forwards 1s;
+}
+
+@keyframes circle {
+  from {
+    stroke-dashoffset: 597;
+  }
+  to {
+    stroke-dashoffset: 1194;
+  }
+}
+
+@keyframes tick {
+  from {
+    stroke-dashoffset: 175;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

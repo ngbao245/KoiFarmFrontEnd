@@ -1,34 +1,69 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import './Payment.css';
+import React, { useEffect } from "react";
+import { Header } from "../../layouts/header/header";
+import { Footer } from "../../layouts/footer/footer";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./PaymentFailed.css"; // Style cho PaymentFailed
+import CrossFail from "../../components/CrossFail";
 
 const PaymentFailed = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const searchParams = new URLSearchParams(location.search);
-  
-  const orderId = searchParams.get('orderId');
-  const status = searchParams.get('status');
+
+  const orderId = searchParams.get("orderId");
+  const paymentId = searchParams.get("paymentId");
+  const status = searchParams.get("status");
 
   const handleGoBack = () => {
-    navigate('/product');
+    navigate("/product");
   };
 
+  // useEffect(() => {
+  //   if (!orderId) {
+  //     navigate("/*");
+  //   }
+  // }, [orderId, paymentId]);
+
   return (
-    <div className="payment-failed-container">
-      <div className="payment-failed-content">
-        <h1 className="payment-failed-title">Thanh toán không thành công</h1>
-        <div className="payment-failed-icon">❌</div>
-        <p className="payment-failed-message">Chúng tôi rất tiếc nhưng khoản thanh toán của bạn không thể được xử lý.</p>
-        <div className="payment-failed-details">
-          <p><strong>Order ID:</strong> {orderId}</p>
-          <p><strong>Status:</strong> {status}</p>
-        </div>
-        <button className="go-back-button" onClick={handleGoBack}>
-        Tiếp tục mua sắm
-        </button>
+    <>
+      <Header />
+      <div className="payment-container">
+        <main className="payment-content">
+          <div className="payment-status-card">
+            <CrossFail />
+
+            <h1 className="payment-status-failure">
+              Thanh toán không thành công
+            </h1>
+            <div className="payment-details">
+              <p>
+                <strong>Order ID:</strong> {orderId}
+              </p>
+              <p>
+                <strong>Payment ID:</strong> {paymentId}
+              </p>
+            </div>
+            <p className="error-message">
+              Chúng tôi rất tiếc, nhưng khoản thanh toán của bạn đã không thành
+              công. Vui lòng thử lại sau.
+            </p>
+            <div className="action-buttons">
+              <button className="btn btn-primary" onClick={handleGoBack}>
+                Tiếp tục mua sắm
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => navigate("/")}
+              >
+                Quay lại trang chủ
+              </button>
+            </div>
+          </div>
+        </main>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 

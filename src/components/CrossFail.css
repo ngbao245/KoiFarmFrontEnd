@@ -1,0 +1,43 @@
+.crossfail-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.crossfail-circle {
+  stroke-dasharray: 597;
+  stroke-dashoffset: 597;
+}
+
+.cross {
+  stroke-dasharray: 56;
+  stroke-dashoffset: 56;
+}
+
+.animate .crossfail-circle {
+  animation: circle 1.1s ease-in-out forwards;
+}
+
+.animate .cross {
+  animation: cross 1.1s ease-out forwards;
+}
+
+@keyframes circle {
+  from {
+    stroke-dashoffset: 597;
+  }
+  to {
+    stroke-dashoffset: 1194;
+  }
+}
+
+@keyframes cross {
+  from {
+    stroke-dashoffset: 56;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
