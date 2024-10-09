@@ -70,7 +70,7 @@
   background: rgba(255, 255, 255, 0) !important;
 } */
 
-.admin-header-container .admin-header {
+.admin-header {
   background-color: #f8f9fa;
   padding: 10px 20px;
   display: flex;
@@ -78,44 +78,41 @@
   align-items: center;
 }
 
-.admin-header-container .header-content {
+.header-content {
   display: flex;
   align-items: center;
   width: 100%;
 }
 
-.admin-header-container .navbar-brand {
+.navbar-brand {
   font-size: 1.5rem;
   display: flex;
   align-items: center;
   margin-right: auto;
 }
 
-.admin-header-container .nav-links {
+.nav-link {
   display: flex;
   gap: 20px;
-}
-
-.admin-header-container .nav-link {
   text-decoration: none;
   color: #000;
   font-size: 1.2rem;
 }
 
-.admin-header-container .nav-link:disabled {
+.nav-link:disabled {
   color: #aaa;
 }
 
-.admin-header-container .user-info {
+.user-info {
   display: flex;
   align-items: center;
 }
 
-.admin-header-container .welcome-message {
+.welcome-message {
   margin-right: 10px;
 }
 
-.admin-header-container .dropdown-toggle {
+.dropdown-toggle {
   background: none;
   border: none;
   font-size: 1rem;
