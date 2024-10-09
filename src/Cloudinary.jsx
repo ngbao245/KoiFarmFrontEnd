@@ -6,10 +6,6 @@ const Cloudinary = () => {
   const [profileImage, setProfileImage] = useState("");
   const [imageReview, setImageReview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
-  const upload_preset = import.meta.env.VITE_UPLOAD_PRESET;
-  const api_key = import.meta.env.VITE_API_KEY;
-  const folder = import.meta.env.VITE_FOLDER;
 
   const handleImageChange = (e) => {
     setProfileImage(e.target.files[0]);
@@ -22,19 +18,18 @@ const Cloudinary = () => {
 
     try {
       let imageUrl;
-
       if (
         profileImage &&
         (profileImage.type === "image/png" ||
           profileImage.type === "image/jpg" ||
           profileImage.type === "image/jpeg")
       ) {
-        const image = new FormData();
-        image.append("file", profileImage);
-        image.append("cloud_name", "koi-farm-shop");
-        image.append("upload_preset", upload_preset);
-        image.append("api_key", api_key);
-        image.append("folder", folder);
+        // const image = new FormData();
+        // image.append("file", profileImage);
+        // image.append("cloud_name", "koi-farm-shop");
+        // image.append("upload_preset", upload_preset);
+        // image.append("api_key", api_key);
+        // image.append("folder", folder);
 
         // const response = await fetch(
         //   `https://api.cloudinary.com/v1_1/koi-farm-shop/image/upload`,
@@ -44,9 +39,8 @@ const Cloudinary = () => {
         //   }
         // );
 
-        const response = await uploadImageCloudinary(image);
-        imageUrl = response.data.secure_url;  //url image
-        console.log(imageUrl);
+        const response = await uploadImageCloudinary(profileImage);
+        imageUrl = response.secure_url;
         setImageReview(null);
         console.log("Uploaded Image URL:", imageUrl);
       }
