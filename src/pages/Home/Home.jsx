@@ -4,8 +4,44 @@ import { Footer } from "../../layouts/footer/footer";
 import "./Home.css";
 import "../../styles/animation.css";
 import fish from "../../../public/assets/img_sec1.png";
+import { useEffect, useState } from "react";
+import { fetchAllProdItem, getProdItemById } from "../../services/ProductItemService";
+import { useNavigate } from "react-router-dom";
+import { getProductById } from "../../services/ProductService";
 
 export const Home = () => {
+
+  const [productItems, setProductItems] = useState([]);
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    fetchAllProdItem().then((response) => {
+      const items = response.data.entities;
+      // Shuffle the items randomly and pick 4
+      const shuffledItems = items.sort(() => 0.5 - Math.random()).slice(0, 4);
+      setProductItems(shuffledItems);
+    })
+      .catch((error) => {
+        console.error("Error fetching product items:", error);
+      })
+  }, []);
+
+  const handleProductClick = async (productItem) => {
+    try {
+      const prodItemResponse = await getProdItemById(productItem.id);
+
+      const productResponse = await getProductById(prodItemResponse.data.productId);
+      const productName = productResponse.data.name;
+
+      navigate(`/koi/${productName.toLowerCase().replace(/\s+/g, "")}/${productItem.id}`, {
+        state: { response: prodItemResponse.data, productName },
+      });
+    } catch (error) {
+      console.error("Error fetching product item:", error);
+    }
+  };
+
   return (
     <>
       <div className="homepage">
@@ -42,182 +78,54 @@ export const Home = () => {
             <section className="best-sellers">
               <h2>Bán Chạy</h2>
               <div className="product-list d-flex flex-wrap justify-content-center">
-                <div
-                  className="rounded-2 border border-1 border-light-subtle p-1 bg-body-tertiary shadow mx-3"
-                  style={{ width: 300 }}
-                >
-                  <div className="rounded-2" style={{ height: 150 }}>
-                    <img
-                      className="rounded-1"
-                      src="./public/assets/koi-fish.jpg"
-                      style={{ width: 280, height: "100%" }}
-                    />
-                  </div>
-
-                  {/* Black line between image and description */}
+                {productItems.map((item) => (
                   <div
-                    style={{
-                      borderBottom: "2px solid black",
-                      margin: "10px 0",
-                    }}
-                  ></div>
+                    key={item.id}
+                    className="rounded-2 border border-1 border-light-subtle p-1 bg-body-tertiary shadow mx-3"
+                    style={{ width: 300 }}
+                  >
+                    <div className="rounded-2" style={{ height: 150 }}>
+                      <img
+                        className="rounded-1"
+                        src={item.imageUrl}
+                        style={{ width: 280, height: "100%" }}
+                        alt={item.name}
+                      />
+                    </div>
 
-                  <div className="d-flex flex-column align-items-center">
-                    <p className="fs-4 fw-semibold">Kohaku Koi</p>
-                    <p className="fs-5 fw-bold" style={{ color: "#C70025" }}>
-                      1.000.000 VND
-                    </p>
-                    <p className="fw-normal" style={{ color: "gray" }}>
-                      TP Hồ Chí Minh
-                    </p>
-                  </div>
-                  <div className="mb-2 d-flex flex-row gap-2 justify-content-center">
-                    <button
-                      className="rounded"
-                      style={{ background: "#C70025" }}
-                    >
-                      Mua ngay
-                    </button>
-                    <button
-                      className="bg-white rounded"
-                      style={{ border: "1px solid #C70025", color: "#C70025" }}
-                    >
-                      Xem thêm
-                    </button>
-                  </div>
-                </div>
+                    <div
+                      style={{
+                        borderBottom: "2px solid black",
+                        margin: "10px 0",
+                      }}
+                    ></div>
 
-                <div
-                  className="rounded-2 border border-1 border-light-subtle p-1 bg-body-tertiary shadow mx-3"
-                  style={{ width: 300 }}
-                >
-                  <div className="rounded-2" style={{ height: 150 }}>
-                    <img
-                      className="rounded-1"
-                      src="./public/assets/koi-fish.jpg"
-                      style={{ width: 280, height: "100%" }}
-                    />
+                    <div className="d-flex flex-column align-items-center">
+                      <p className="fs-4 fw-semibold">{item.name}</p>
+                      <p className="fs-5 fw-bold" style={{ color: "#C70025" }}>
+                        {item.price} VND
+                      </p>
+                      <p className="fw-normal" style={{ color: "gray" }}>
+                        {item.origin}
+                      </p>
+                    </div>
+                    <div className="mb-2 d-flex flex-row gap-2 justify-content-center">
+                      <button
+                        className="rounded"
+                        style={{ background: "#C70025" }}
+                      >
+                        Mua ngay
+                      </button>
+                      <button
+                        className="bg-white rounded"
+                        style={{ border: "1px solid #C70025", color: "#C70025" }}
+                        onClick={() => handleProductClick(item)}
+                      >
+                        Xem thêm
+                      </button>
+                    </div>
                   </div>
-
-                  <div
-                    style={{
-                      borderBottom: "2px solid black",
-                      margin: "10px 0",
-                    }}
-                  ></div>
-
-                  <div className="d-flex flex-column align-items-center">
-                    <p className="fs-4 fw-semibold">Kohaku Koi</p>
-                    <p className="fs-5 fw-bold" style={{ color: "#C70025" }}>
-                      1.000.000 VND
-                    </p>
-                    <p className="fw-normal" style={{ color: "gray" }}>
-                      TP Hồ Chí Minh
-                    </p>
-                  </div>
-                  <div className="mb-2 d-flex flex-row gap-2 justify-content-center">
-                    <button
-                      className="rounded"
-                      style={{ background: "#C70025" }}
-                    >
-                      Mua ngay
-                    </button>
-                    <button
-                      className="bg-white rounded"
-                      style={{ border: "1px solid #C70025", color: "#C70025" }}
-                    >
-                      Xem thêm
-                    </button>
-                  </div>
-                </div>
-
-                <div
-                  className="rounded-2 border border-1 border-light-subtle p-1 bg-body-tertiary shadow mx-3"
-                  style={{ width: 300 }}
-                >
-                  <div className="rounded-2" style={{ height: 150 }}>
-                    <img
-                      className="rounded-1"
-                      src="./public/assets/koi-fish.jpg"
-                      style={{ width: 280, height: "100%" }}
-                    />
-                  </div>
-
-                  <div
-                    style={{
-                      borderBottom: "2px solid black",
-                      margin: "10px 0",
-                    }}
-                  ></div>
-
-                  <div className="d-flex flex-column align-items-center">
-                    <p className="fs-4 fw-semibold">Kohaku Koi</p>
-                    <p className="fs-5 fw-bold" style={{ color: "#C70025" }}>
-                      1.000.000 VND
-                    </p>
-                    <p className="fw-normal" style={{ color: "gray" }}>
-                      TP Hồ Chí Minh
-                    </p>
-                  </div>
-                  <div className="mb-2 d-flex flex-row gap-2 justify-content-center">
-                    <button
-                      className="rounded"
-                      style={{ background: "#C70025" }}
-                    >
-                      Mua ngay
-                    </button>
-                    <button
-                      className="bg-white rounded"
-                      style={{ border: "1px solid #C70025", color: "#C70025" }}
-                    >
-                      Xem thêm
-                    </button>
-                  </div>
-                </div>
-
-                <div
-                  className="rounded-2 border border-1 border-light-subtle p-1 bg-body-tertiary shadow mx-3"
-                  style={{ width: 300 }}
-                >
-                  <div className="rounded-2" style={{ height: 150 }}>
-                    <img
-                      className="rounded-1"
-                      src="./public/assets/koi-fish.jpg"
-                      style={{ width: 280, height: "100%" }}
-                    />
-                  </div>
-
-                  <div
-                    style={{
-                      borderBottom: "2px solid black",
-                      margin: "10px 0",
-                    }}
-                  ></div>
-
-                  <div className="d-flex flex-column align-items-center">
-                    <p className="fs-4 fw-semibold">Kohaku Koi</p>
-                    <p className="fs-5 fw-bold" style={{ color: "#C70025" }}>
-                      1.000.000 VND
-                    </p>
-                    <p className="fw-normal" style={{ color: "gray" }}>
-                      TP Hồ Chí Minh
-                    </p>
-                  </div>
-                  <div className="mb-2 d-flex flex-row gap-2 justify-content-center">
-                    <button
-                      className="rounded"
-                      style={{ background: "#C70025" }}
-                    >
-                      Mua ngay
-                    </button>
-                    <button
-                      className="bg-white rounded"
-                      style={{ border: "1px solid #C70025", color: "#C70025" }}
-                    >
-                      Xem thêm
-                    </button>
-                  </div>
-                </div>
+                ))}
               </div>
             </section>
 
