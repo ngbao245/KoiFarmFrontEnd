@@ -16,11 +16,11 @@ const Payment = () => {
   const paymentId = searchParams.get("paymentId");
   const status = searchParams.get("status");
 
-  // useEffect(() => {
-  //   if (!orderId || !paymentId) {
-  //     navigate("/*");
-  //   }
-  // }, [orderId, paymentId]);
+  useEffect(() => {
+    if (!orderId || !paymentId) {
+      navigate("/*");
+    }
+  }, [orderId, paymentId]);
 
   return (
     <>

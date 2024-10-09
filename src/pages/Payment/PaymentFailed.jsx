@@ -19,11 +19,11 @@ const PaymentFailed = () => {
     navigate("/product");
   };
 
-  // useEffect(() => {
-  //   if (!orderId) {
-  //     navigate("/*");
-  //   }
-  // }, [orderId, paymentId]);
+  useEffect(() => {
+    if (!orderId) {
+      navigate("/*");
+    }
+  }, [orderId, paymentId]);
 
   return (
     <>
