@@ -40,9 +40,7 @@ const PaymentFailed = () => {
               <p>
                 <strong>Order ID:</strong> {orderId}
               </p>
-              <p>
-                <strong>Payment ID:</strong> {paymentId}
-              </p>
+              <br />
             </div>
             <p className="error-message">
               Chúng tôi rất tiếc, nhưng khoản thanh toán của bạn đã không thành
