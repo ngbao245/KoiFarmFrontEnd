@@ -2,7 +2,6 @@ html,
 body {
   height: 100%;
   margin: 0;
-  font-family: Arial, sans-serif;
 }
 
 .pg-Login .login {
@@ -13,7 +12,6 @@ body {
   width: 100vw;
   margin: 0;
   position: relative;
-  font-family: sans-serif;
   padding-bottom: 3.2rem;
 }
 
