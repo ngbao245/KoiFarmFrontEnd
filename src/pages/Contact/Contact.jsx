@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Header } from "../../layouts/header/header";
 import "./Contact.css";
 import "../../styles/animation.css";
 import { Footer } from "../../layouts/footer/footer";
+import emailjs from '@emailjs/browser';
+import { toast } from 'react-toastify';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    user_name: "",
+    user_email: "",
     message: "",
   });
+
+  const form = useRef();
 
   useEffect(() => {
     const formElement = document.getElementById("form");
@@ -24,8 +28,25 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    setFormData({ name: "", email: "", message: "" });
+    
+    emailjs
+      .sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        form.current, 
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      )
+      .then(
+        () => {
+          console.log("SUCCESS!");
+          toast.success("Message sent successfully!");
+          setFormData({ user_name: "", user_email: "", message: "" });
+        },
+        (error) => {
+          console.log("FAILED...", error.text);
+          toast.error("Message failed to send. Please try again."); // Error notification
+        }
+      );
   };
 
   return (
@@ -57,14 +78,14 @@ const Contact = () => {
             </section>
 
             <section className="contact-form">
-              <form className="contact-form" onSubmit={handleSubmit}>
+              <form ref={form} className="contact-form" onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label htmlFor="name">Tên</label>
                   <input
                     type="text"
                     id="name"
-                    name="name"
-                    value={formData.name}
+                    name="user_name"
+                    value={formData.user_name}
                     onChange={handleChange}
                     required
                     placeholder="Họ và tên"
@@ -75,8 +96,8 @@ const Contact = () => {
                   <input
                     type="email"
                     id="email"
-                    name="email"
-                    value={formData.email}
+                    name="user_email"
+                    value={formData.user_email}
                     onChange={handleChange}
                     required
                     placeholder="Địa chỉ email của bạn"
