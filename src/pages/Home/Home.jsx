@@ -8,23 +8,37 @@ import { useEffect, useState } from "react";
 import { fetchAllProdItem, getProdItemById } from "../../services/ProductItemService";
 import { useNavigate } from "react-router-dom";
 import { getProductById } from "../../services/ProductService";
+import { fetchAllBlogs } from "../../services/BlogService";
 
 export const Home = () => {
 
   const [productItems, setProductItems] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    fetchAllProdItem().then((response) => {
-      const items = response.data.entities;
-      // Shuffle the items randomly and pick 4
-      const shuffledItems = items.sort(() => 0.5 - Math.random()).slice(0, 4);
-      setProductItems(shuffledItems);
-    })
-      .catch((error) => {
-        console.error("Error fetching product items:", error);
+    Promise.all([
+      fetchAllProdItem(), // Fetching product items
+      fetchAllBlogs() // Fetching blogs
+    ])
+      .then(([productResponse, blogResponse]) => {
+        const items = productResponse.data.entities;
+        const shuffledItems = items.sort(() => 0.5 - Math.random()).slice(0, 4);
+        setProductItems(shuffledItems); 
+
+        if (blogResponse.statusCode === 200 && Array.isArray(blogResponse.data)) {
+          const blogsToShow = blogResponse.data.slice(0, 2); // Show only the first two blogs
+          setBlogs(blogsToShow);
+        } else {
+          toast.error("Failed to fetch blogs.");
+        }
       })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        toast.error("Error fetching data.");
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
   const handleProductClick = async (productItem) => {
@@ -132,47 +146,33 @@ export const Home = () => {
             <section className="news-section">
               <h2>Tin tức cá koi - Tin tức Koi Shop</h2>
               <div className="news-list d-flex flex-row">
-                <div className="card mb-3 p-2 me-3">
-                  <img
-                    style={{ width: 700, height: 400 }}
-                    src="./public/assets/post1.jpg"
-                    className="card-img-top rounded"
-                    alt="Card Top"
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">Thức ăn và cá koi</h5>
-                    <p className="card-text">
-                      Thức ăn không chỉ ảnh hưởng đến chất lượng cá koi, mà
-                      còn...
-                    </p>
-                    <p className="card-text">
-                      <small className="text-body-secondary">
-                        Last updated 3 mins ago
-                      </small>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="card mb-3 p-2">
-                  <img
-                    style={{ width: 700, height: 400 }}
-                    src="./public/assets/post2.jpg"
-                    className="card-img-top rounded"
-                    alt="Card Top"
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">Thức ăn và cá koi</h5>
-                    <p className="card-text">
-                      Thức ăn không chỉ ảnh hưởng đến chất lượng cá koi, mà
-                      còn...
-                    </p>
-                    <p className="card-text">
-                      <small className="text-body-secondary">
-                        Last updated 3 mins ago
-                      </small>
-                    </p>
-                  </div>
-                </div>
+                {isLoading ? (
+                  <p>Loading blogs...</p>
+                ) : blogs.length > 0 ? (
+                  blogs.map((blog) => (
+                    <div className="card mb-3 p-2 me-3" key={blog.id}>
+                      <img
+                        style={{ width: 700, height: 400 }}
+                        src={blog.imageUrl || "./public/assets/default.jpg"}
+                        className="card-img-top rounded"
+                        alt={blog.title}
+                      />
+                      <div className="card-body">
+                        <h5 className="card-title">{blog.title}</h5>
+                        <p className="card-text">
+                          {blog.description.substring(0, 50)}...
+                        </p>
+                        <p className="card-text">
+                          <small className="text-body-secondary">
+                            Last updated recently
+                          </small>
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p>No blogs available</p>
+                )}
               </div>
             </section>
           </main>

@@ -20,18 +20,18 @@ const AdminBlog = () => {
 
   const fetchUserNames = async (blogs) => {
     const userIds = blogs.map((blog) => blog.userId);
-    const uniqueUserIds = [...new Set(userIds)]; // Remove duplicates
+    const uniqueUserIds = [...new Set(userIds)];
 
     const names = {};
     for (const userId of uniqueUserIds) {
       try {
         const response = await getUserById(userId);
         if (response && response.data) {
-          names[userId] = response.data.name; // Assuming the API response has `name`
+          names[userId] = response.data.name;
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
-        names[userId] = "Unknown User"; // Fallback in case of error
+        names[userId] = "Unknown User";
       }
     }
 
@@ -67,7 +67,7 @@ const AdminBlog = () => {
     if (window.confirm("Are you sure you want to delete this blog?")) {
       try {
         const response = await deleteBlog(id);
-        if (response) {
+        if (response.statusCode === 200) {
           toast.success("Blog deleted successfully!");
           setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
         } else {
