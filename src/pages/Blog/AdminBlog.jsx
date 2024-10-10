@@ -44,8 +44,6 @@ const AdminBlog = () => {
       if (response && response.data) {
         setBlogs(response.data);
         await fetchUserNames(response.data);
-      } else {
-        toast.error("Failed to fetch blogs.");
       }
     } catch (error) {
       console.error("Error fetching blogs:", error);
@@ -60,7 +58,13 @@ const AdminBlog = () => {
   }, []);
 
   const handleUpdateBlogList = (newBlog) => {
-    setBlogs((prevBlogs) => [newBlog, ...prevBlogs]); 
+    setBlogs((prevBlogs) => {
+      if (Array.isArray(prevBlogs)) {
+        return [newBlog, ...prevBlogs];
+      } else {
+        return [newBlog];
+      }
+    });
   };
 
   const handleDeleteBlog = async (id) => {
