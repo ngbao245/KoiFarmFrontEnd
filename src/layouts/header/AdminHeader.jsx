@@ -71,6 +71,13 @@ const AdminHeader = () => {
                     >
                       Product Item
                     </NavLink>
+                    <NavLink
+                      className="nav-link"
+                      to="/admin-blog"
+                      disabled={!user || !user.auth}
+                    >
+                      Blog
+                    </NavLink>
                   </Nav>
                   <Nav>
                     {user && user.email && (

@@ -24,6 +24,10 @@ const deleteStaff = (id) => {
   return axios.delete(`/User/delete-user/${id}`);
 };
 
+const getUserById = (userId) => {
+  return axios.get(`/User/get-user/${userId}`);
+};
+
 export {
   signin,
   signup,
@@ -31,4 +35,5 @@ export {
   fetchAllStaff,
   postCreateStaff,
   deleteStaff,
+  getUserById,
 };

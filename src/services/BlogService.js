@@ -4,16 +4,50 @@ const fetchAllBlogs = () => {
   return axios.get("Blog/get-all-blogs");
 };
 
-const createBlog = () => {
-  return axios.post("Blog/create-blog");
+const createBlog = (blogData) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No token found! Please log in again.');
+  }
+  
+  return axios.post("Blog/create-blog",
+    blogData,
+    {
+      headers:{
+        Authorization: `${token}`
+      }
+    }
+  );
 };
 
-const updateBlog = (id) => {
-  return axios.put(`Blog/update-blog/${id}`);
+const updateBlog = (id, data) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No token found! Please log in again.');
+  }
+
+  return axios.put(`Blog/update-blog/${id}`, data,
+    {
+      headers:{
+        Authorization: `${token}`
+      }
+    }
+  );
 };
 
 const deleteBlog = (id) => {
-  return axios.delete(`Blog/delete-blog/${id}`);
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No token found! Please log in again.');
+  }
+  
+  return axios.delete(`Blog/delete-blog/${id}`,
+    {
+      headers:{
+        Authorization: `${token}`
+      }
+    }
+  );
 };
 
 export { fetchAllBlogs, createBlog, updateBlog, deleteBlog };
