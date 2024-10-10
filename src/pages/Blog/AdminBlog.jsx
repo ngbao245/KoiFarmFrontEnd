@@ -19,24 +19,35 @@ const AdminBlog = () => {
   const handleCloseModal = () => setShowModalCreateBlog(false);
 
   const fetchUserNames = async (blogs) => {
-    const userIds = blogs.map((blog) => blog.userId);
-    const uniqueUserIds = [...new Set(userIds)];
-
-    const names = {};
-    for (const userId of uniqueUserIds) {
-      try {
-        const response = await getUserById(userId);
-        if (response && response.data) {
-          names[userId] = response.data.name;
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        names[userId] = "Unknown User";
-      }
+    if (!Array.isArray(blogs)) {
+      console.error("Invalid blogs data format:", blogs);
+      return;
     }
-
-    setUserNames(names);
+  
+    const userIds = blogs.map((blog) => blog.userId);
+    const uniqueUserIds = [...new Set(userIds)]; 
+  
+    const names = {};
+  
+    await Promise.all(
+      uniqueUserIds.map(async (userId) => {
+        try {
+          const response = await getUserById(userId);
+          if (response && response.data) {
+            names[userId] = response.data.name;
+          } else {
+            names[userId] = "Unknown User"; 
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          names[userId] = "Unknown User"; 
+        }
+      })
+    );
+  
+    setUserNames(names); 
   };
+  
 
   const fetchBlogs = async () => {
     try {
