@@ -1,9 +1,9 @@
 import axios from "./Customize-Axios";
 const upload_preset = import.meta.env.VITE_UPLOAD_PRESET;
 const api_key = import.meta.env.VITE_API_KEY;
-const folder = import.meta.env.VITE_FOLDER;
+// const folder = import.meta.env.VITE_FOLDER;
 
-const uploadImageCloudinary = (profileImage) => {
+const uploadImageCloudinary = (profileImage, folder) => {
   const image = new FormData();
   image.append("file", profileImage);
   image.append("cloud_name", "koi-farm-shop");

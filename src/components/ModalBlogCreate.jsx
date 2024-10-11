@@ -1,43 +1,82 @@
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import { createBlog } from '../services/BlogService'; // Make sure this service function is correctly set up
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { createBlog } from "../services/BlogService";
+import "./ModalBlogCreate.css";
+import { uploadImageCloudinary } from "../services/CloudinaryService";
+
+const folder = import.meta.env.VITE_FOLDER_BLOG;
 
 const ModalBlogCreate = ({ isOpen, onClose, handleUpdate }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    imageUrl: ''
+    title: "",
+    description: "",
+    imageUrl: "",
   });
+
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const uploadImage = async () => {
+    setIsLoading(true);
+    try {
+      if (imageFile) {
+        const response = await uploadImageCloudinary(imageFile, folder);
+        return response.secure_url;
+      }
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      toast.error("Image upload failed. Please try again.");
+    }
+    return null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      const res = await createBlog(formData);
+      const uploadedImageUrl = await uploadImage();
+      if (uploadedImageUrl) {
+        const newBlogData = { ...formData, imageUrl: uploadedImageUrl };
+        const response = await createBlog(newBlogData);
 
-      if (res && res.data && res.data.id) {
-        toast.success('Blog created successfully!');
-        setFormData({
-          title: '',
-          description: '',
-          imageUrl: ''
-        });
+        if (response && response.data && response.data.id) {
+          toast.success("Blog created successfully!");
+          setFormData({
+            title: "",
+            description: "",
+            imageUrl: "",
+          });
 
-        handleUpdate(res.data); 
-        onClose();
-      } else {
-        toast.error('Error while creating the blog.');
+          setImageFile(null);
+          setImagePreview(null);
+          handleUpdate(response.data);
+          onClose();
+        } else {
+          toast.error("Error while creating the blog.");
+        }
       }
     } catch (error) {
-      toast.error('An error occurred. Please try again.');
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,7 +84,7 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className={`modal-content ${isLoading ? "blurred" : ""}`}>
         <div className="modal-header">
           <h2>Add New Blog</h2>
           <button className="modal-close-button" onClick={onClose}>
@@ -76,25 +115,45 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="imageUrl">Image URL:</label>
+            <label htmlFor="imageUrl">Choose file:</label>
             <input
               id="imageUrl"
               name="imageUrl"
-              value={formData.imageUrl}
-              onChange={handleChange}
+              type="file"
+              accept="image/png, image/jpg, image/jpeg"
+              onChange={handleImageChange}
+              className="text-dark"
               required
             />
+            {imagePreview && (
+              <img src={imagePreview} alt="Preview" className="w-100" />
+            )}
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="cancel-button" onClick={onClose}>
+            <button
+              type="button"
+              className="cancel-button"
+              onClick={onClose}
+              disabled={isLoading}
+            >
               Cancel
             </button>
-            <button type="submit" className="submit-button">
-              Add Blog
+            <button
+              type="submit"
+              className="submit-button"
+              disabled={isLoading}
+            >
+              {isLoading ? "Adding Blog..." : "Add Blog"}
             </button>
           </div>
         </form>
+        {isLoading && (
+          <div className="loading-overlay">
+            <div className="loading-spinner"></div>
+            <p>Đang tải ảnh lên và tạo blog...</p>
+          </div>
+        )}
       </div>
     </div>
   );

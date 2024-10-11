@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { uploadImageCloudinary } from "../services/CloudinaryService";
+
+const folder = import.meta.env.VITE_FOLDER_BLOG;
 
 const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData }) => {
   const [formData, setFormData] = useState({
@@ -8,9 +11,16 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData }) => {
     imageUrl: "",
   });
 
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     if (blogData) {
       setFormData(blogData);
+      if (blogData.imageUrl) {
+        setImagePreview(blogData.imageUrl);
+      }
     }
   }, [blogData]);
 
@@ -19,22 +29,49 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const uploadImage = async () => {
+    if (!imageFile) return formData.imageUrl;
+    try {
+      const response = await uploadImageCloudinary(imageFile, folder);
+      return response.secure_url;
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      toast.error("Image upload failed. Please try again.");
+      return null;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title || !formData.description || !formData.imageUrl) {
-        toast.error('All fields are required!');
-        return;
-      }
-  
-      onSubmit(formData);
+    if (!formData.title || !formData.description) {
+      toast.error("Title and description are required!");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const uploadedImageUrl = await uploadImage();
+    if (uploadedImageUrl) {
+      onSubmit({ ...formData, imageUrl: uploadedImageUrl });
       onClose();
+    }
+
+    setIsLoading(false);
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className={`modal-content ${isLoading ? "blurred" : ""}`}>
         <div className="modal-header">
           <h2>Update Blog</h2>
           <button className="modal-close-button" onClick={onClose}>
@@ -63,25 +100,39 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData }) => {
             ></textarea>
           </div>
           <div className="form-group">
-            <label htmlFor="imageUrl">Image URL:</label>
+            <label htmlFor="imageUrl">Choose file:</label>
             <input
               id="imageUrl"
               name="imageUrl"
-              value={formData.imageUrl}
-              onChange={handleChange}
-              required
+              type="file"
+              accept="image/png, image/jpg, image/jpeg"
+              onChange={handleImageChange}
+              className="text-dark"
             />
+            {imagePreview && (
+              <img src={imagePreview} alt="Preview" className="w-100" />
+            )}
           </div>
           <div className="modal-footer">
-          <button type="button" className="cancel-button" onClick={onClose}>
+            <button type="button" className="cancel-button" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="submit-button">
-              Update Blog
+            <button
+              type="submit"
+              className="submit-button"
+              disabled={isLoading}
+            >
+              {isLoading ? "Updating Blog..." : "Update Blog"}
             </button>
           </div>
         </form>
       </div>
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+          <p>Uploading image and updating blog...</p>
+        </div>
+      )}
     </div>
   );
 };

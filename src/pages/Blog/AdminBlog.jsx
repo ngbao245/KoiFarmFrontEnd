@@ -8,7 +8,7 @@ import { fetchAllBlogs, deleteBlog, updateBlog } from '../../services/BlogServic
 import { getUserById } from "../../services/UserService";
 
 const AdminBlog = () => {
-  const [blogs, setBlogs] = useState([]); // List of blogs
+  const [blogs, setBlogs] = useState([]);  
   const [showModalCreateBlog, setShowModalCreateBlog] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -156,7 +156,8 @@ const AdminBlog = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan="4">Loading blogs...</td>
+                  {/* <td colSpan="4">Loading blogs...</td> */}
+                  <td colSpan="5">Loading blogs...</td>
                 </tr>
               ) : blogs.length > 0 ? (
                 blogs.map((blog) => (
