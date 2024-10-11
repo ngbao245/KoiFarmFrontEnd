@@ -6,7 +6,7 @@ import { uploadImageCloudinary } from "../services/CloudinaryService";
 
 const folder = import.meta.env.VITE_FOLDER_BLOG;
 
-const ModalBlogCreate = ({ isOpen, onClose, handleUpdate }) => {
+const ModalBlogCreate = ({ isOpen, onClose, handleUpdate, setIsUploading }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -35,6 +35,7 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate }) => {
 
   const uploadImage = async () => {
     setIsLoading(true);
+    setIsUploading(true);
     try {
       if (imageFile) {
         const response = await uploadImageCloudinary(imageFile, folder);
@@ -43,6 +44,8 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate }) => {
     } catch (error) {
       console.error("Image upload failed:", error);
       toast.error("Image upload failed. Please try again.");
+    } finally {
+      setIsUploading(false);
     }
     return null;
   };
@@ -50,6 +53,7 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    onClose();
 
     try {
       const uploadedImageUrl = await uploadImage();
@@ -68,7 +72,6 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate }) => {
           setImageFile(null);
           setImagePreview(null);
           handleUpdate(response.data);
-          onClose();
         } else {
           toast.error("Error while creating the blog.");
         }

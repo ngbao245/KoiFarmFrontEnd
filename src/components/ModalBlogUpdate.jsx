@@ -4,7 +4,7 @@ import { uploadImageCloudinary } from "../services/CloudinaryService";
 
 const folder = import.meta.env.VITE_FOLDER_BLOG;
 
-const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData }) => {
+const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData, setIsUploading }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -39,6 +39,7 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData }) => {
 
   const uploadImage = async () => {
     if (!imageFile) return formData.imageUrl;
+    setIsUploading(true);
     try {
       const response = await uploadImageCloudinary(imageFile, folder);
       return response.secure_url;
@@ -46,6 +47,8 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData }) => {
       console.error("Image upload failed:", error);
       toast.error("Image upload failed. Please try again.");
       return null;
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -57,14 +60,16 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData }) => {
     }
 
     setIsLoading(true);
+    setIsUploading(true);
+    onClose();
 
     const uploadedImageUrl = await uploadImage();
     if (uploadedImageUrl) {
-      onSubmit({ ...formData, imageUrl: uploadedImageUrl });
-      onClose();
+      await onSubmit({ ...formData, imageUrl: uploadedImageUrl });
     }
 
     setIsLoading(false);
+    setIsUploading(false);
   };
 
   if (!isOpen) return null;
@@ -126,13 +131,13 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData }) => {
             </button>
           </div>
         </form>
+        {isLoading && (
+          <div className="loading-overlay">
+            <div className="loading-spinner"></div>
+            <p>Updating Blog...</p>
+          </div>
+        )}
       </div>
-      {isLoading && (
-        <div className="loading-overlay">
-          <div className="loading-spinner"></div>
-          <p>Uploading image and updating blog...</p>
-        </div>
-      )}
     </div>
   );
 };

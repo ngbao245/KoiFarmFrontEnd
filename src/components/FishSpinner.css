@@ -1,0 +1,77 @@
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.fish-container {
+  width: 300px;
+  height: 150px;
+  position: relative;
+  overflow: hidden;
+  background-color: #e0f7fa;
+  border-radius: 10px;
+}
+
+.water {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to right, #4fc3f7, #29b6f6, #4fc3f7);
+  animation: wave 2s ease-in-out infinite alternate;
+}
+
+.fish {
+  width: 120px;
+  height: 60px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"><path d="M95 25c-2.5-7.5-7.5-15-17.5-15-5 0-10 2.5-15 5C57.5 5 47.5 0 37.5 0 17.5 0 7.5 15 2.5 25c5 10 15 25 35 25 10 0 20-5 25-15 5 2.5 10 5 15 5 10 0 15-7.5 17.5-15z" fill="%23e74c3c"/><path d="M92.5 25c-1.25-3.75-3.75-7.5-8.75-7.5-2.5 0-5 1.25-7.5 2.5 1.25-3.75 1.25-7.5 1.25-11.25C70 3.75 62.5 0 55 0 42.5 0 32.5 8.75 27.5 17.5 22.5 8.75 12.5 0 0 0v50c12.5 0 22.5-8.75 27.5-17.5 5 8.75 15 17.5 27.5 17.5 7.5 0 15-3.75 22.5-8.75 0-3.75 0-7.5-1.25-11.25 2.5 1.25 5 2.5 7.5 2.5 5 0 7.5-3.75 8.75-7.5z" fill="%23c0392b"/><circle cx="82.5" cy="18.75" r="3.75" fill="%23fff"/><circle cx="82.5" cy="18.75" r="1.25" fill="%23000"/></svg>');
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: swim 2s linear infinite, bob 2s ease-in-out infinite alternate;
+}
+
+@keyframes swim {
+  0% {
+    left: -120px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes bob {
+  0% {
+    transform: translateY(-40%);
+  }
+  100% {
+    transform: translateY(-60%);
+  }
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(-25%);
+  }
+  100% {
+    transform: translateX(25%);
+  }
+}
+
+.loading-overlay p {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #333;
+}

@@ -3,8 +3,8 @@ import { Header } from "../../layouts/header/header";
 import "./Contact.css";
 import "../../styles/animation.css";
 import { Footer } from "../../layouts/footer/footer";
-import emailjs from '@emailjs/browser';
-import { toast } from 'react-toastify';
+import emailjs from "@emailjs/browser";
+import { toast } from "react-toastify";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -28,12 +28,12 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     emailjs
       .sendForm(
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        form.current, 
+        form.current,
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       )
       .then(
@@ -44,7 +44,7 @@ const Contact = () => {
         },
         (error) => {
           console.log("FAILED...", error.text);
-          toast.error("Message failed to send. Please try again."); // Error notification
+          toast.error("Message failed to send. Please try again.");
         }
       );
   };

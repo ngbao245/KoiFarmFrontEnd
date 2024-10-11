@@ -1,19 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import AdminHeader from "../../layouts/header/AdminHeader";
-import ModalBlogCreate from '../../components/ModalBlogCreate';
-import ModalBlogUpdate from '../../components/ModalBlogUpdate';
+import ModalBlogCreate from "../../components/ModalBlogCreate";
+import ModalBlogUpdate from "../../components/ModalBlogUpdate";
 import { CSVLink } from "react-csv";
-import { toast } from 'react-toastify';
-import { fetchAllBlogs, deleteBlog, updateBlog } from '../../services/BlogService';
+import { toast } from "react-toastify";
+import {
+  fetchAllBlogs,
+  deleteBlog,
+  updateBlog,
+} from "../../services/BlogService";
 import { getUserById } from "../../services/UserService";
+import "./AdminBlog.css";
+import FishSpinner from "../../components/FishSpinner";
 
 const AdminBlog = () => {
-  const [blogs, setBlogs] = useState([]);  
+  const [blogs, setBlogs] = useState([]);
   const [showModalCreateBlog, setShowModalCreateBlog] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [userNames, setUserNames] = useState({});
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleOpenModal = () => setShowModalCreateBlog(true);
   const handleCloseModal = () => setShowModalCreateBlog(false);
@@ -23,12 +30,12 @@ const AdminBlog = () => {
       console.error("Invalid blogs data format:", blogs);
       return;
     }
-  
+
     const userIds = blogs.map((blog) => blog.userId);
-    const uniqueUserIds = [...new Set(userIds)]; 
-  
+    const uniqueUserIds = [...new Set(userIds)];
+
     const names = {};
-  
+
     await Promise.all(
       uniqueUserIds.map(async (userId) => {
         try {
@@ -36,18 +43,17 @@ const AdminBlog = () => {
           if (response && response.data) {
             names[userId] = response.data.name;
           } else {
-            names[userId] = "Unknown User"; 
+            names[userId] = "Unknown User";
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
-          names[userId] = "Unknown User"; 
+          names[userId] = "Unknown User";
         }
       })
     );
-  
-    setUserNames(names); 
+
+    setUserNames(names);
   };
-  
 
   const fetchBlogs = async () => {
     try {
@@ -76,6 +82,7 @@ const AdminBlog = () => {
         return [newBlog];
       }
     });
+    setIsUploading(false);
   };
 
   const handleDeleteBlog = async (id) => {
@@ -127,6 +134,7 @@ const AdminBlog = () => {
     <>
       <AdminHeader />
       <div className="container">
+        {isUploading && <FishSpinner />}
         <div className="my-3 add-new d-sm-flex">
           <span>
             <b>Manage Blogs</b>
@@ -135,6 +143,7 @@ const AdminBlog = () => {
             <button
               className="btn btn-primary"
               onClick={handleOpenModal}
+              disabled={isUploading}
             >
               <i className="fa-solid fa-circle-plus px-1"></i>
               <span className="px-1">Add new blog</span>
@@ -156,7 +165,6 @@ const AdminBlog = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  {/* <td colSpan="4">Loading blogs...</td> */}
                   <td colSpan="5">Loading blogs...</td>
                 </tr>
               ) : blogs.length > 0 ? (
@@ -169,7 +177,11 @@ const AdminBlog = () => {
                         <img
                           src={blog.imageUrl}
                           alt={blog.title}
-                          style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            objectFit: "cover",
+                          }}
                         />
                       ) : (
                         "No Image"
@@ -177,15 +189,18 @@ const AdminBlog = () => {
                     </td>
                     <td>{userNames[blog.userId] || blog.userId}</td>
                     <td>
-                      <button 
-                      className="btn btn-warning"
-                      onClick={() => handleEditBlog(blog)}
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => handleEditBlog(blog)}
+                        disabled={isLoading || isUploading}
                       >
                         Edit
                       </button>
-                      <button className="btn btn-danger" 
-                      style={{ marginLeft: "10px" }}
-                      onClick={() => handleDeleteBlog(blog.id)}
+                      <button
+                        className="btn btn-danger"
+                        style={{ marginLeft: "10px" }}
+                        onClick={() => handleDeleteBlog(blog.id)}
+                        disabled={isLoading || isUploading}
                       >
                         Delete
                       </button>
@@ -205,12 +220,14 @@ const AdminBlog = () => {
           isOpen={showModalCreateBlog}
           onClose={handleCloseModal}
           handleUpdate={handleUpdateBlogList}
+          setIsUploading={setIsUploading}
         />
         <ModalBlogUpdate
           isOpen={showUpdateModal}
           onClose={handleCloseUpdateModal}
           onSubmit={handleSubmitBlogUpdate}
-          blogData={selectedBlog} 
+          blogData={selectedBlog}
+          setIsUploading={setIsUploading}
         />
       </div>
     </>
