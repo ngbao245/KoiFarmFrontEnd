@@ -1,0 +1,35 @@
+.user-payment {
+  padding: 20px;
+}
+
+.payment-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.payment-table th,
+.payment-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.payment-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.payment-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.payment-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+}
+
