@@ -23,7 +23,7 @@ const UserDetail = () => {
     phone: "",
   });
 
-  const isPaymentPage = window.location.pathname.includes('/payments');
+  const isPaymentPage = window.location.pathname.includes("/payments");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +34,7 @@ const UserDetail = () => {
           setPayments(paymentsResponse.data?.data || []);
         } else {
           const ordersResponse = await getOrderByUser();
-          setOrders(ordersResponse.data?.data || []);
+          setOrders(ordersResponse.data || []);
         }
         setLoading(false);
       } catch (err) {
@@ -82,7 +82,11 @@ const UserDetail = () => {
   };
 
   if (!user.auth) {
-    return <div className="user-detail-container">Vui lòng đăng nhập để xem thông tin.</div>;
+    return (
+      <div className="user-detail-container">
+        Vui lòng đăng nhập để xem thông tin.
+      </div>
+    );
   }
 
   if (loading) {
@@ -96,7 +100,7 @@ const UserDetail = () => {
   return (
     <div className="user-detail-container">
       <h1>{isPaymentPage ? "Lịch sử thanh toán" : "Thông tin người dùng"}</h1>
-      
+
       {!isPaymentPage && (
         <div className="user-info">
           {editMode ? (
@@ -193,7 +197,7 @@ const UserDetail = () => {
           )}
         </div>
       )}
-      
+
       {isPaymentPage ? (
         <>
           <table className="payment-table">
@@ -210,9 +214,11 @@ const UserDetail = () => {
               {payments.map((payment) => (
                 <tr key={payment.id}>
                   <td>{payment.id}</td>
-                  <td>{payment.amount.toLocaleString('vi-VN')} VND</td>
+                  <td>{payment.amount.toLocaleString("vi-VN")} VND</td>
                   <td>{payment.paymentMethod}</td>
-                  <td>{new Date(payment.paymentDate).toLocaleDateString('vi-VN')}</td>
+                  <td>
+                    {new Date(payment.paymentDate).toLocaleDateString("vi-VN")}
+                  </td>
                   <td>{payment.status}</td>
                 </tr>
               ))}
@@ -241,15 +247,23 @@ const UserDetail = () => {
                 {orders.map((order) => (
                   <tr key={order.orderId}>
                     <td>{order.orderId}</td>
-                    <td>{order.total.toLocaleString('vi-VN')} VND</td>
+                    <td>{order.total.toLocaleString("vi-VN")} VND</td>
                     <td>{order.status}</td>
-                    <td>{order.items.reduce((sum, item) => sum + item.quantity, 0)}</td>
+                    <td>
+                      {order.items.reduce(
+                        (sum, item) => sum + item.quantity,
+                        0
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
-          <button onClick={handleNavigateToPayments} className="btn btn-primary">
+          <button
+            onClick={handleNavigateToPayments}
+            className="btn btn-primary"
+          >
             Xem lịch sử thanh toán
           </button>
         </>
