@@ -119,6 +119,10 @@ export const Header = () => {
     toast.success("Logout Success");
   };
 
+  const handleClickDetail = () => {
+    navigate(`/${user.email}/detail`);
+  };
+
   return (
     <>
       <div className="nav-container">
@@ -157,6 +161,9 @@ export const Header = () => {
                       <div className="dropdown-link">
                         <button className="nav-btn" onClick={handleClickCart}>
                           Cart
+                        </button>
+                        <button className="nav-btn" onClick={handleClickDetail}>
+                          Detail
                         </button>
                         <button className="nav-btn" onClick={handleLogout}>
                           Logout

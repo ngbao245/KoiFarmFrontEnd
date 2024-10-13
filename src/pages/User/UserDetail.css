@@ -1,0 +1,223 @@
+/* Variables */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #3498db;
+    --background-color: #ecf0f1;
+    --card-background: #ffffff;
+    --error-color: #e74c3c;
+    --success-color: #2ecc71;
+    --border-color: #bdc3c7;
+    
+    --font-size-small: 14px;
+    --font-size-medium: 16px;
+    --font-size-large: 18px;
+    --font-size-xlarge: 24px;
+    
+    --spacing-small: 10px;
+    --spacing-medium: 20px;
+    --spacing-large: 30px;
+    
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+}
+
+/* Layout */
+.user-detail-container {
+    max-width: 800px;
+    margin: var(--spacing-large) auto;
+    padding: var(--spacing-large);
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+/* Typography */
+h1, h2 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-medium);
+}
+
+h1 {
+    font-size: var(--font-size-xlarge);
+    font-weight: 700;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: var(--spacing-small);
+}
+
+h2 {
+    font-size: var(--font-size-large);
+    font-weight: 600;
+    margin-top: var(--spacing-large);
+}
+
+/* User Info Section */
+.user-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-medium);
+    margin-bottom: var(--spacing-large);
+}
+
+.user-info p {
+    margin: 0;
+    padding: var(--spacing-small);
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+}
+
+.user-info strong {
+    display: block;
+    color: var(--primary-color);
+    font-size: var(--font-size-small);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.auth-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: var(--font-size-small);
+    font-weight: 600;
+}
+
+.auth-status.authenticated {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.auth-status.not-authenticated {
+    background-color: var(--error-color);
+    color: white;
+}
+
+/* Payment Table */
+.payment-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: var(--spacing-medium);
+}
+
+.payment-table th,
+.payment-table td {
+    padding: var(--spacing-small);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.payment-table th {
+    background-color: var(--accent-color);
+    color: white;
+    font-weight: 600;
+}
+
+.payment-table tr:last-child td {
+    border-bottom: none;
+}
+
+.payment-table tr:nth-child(even) {
+    background-color: var(--background-color);
+}
+
+/* Status Messages */
+.loading-spinner,
+.error-message,
+.no-payments {
+    text-align: center;
+    padding: var(--spacing-large);
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    margin-top: var(--spacing-medium);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-weight: 600;
+}
+
+.no-payments {
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+/* Edit Form */
+.edit-form {
+    display: grid;
+    gap: var(--spacing-medium);
+}
+
+.edit-form div {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-form label {
+    margin-bottom: var(--spacing-small);
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.edit-form input {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-medium);
+}
+
+.edit-form button {
+    padding: 10px 20px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: var(--font-size-medium);
+    transition: background-color 0.3s ease;
+}
+
+.edit-form button:hover {
+    background-color: #2980b9;
+}
+
+.edit-form button[type="button"] {
+    background-color: var(--error-color);
+}
+
+.edit-form button[type="button"]:hover {
+    background-color: #c0392b;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.order-table th,
+.order-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.order-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.order-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.order-table tr:hover {
+  background-color: #f5f5f5;
+}

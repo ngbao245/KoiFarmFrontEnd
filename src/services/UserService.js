@@ -28,6 +28,26 @@ const getUserById = (userId) => {
   return axios.get(`/User/get-user/${userId}`);
 };
 
+const updateUserInfo = (data) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  if (!data.password) {
+    throw new Error("Password is required for updating user information.");
+  }
+
+  console.log("Data being sent:", data);
+
+  return axios.put(`User/update-my-user`, data, {
+    headers: {
+      Authorization: `${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 export {
   signin,
   signup,
@@ -36,4 +56,5 @@ export {
   postCreateStaff,
   deleteStaff,
   getUserById,
+  updateUserInfo,
 };

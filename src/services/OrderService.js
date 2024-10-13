@@ -1,21 +1,24 @@
 import axios from "./Customize-Axios";
 
 const createOrder = (cartId) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (!token) {
     throw new Error("No token found! Please log in again.");
   }
-  
-  // Correct structure: Pass the data (if any) as the second argument and headers as the third
+
   return axios.post(
-    "Order/create", // API endpoint
+    "Order/create",
     { cartId },
     {
       headers: {
-        Authorization: `${token}` // Include the token with 'Bearer' scheme
-      }
+        Authorization: `${token}`,
+      },
     }
   );
+};
+
+const fetchOrderByUser = () => {
+  return axios.get("Order/get-all-orders");
 };
 
 const getOrderById = (orderId) => {
@@ -23,7 +26,49 @@ const getOrderById = (orderId) => {
 };
 
 const getOrderByUser = () => {
-  return axios.get("Order/user");
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return axios.get("Order/user", {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
-export { createOrder, getOrderById, getOrderByUser };
+const getOrderByStatus = (status) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return axios.get(`Order/get-by-status/${status}`, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
+};
+
+const updateOrderStatus = (id, status) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return axios.put(`Order/update-status/${id}`, status, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
+};
+
+export {
+  createOrder,
+  fetchOrderByUser,
+  getOrderById,
+  getOrderByUser,
+  getOrderByStatus,
+  updateOrderStatus,
+};

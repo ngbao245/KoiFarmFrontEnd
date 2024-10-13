@@ -18,6 +18,7 @@ import Payment from "../pages/Payment/Payment";
 import Order from "../pages/Order/Order";
 import PaymentFailed from "../pages/Payment/PaymentFailed";
 import AdminBlog from "../pages/Blog/AdminBlog.jsx";
+import UserDetail from "../pages/User/UserDetail.jsx";
 
 const AppRoutes = () => {
   return (
@@ -30,11 +31,11 @@ const AppRoutes = () => {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/:id/detail" element={<UserDetail />} />
 
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin-product" element={<AdminProduct />} />
         <Route path="/admin-blog" element={<AdminBlog />} />
-
 
         <Route path="/product" element={<Product />} />
 
