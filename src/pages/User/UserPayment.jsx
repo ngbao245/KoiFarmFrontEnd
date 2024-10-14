@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import { fetchAllPayment } from '../../services/PaymentService';
+import { fetchUserPayment } from '../../services/PaymentService';
 import './UserPayment.css';
 
 const UserPayment = () => {
@@ -12,7 +12,7 @@ const UserPayment = () => {
   useEffect(() => {
     const getPayments = async () => {
       try {
-        const response = await fetchAllPayment();
+        const response = await fetchUserPayment();
         console.log('Payments data:', response.data);
         const paymentsData = Array.isArray(response.data) ? response.data : 
                              (Array.isArray(response.data?.data) ? response.data.data : []);

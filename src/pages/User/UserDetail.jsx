@@ -10,7 +10,7 @@ const UserDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState([]); // Initialize as an empty array
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,9 +30,9 @@ const UserDetail = () => {
       try {
         setLoading(true);
 
+        // Fetch user info
         const userInfoResponse = await getUserInfo();
         const userData = userInfoResponse.data;
-        console.log("Fetched user data:", userData);
 
         setUpdatedUser({
           name: userData?.name || "",
@@ -42,13 +42,16 @@ const UserDetail = () => {
           password: "",
         });
 
+        // Fetch payments if on payment page, otherwise fetch orders
         if (isPaymentPage) {
           const paymentsResponse = await fetchAllPayment();
           setPayments(paymentsResponse.data?.data || []);
         } else {
           const ordersResponse = await getOrderByUser();
-          setOrders(ordersResponse.data || []);
+          // Ensure the response is an array or fallback to an empty array
+          setOrders(Array.isArray(ordersResponse.data) ? ordersResponse.data : []);
         }
+
         setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
