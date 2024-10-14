@@ -51,18 +51,33 @@ const getOrderByStatus = (status) => {
   });
 };
 
-const updateOrderStatus = (id, status) => {
+const updateOrderStatus = (orderId, newStatus) => {
   const token = localStorage.getItem("token");
   if (!token) {
     throw new Error("No token found! Please log in again.");
   }
 
-  return axios.put(`Order/update-status/${id}`, status, {
+  return axios.put(`Order/update-order-status/${orderId}`,
+    { status: newStatus}, {
     headers: {
       Authorization: `${token}`,
     },
   });
 };
+
+const getAssignedOrders = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return axios.get("/Order/staff/get-assigned-orders",{
+    headers:{
+      Authorization: `${token}`
+    }
+  });
+};
+
 
 export {
   createOrder,
@@ -71,4 +86,5 @@ export {
   getOrderByUser,
   getOrderByStatus,
   updateOrderStatus,
+  getAssignedOrders,
 };

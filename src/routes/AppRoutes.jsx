@@ -20,6 +20,7 @@ import PaymentFailed from "../pages/Payment/PaymentFailed";
 import AdminBlog from "../pages/Blog/AdminBlog.jsx";
 import UserDetail from "../pages/User/UserDetail.jsx";
 import UserPayment from "../pages/User/UserPayment.jsx";
+import StaffOrders from "../pages/Order/StaffOrders.jsx";
 
 const AppRoutes = () => {
   return (
@@ -46,6 +47,9 @@ const AppRoutes = () => {
 
         <Route path="/cart" element={<Cart />} />
         <Route path="order" element={<Order />} />
+
+        <Route path="/staff-orders" element={<StaffOrders />} />
+
 
         <Route path="/test" element={<Cloudinary />} />
 
