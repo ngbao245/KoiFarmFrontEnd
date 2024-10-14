@@ -55,6 +55,7 @@ const UserPayment = () => {
               <th>Số tiền</th>
               <th>Phương thức</th>
               <th>Ngày thanh toán</th>
+              <th>Mã đơn hàng</th>
               <th>Trạng thái</th>
             </tr>
           </thead>
@@ -63,9 +64,12 @@ const UserPayment = () => {
               <tr key={payment.id}>
                 <td>{payment.id}</td>
                 <td>{payment.amount.toLocaleString('vi-VN')} VND</td>
-                <td>{payment.paymentMethod}</td>
-                <td>{new Date(payment.paymentDate).toLocaleDateString('vi-VN')}</td>
-                <td>{payment.status}</td>
+                <td>{payment.method}</td>
+                <td>{new Date(payment.createdTime).toLocaleDateString('vi-VN')}</td>
+                <td>{payment.orderId}</td>
+                <td style={{
+                  color: 'green'
+                }}>{payment.status}</td>
               </tr>
             ))}
           </tbody>
