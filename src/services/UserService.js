@@ -48,6 +48,19 @@ const updateUserInfo = (data) => {
   });
 };
 
+const getUserInfo = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return axios.get(`/User/get-my-user`,{
+    headers:{
+      Authorization: `${token}`
+    }
+  });
+};
+
 export {
   signin,
   signup,
@@ -57,4 +70,5 @@ export {
   deleteStaff,
   getUserById,
   updateUserInfo,
+  getUserInfo,
 };

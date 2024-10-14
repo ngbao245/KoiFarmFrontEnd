@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import "./UserDetail.css";
-import { updateUserInfo } from "../../services/UserService";
+import { updateUserInfo, getUserInfo } from "../../services/UserService";
 import { getOrderByUser } from "../../services/OrderService";
 import { fetchAllPayment } from "../../services/PaymentService";
 
@@ -29,6 +29,19 @@ const UserDetail = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+
+        const userInfoResponse = await getUserInfo();
+        const userData = userInfoResponse.data;
+        console.log("Fetched user data:", userData);
+
+        setUpdatedUser({
+          name: userData?.name || "",
+          email: userData?.email || "",
+          address: userData?.address || "",
+          phone: userData?.phone || "",
+          password: "",
+        });
+
         if (isPaymentPage) {
           const paymentsResponse = await fetchAllPayment();
           setPayments(paymentsResponse.data?.data || []);
