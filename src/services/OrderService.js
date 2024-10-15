@@ -121,6 +121,20 @@ const assignStaff = (orderId, staffId) => {
   );
 };
 
+const updateIsDelivered = async (orderId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return await axios.put(`Order/is-delivered?orderId=${orderId}`, 
+    { isDelivered : true }, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
+};
+
 export {
   createOrder,
   fetchOrder,
@@ -131,4 +145,5 @@ export {
   updateOrderStatus,
   getAssignedOrders,
   assignStaff,
+  updateIsDelivered,
 };

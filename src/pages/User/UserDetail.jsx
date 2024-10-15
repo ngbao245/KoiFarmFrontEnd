@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import "./UserDetail.css";
 import { updateUserInfo, getUserInfo } from "../../services/UserService";
-import { getOrderByUser } from "../../services/OrderService";
+import { getOrderByUser, updateIsDelivered } from "../../services/OrderService";
 import { fetchAllPayment } from "../../services/PaymentService";
 
 const UserDetail = () => {
@@ -94,6 +94,19 @@ const UserDetail = () => {
         err.message || "Không thể cập nhật thông tin. Vui lòng thử lại."
       );
       console.error(err);
+    }
+  };
+
+  const handleUpdateIsDelivered = async (orderId) => {
+    try {
+      await updateIsDelivered(orderId);
+      const updatedOrders = orders.map((order) =>
+        order.orderId === orderId ? { ...order, isDelivered: true } : order
+      );
+      setOrders(updatedOrders);
+    } catch (err) {
+      console.error("Error updating isDelivered:", err);
+      setError("Failed to update order. Please try again.");
     }
   };
 
@@ -199,9 +212,8 @@ const UserDetail = () => {
               <p>
                 <strong>Trạng thái:</strong>{" "}
                 <span
-                  className={`auth-status ${
-                    user.auth ? "authenticated" : "not-authenticated"
-                  }`}
+                  className={`auth-status ${user.auth ? "authenticated" : "not-authenticated"
+                    }`}
                 >
                   {user.auth ? "Đã xác thực" : "Chưa xác thực"}
                 </span>
@@ -257,6 +269,7 @@ const UserDetail = () => {
                   <th>Tổng tiền</th>
                   <th>Trạng thái</th>
                   <th>Số lượng sản phẩm</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -269,6 +282,20 @@ const UserDetail = () => {
                       {order.items.reduce(
                         (sum, item) => sum + item.quantity,
                         0
+                      )}
+                    </td>
+                    <td>
+                      {order.status === "Completed" && !order.isDelivered ? (
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleUpdateIsDelivered(order.orderId)}
+                        >
+                          Xác nhận đã nhận hàng
+                        </button>
+                      ) : (
+                        order.isDelivered && (
+                          <span style={{ color: "green", fontWeight: "bold" }}>✓ Đã nhận hàng</span>
+                        )
                       )}
                     </td>
                   </tr>
