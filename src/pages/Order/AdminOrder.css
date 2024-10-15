@@ -1,0 +1,58 @@
+.admin-order-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.assign {
+  position: relative; /* Make it relative to the parent container (the table cell) */
+  display: inline-block;
+}
+
+.assign .dropdown-content {
+  position: absolute;
+  transform: translateX(-50%); /* Adjust to perfect center */
+  z-index: 1000;
+  min-width: 200px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin-top: 8px;
+  display: none; /* Initially hidden */
+}
+
+.assign.open .dropdown-content {
+  /* position: relative; */
+  display: block;
+}
+
+.customize-table {
+  width: fit-content;
+  overflow-x: auto;
+}
+
+.customize-table table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.customize-table th,
+.customize-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  word-break: break-word;
+}
+
+.customize-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.customize-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.customize-table tr:hover {
+  background-color: #e8e8e8;
+}

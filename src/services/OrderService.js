@@ -17,8 +17,17 @@ const createOrder = (cartId) => {
   );
 };
 
-const fetchOrderByUser = () => {
-  return axios.get("Order/get-all-orders");
+const fetchOrder = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return axios.get("Order/get-all-orders", {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const getOrderById = (orderId) => {
@@ -51,18 +60,34 @@ const getOrderByStatus = (status) => {
   });
 };
 
+const getUserOrderByStatus = (status) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return axios.get(`Order/user/get-orders-by-status/${status}`, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
+};
+
 const updateOrderStatus = (orderId, newStatus) => {
   const token = localStorage.getItem("token");
   if (!token) {
     throw new Error("No token found! Please log in again.");
   }
 
-  return axios.put(`Order/update-order-status/${orderId}`,
-    { status: newStatus}, {
-    headers: {
-      Authorization: `${token}`,
-    },
-  });
+  return axios.put(
+    `Order/update-order-status/${orderId}`,
+    { status: newStatus },
+    {
+      headers: {
+        Authorization: `${token}`,
+      },
+    }
+  );
 };
 
 const getAssignedOrders = () => {
@@ -71,20 +96,39 @@ const getAssignedOrders = () => {
     throw new Error("No token found! Please log in again.");
   }
 
-  return axios.get("/Order/staff/get-assigned-orders",{
-    headers:{
-      Authorization: `${token}`
-    }
+  return axios.get("/Order/staff/get-assigned-orders", {
+    headers: {
+      Authorization: `${token}`,
+    },
   });
 };
 
+const assignStaff = (orderId, staffId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return axios.put(
+    `Order/order/assign-staff/${orderId}`,
+    { staffId: staffId },
+    {
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
 
 export {
   createOrder,
-  fetchOrderByUser,
+  fetchOrder,
   getOrderById,
   getOrderByUser,
   getOrderByStatus,
+  getUserOrderByStatus,
   updateOrderStatus,
   getAssignedOrders,
+  assignStaff,
 };

@@ -21,6 +21,7 @@ import AdminBlog from "../pages/Blog/AdminBlog.jsx";
 import UserDetail from "../pages/User/UserDetail.jsx";
 import UserPayment from "../pages/User/UserPayment.jsx";
 import StaffOrders from "../pages/Order/StaffOrders.jsx";
+import AdminOrder from "../pages/Order/AdminOrder.jsx";
 
 const AppRoutes = () => {
   return (
@@ -39,6 +40,7 @@ const AppRoutes = () => {
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin-product" element={<AdminProduct />} />
         <Route path="/admin-blog" element={<AdminBlog />} />
+        <Route path="/admin-order" element={<AdminOrder />} />
 
         <Route path="/product" element={<Product />} />
 
@@ -49,7 +51,6 @@ const AppRoutes = () => {
         <Route path="order" element={<Order />} />
 
         <Route path="/staff-orders" element={<StaffOrders />} />
-
 
         <Route path="/test" element={<Cloudinary />} />
 

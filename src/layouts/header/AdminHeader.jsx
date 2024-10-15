@@ -80,6 +80,13 @@ const AdminHeader = () => {
                     </NavLink>
                     <NavLink
                       className="nav-link"
+                      to="/admin-order"
+                      disabled={!user || !user.auth}
+                    >
+                      Order
+                    </NavLink>
+                    <NavLink
+                      className="nav-link"
                       to="/staff-orders"
                       disabled={!user || !user.auth}
                     >
