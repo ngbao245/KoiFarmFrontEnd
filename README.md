@@ -1,5 +1,9 @@
 # Koi Farm Shop
 
+## Quick Navigation
+- [English Version](#koi-farm-shop-english)
+- [Vietnamese Version](#cửa-hàng-koi-farm)
+
 ## Table of Contents
 - [About](#about)
 - [Features](#features)
@@ -12,7 +16,9 @@
 - [Contributing](#contributing)
 - [License](#license)
 
-## About
+## Koi Farm Shop (English)
+
+### About
 Koi Farm Shop is a comprehensive management system for a Koi fish farm. It provides a platform for customers to view, purchase, and manage Koi fish, while also offering farm management tools for staff and managers. The system supports various roles including Guest, Customer, Staff, and Manager, each with specific functionalities.
 
 ## Features
