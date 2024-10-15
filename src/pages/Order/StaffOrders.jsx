@@ -9,6 +9,7 @@ import { getUserById } from "../../services/UserService";
 import AdminHeader from "../../layouts/header/AdminHeader";
 import { toast } from "react-toastify";
 import "./StaffOrders.css";
+import FishSpinner from "../../components/FishSpinner";
 
 const StaffOrders = () => {
   const { user } = useContext(UserContext);
@@ -30,7 +31,6 @@ const StaffOrders = () => {
       const productNameMap = await fetchProductNames(assignedOrders);
       setProductNames(productNameMap);
 
-      // Fetch user names for each order
       const ordersWithUserNames = await Promise.all(
         assignedOrders.map(async (order) => {
           const userResponse = await getUserById(order.userId);
@@ -65,7 +65,7 @@ const StaffOrders = () => {
     );
 
     const results = await Promise.all(promises);
-    return Object.assign({}, ...results); // Trộn các đối tượng lại thành một
+    return Object.assign({}, ...results);
   };
 
   const handleStatusChange = async (orderId, newStatus) => {
@@ -92,12 +92,24 @@ const StaffOrders = () => {
   );
 
   const getStatusBadgeClass = (status) => {
-    return status.toLowerCase() === "completed" ? "completed" : "not-completed";
+    switch (status.toLowerCase()) {
+      case "completed":
+        return "completed";
+      case "delivering":
+        return "delivering";
+      default:
+        return "not-completed";
+    }
   };
 
   if (!user?.auth)
     return <div className="staff-orders">Please log in to view orders.</div>;
-  if (loading) return <div className="staff-orders">Loading orders...</div>;
+  if (loading)
+    return (
+      <div className="staff-orders">
+        <FishSpinner />
+      </div>
+    );
   if (error) return <div className="staff-orders">{error}</div>;
 
   return (
@@ -106,14 +118,14 @@ const StaffOrders = () => {
       <div className="container">
         <div className="my-3 add-new d-sm-flex">
           <span>
-            <b>Assigned Orders:</b>
+            <b>Đơn hàng được giao:</b>
           </span>
         </div>
 
         <div className="col-12 col-sm-4 my-3">
           <input
             className="form-control"
-            placeholder="Search orders by ID or user name..."
+            placeholder="Tìm kiếm theo mã đơn hàng hoặc tên người dùng..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -123,14 +135,14 @@ const StaffOrders = () => {
           <table className="table table-striped text-center">
             <thead>
               <tr>
-                <th>Order ID</th>
-                <th>User Name</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Products</th>
-                <th>Address</th>
+                <th>Mã Đơn Hàng</th>
+                <th>Tên Khách Hàng</th>
+                <th>Tổng Tiền</th>
+                <th>Trạng Thái</th>
+                <th>Sản Phẩm</th>
+                <th>Địa Chỉ</th>
                 <th>Created Date</th>
-                <th>Actions</th>
+                <th>Xác Nhận Đơn Hàng</th>
               </tr>
             </thead>
             <tbody>
@@ -152,8 +164,8 @@ const StaffOrders = () => {
                     <td>
                       {order.items.map((item, index) => (
                         <div key={`${item.productItemId}-${index}`}>
-                          {item.quantity} x{" "}
-                          {productNames[item.productItemId] || "Unknown"}
+                          {productNames[item.productItemId] || "Unknown"} x
+                          {item.quantity}
                         </div>
                       ))}
                     </td>
