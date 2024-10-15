@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AdminHeader from "../../layouts/header/AdminHeader";
 import { fetchOrder, assignStaff } from "../../services/OrderService";
-import { fetchAllStaff } from "../../services/UserService";
+import { fetchAllStaff, getUserById } from "../../services/UserService";
 import StaffDropdown from "../../components/StaffDropdown";
 import { toast } from "react-toastify";
 import "./AdminOrder.css";
@@ -9,46 +9,41 @@ import "./AdminOrder.css";
 const AdminOrder = () => {
   const [orders, setOrders] = useState([]);
   const [staffMembers, setStaffMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      const orderResponse = await fetchOrder();
+      const staffResponse = await fetchAllStaff();
+
+      const ordersData = orderResponse?.data || [];
+      const staffData = staffResponse?.data?.entities || [];
+
+      const detailedOrders = await Promise.all(
+        ordersData.map(async (order) => {
+          const userResponse = await getUserById(order.userId);
+          return {
+            ...order,
+            userName: userResponse?.data?.name || "Unknown",
+            assignedStaffName:
+              staffData.find((s) => s.id === order.staffId)?.name ||
+              "Not assigned",
+          };
+        })
+      );
+
+      setOrders(detailedOrders);
+      setStaffMembers(staffData);
+    } catch (error) {
+      toast.error("Failed to load data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load data khi component mount
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [orderResponse, staffResponse] = await Promise.all([
-          fetchOrder(),
-          fetchAllStaff(),
-        ]);
-
-        console.log("Order Response:", orderResponse);
-        console.log("Staff Response:", staffResponse);
-
-        // Handle the order data
-        const ordersData = orderResponse.data || [];
-        
-        // Handle the staff data
-        const staffData = staffResponse.data.entities || [];
-
-        const ordersWithDetails = ordersData.map((order) => {
-          const assignedStaff = staffData.find(
-            (staff) => staff.id === order.staffId
-          );
-          return { ...order, assignedStaffName: assignedStaff?.name || "Not assigned" };
-        });
-
-        console.log("Processed Orders:", ordersWithDetails);
-
-        setOrders(ordersWithDetails);
-        setStaffMembers(staffData);
-        setLoading(false);
-      } catch (err) {
-        console.error("Failed to fetch data", err);
-        setError("Failed to fetch data");
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -56,82 +51,99 @@ const AdminOrder = () => {
     try {
       await assignStaff(orderId, staffId);
       toast.success("Staff assigned successfully!");
-      // Refresh the orders after assignment
-      const updatedOrders = orders.map(order => 
-        order.orderId === orderId 
-          ? { ...order, staffId, assignedStaffName: staffMembers.find(s => s.id === staffId)?.name || "Not assigned" }
+
+      // Cập nhật lại thông tin đơn hàng sau khi gán staff
+      const updatedOrders = orders.map((order) =>
+        order.orderId === orderId
+          ? {
+              ...order,
+              staffId,
+              assignedStaffName:
+                staffMembers.find((s) => s.id === staffId)?.name ||
+                "Not assigned",
+            }
           : order
       );
       setOrders(updatedOrders);
     } catch (error) {
-      console.error("Error assigning staff:", error);
       toast.error("Failed to assign staff");
     }
   };
 
   const filteredOrders = orders.filter((order) =>
-    order.userId?.toLowerCase().includes(searchTerm.toLowerCase())
+    order.userName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const getStatusBadgeClass = (status) => {
+    return status.toLowerCase() === "completed" ? "completed" : "not-completed";
+  };
+
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
       <AdminHeader />
-      <div className="admin-order-container container">
+      <div className="container">
         <div className="my-3">
-          <input
-            className="form-control"
-            placeholder="Search orders by user ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <b>List Orders:</b>
+          <div className="col-12 col-sm-4 my-3">
+            <input
+              className="form-control"
+              placeholder="Search orders by user name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
-        {filteredOrders.length === 0 ? (
-          <div>No orders found</div>
-        ) : (
-          <div className="customize-table">
-            <table className="table table-striped text-center">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>User ID</th>
-                  <th>Address</th>
-                  <th>Date</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                  <th>Assigned Staff</th>
-                  <th>Actions</th>
+        <table className="table table-striped text-center">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>User Name</th>
+              <th>Address</th>
+              <th>Date</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Assigned Staff</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredOrders.length > 0 ? (
+              filteredOrders.map((order) => (
+                <tr key={order.orderId}>
+                  <td>{order.orderId}</td>
+                  <td>{order.userName}</td>
+                  <td>{order.address}</td>
+                  <td>{new Date(order.createdTime).toLocaleDateString()}</td>
+                  <td>{order.total.toLocaleString("vi-VN")} VND</td>
+                  <td>
+                    <span
+                      className={`status-badge ${getStatusBadgeClass(
+                        order.status
+                      )}`}
+                    >
+                      {order.status}
+                    </span>
+                  </td>
+                  <td>
+                    <StaffDropdown
+                      staffMembers={staffMembers}
+                      currentStaffId={order.staffId}
+                      onAssign={(staffId) =>
+                        handleAssignStaff(order.orderId, staffId)
+                      }
+                    />
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredOrders.map((order) => (
-                  <tr key={order.orderId}>
-                    <td>{order.orderId}</td>
-                    <td>{order.userId}</td>
-                    <td>{order.address}</td>
-                    <td>{new Date(order.createdTime).toLocaleDateString()}</td>
-                    <td>{order.total}</td>
-                    <td>{order.status}</td>
-                    <td>{order.assignedStaffName}</td>
-                    <td>
-                      <StaffDropdown
-                        className="assign"
-                        staffMembers={staffMembers}
-                        currentStaffId={order.staffId}
-                        onAssign={(staffId) =>
-                          handleAssignStaff(order.orderId, staffId)
-                        }
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7">No orders found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </>
   );

@@ -4,9 +4,11 @@ import {
   getAssignedOrders,
   updateOrderStatus,
 } from "../../services/OrderService";
-import "./StaffOrders.css";
-import AdminHeader from "../../layouts/header/AdminHeader";
 import { getNameOfProdItem } from "../../services/ProductItemService";
+import { getUserById } from "../../services/UserService";
+import AdminHeader from "../../layouts/header/AdminHeader";
+import { toast } from "react-toastify";
+import "./StaffOrders.css";
 
 const StaffOrders = () => {
   const { user } = useContext(UserContext);
@@ -15,97 +17,106 @@ const StaffOrders = () => {
   const [error, setError] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [productNames, setProductNames] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchAssignedOrders = async () => {
-      try {
-        setLoading(true);
-        const response = await getAssignedOrders();
-        console.log(response);
-        
-        const assignedOrders = response.data || [];
-
-        const productNamePromises = assignedOrders.flatMap((order) =>
-          order.items.map(async (item) => {
-            try {
-              const product = await getNameOfProdItem(item.productItemId);
-              return {
-                productItemId: item.productItemId,
-                name: product.name || "Unknown",
-              };
-            } catch (err) {
-              console.error(
-                `Error fetching product ${item.productItemId}:`,
-                err
-              );
-              return { productItemId: item.productItemId, name: "Unknown" };
-            }
-          })
-        );
-
-        const productNameResults = await Promise.all(productNamePromises);
-        const productNameMap = productNameResults.reduce(
-          (map, { productItemId, name }) => {
-            map[productItemId] = name;
-            return map;
-          },
-          {}
-        );
-
-        setProductNames(productNameMap);
-        setOrders(assignedOrders);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching assigned orders:", err);
-        setError("Failed to load assigned orders. Please try again later.");
-        setLoading(false);
-      }
-    };
-
-    if (user.auth) {
-      fetchAssignedOrders();
-    }
+    if (!user.auth) return;
+    fetchData();
   }, [user]);
 
-  const handleStatusChange = async (orderId, newStatus) => {
+  const fetchData = async () => {
     try {
-      setIsUpdating(true);
-      await updateOrderStatus(orderId, newStatus);
-      const updatedOrders = orders.map((order) =>
-        order.orderId === orderId ? { ...order, status: newStatus } : order
+      const { data: assignedOrders = [] } = await getAssignedOrders();
+      const productNameMap = await fetchProductNames(assignedOrders);
+      setProductNames(productNameMap);
+
+      // Fetch user names for each order
+      const ordersWithUserNames = await Promise.all(
+        assignedOrders.map(async (order) => {
+          const userResponse = await getUserById(order.userId);
+          return {
+            ...order,
+            userName: userResponse?.data?.name || "Unknown User",
+          };
+        })
       );
-      setOrders(updatedOrders);
-      setIsUpdating(false);
+
+      setOrders(ordersWithUserNames);
     } catch (err) {
-      console.error("Error updating order status:", err);
-      setError("Failed to update order status. Please try again.");
+      console.error("Error fetching assigned orders:", err);
+      setError("Failed to load assigned orders. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchProductNames = async (orders) => {
+    const promises = orders.flatMap((order) =>
+      order.items.map(async (item) => {
+        try {
+          const { name = "Unknown" } = await getNameOfProdItem(
+            item.productItemId
+          );
+          return { [item.productItemId]: name };
+        } catch {
+          return { [item.productItemId]: "Unknown" };
+        }
+      })
+    );
+
+    const results = await Promise.all(promises);
+    return Object.assign({}, ...results); // Trộn các đối tượng lại thành một
+  };
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    setIsUpdating(true);
+    try {
+      await updateOrderStatus(orderId, newStatus);
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.orderId === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+      toast.success("Order status updated successfully!");
+    } catch {
+      toast.error("Failed to update order status");
+    } finally {
       setIsUpdating(false);
     }
   };
 
-  if (!user.auth) {
-    return (
-      <div className="staff-orders">Please log in to view assigned orders.</div>
-    );
-  }
+  const filteredOrders = orders.filter(
+    (order) =>
+      order.orderId.toString().includes(searchTerm.toLowerCase()) ||
+      order.userName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  if (loading) {
-    return <div className="staff-orders">Loading orders...</div>;
-  }
+  const getStatusBadgeClass = (status) => {
+    return status.toLowerCase() === "completed" ? "completed" : "not-completed";
+  };
 
-  if (error) {
-    return <div className="staff-orders error-message">{error}</div>;
-  }
+  if (!user?.auth)
+    return <div className="staff-orders">Please log in to view orders.</div>;
+  if (loading) return <div className="staff-orders">Loading orders...</div>;
+  if (error) return <div className="staff-orders">{error}</div>;
 
   return (
     <>
       <AdminHeader />
-      <div className="staff-orders container">
-        <h1>Assigned Orders</h1>
-        <div className="my-3 d-sm-flex">
+      <div className="container">
+        <div className="my-3 add-new d-sm-flex">
           <span>
-            <b>Manage Assigned Orders</b>
+            <b>Assigned Orders:</b>
           </span>
+        </div>
+
+        <div className="col-12 col-sm-4 my-3">
+          <input
+            className="form-control"
+            placeholder="Search orders by ID or user name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
 
         <div className="customize-table">
@@ -113,29 +124,37 @@ const StaffOrders = () => {
             <thead>
               <tr>
                 <th>Order ID</th>
-                <th>Tổng</th>
-                <th>Trạng thái</th>
-                <th>Sản phẩm</th>
-                <th>Địa chỉ</th>
-                <th>Ngày tạo đơn</th>
-                <th>Hành động</th>
+                <th>User Name</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Products</th>
+                <th>Address</th>
+                <th>Created Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {orders.length > 0 ? (
-                orders.map((order) => (
+              {filteredOrders.length > 0 ? (
+                filteredOrders.map((order) => (
                   <tr key={order.orderId}>
                     <td>{order.orderId}</td>
+                    <td>{order.userName}</td>
                     <td>{order.total.toLocaleString("vi-VN")} VND</td>
-                    <td>{order.status}</td>
                     <td>
-                      {order.items.map((item, itemIndex) => (
-                        <span key={`item-${item.productItemId}-${itemIndex}`}>
+                      <span
+                        className={`status-badge ${getStatusBadgeClass(
+                          order.status
+                        )}`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
+                    <td>
+                      {order.items.map((item, index) => (
+                        <div key={`${item.productItemId}-${index}`}>
                           {item.quantity} x{" "}
-                          {productNames[item.productItemId] ||
-                            item.productItemId}
-                          <br />
-                        </span>
+                          {productNames[item.productItemId] || "Unknown"}
+                        </div>
                       ))}
                     </td>
                     <td>{order.address}</td>
@@ -153,8 +172,7 @@ const StaffOrders = () => {
                         Start Delivery
                       </button>
                       <button
-                        className="btn btn-success"
-                        style={{ marginLeft: "10px" }}
+                        className="btn btn-success ms-2"
                         onClick={() =>
                           handleStatusChange(order.orderId, "Completed")
                         }
@@ -167,7 +185,7 @@ const StaffOrders = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6">No assigned orders available</td>
+                  <td colSpan="8">No assigned orders available</td>
                 </tr>
               )}
             </tbody>

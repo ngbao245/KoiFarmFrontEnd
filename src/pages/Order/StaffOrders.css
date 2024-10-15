@@ -1,19 +1,39 @@
 .staff-orders-container {
-    padding: 20px;
-  }
-  
-  .tabs {
-    margin-bottom: 20px;
-  }
-  
-  .tabs button {
-    margin-right: 10px;
-  }
-  
-  .orders-list {
-    margin-bottom: 20px;
-  }
-  
+  padding: 20px;
+}
+
+.customize-table {
+  width: inherit;
+  overflow-x: auto;
+}
+
+td {
+  vertical-align: middle;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn-primary,
+.btn-success {
+  white-space: nowrap;
+}
+
+.tabs {
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  margin-right: 10px;
+}
+
+.orders-list {
+  margin-bottom: 20px;
+}
+/*   
   table {
     width: 100%;
     border-collapse: collapse;
@@ -35,4 +55,4 @@
   button:hover {
     background-color: #0056b3;
   }
-  
+   */
