@@ -30,6 +30,11 @@
   background-color: transparent;
 }
 
+.assign-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .dropdown-content {
   position: absolute;
   top: 1;

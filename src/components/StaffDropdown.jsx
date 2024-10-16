@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./StaffDropdown.css";
 
-const StaffDropdown = ({ staffMembers, onAssign, currentStaffId }) => {
+const StaffDropdown = ({ staffMembers, onAssign, currentStaffId, disabled }) => {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -25,13 +25,23 @@ const StaffDropdown = ({ staffMembers, onAssign, currentStaffId }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleButtonClick = () => {
+    if (!disabled) {
+      setIsOpen((prev) => !prev);
+    }
+  };
+
   return (
     <div className={`assign ${isOpen ? "open" : "close"}`} ref={dropdownRef}>
-      <button className="assign-btn" onClick={() => setIsOpen((prev) => !prev)}>
+      <button 
+        className={`assign-btn ${disabled ? "disabled" : ""}`} 
+        onClick={handleButtonClick}
+        disabled={disabled}
+      >
         {currentStaff ? `${currentStaff.name}` : ""}
       </button>
 
-      {isOpen && (
+      {isOpen && !disabled && (
         <div className="dropdown-content">
           <input
             type="text"
