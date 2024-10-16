@@ -43,8 +43,7 @@ const StaffOrders = () => {
 
       setOrders(ordersWithUserNames);
     } catch (err) {
-      console.error("Error fetching assigned orders:", err);
-      setError("Failed to load assigned orders. Please try again.");
+      setError("Không có đơn hàng nào được chỉ định.");
     } finally {
       setLoading(false);
     }
@@ -110,7 +109,13 @@ const StaffOrders = () => {
         <FishSpinner />
       </div>
     );
-  if (error) return <div className="staff-orders">{error}</div>;
+  if (error)
+    return (
+      <>
+        <AdminHeader />
+        <div className="staff-orders error-message">{error}</div>
+      </>
+    );
 
   return (
     <>
@@ -141,7 +146,7 @@ const StaffOrders = () => {
                 <th>Trạng Thái</th>
                 <th>Sản Phẩm</th>
                 <th>Địa Chỉ</th>
-                <th>Created Date</th>
+                <th>Ngày mua</th>
                 <th>Xác Nhận Đơn Hàng</th>
               </tr>
             </thead>

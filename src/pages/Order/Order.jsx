@@ -45,21 +45,23 @@ const Order = () => {
 
     try {
       const response = await createOrder(cartData.cartId);
-    
+
       // Log the full response
-      console.log("Full Order creation response:", JSON.stringify(response, null, 2));
-    
+      console.log(
+        "Full Order creation response:",
+        JSON.stringify(response, null, 2)
+      );
+
       if (response.data) {
         console.log("response.data:", JSON.stringify(response.data, null, 2));
-    
+
         // Extracting data assuming two possible structures
         const orderData = response.data.data || response.data;
-    
+
         // Check if orderData has orderId
         if (orderData && orderData.orderId) {
-          toast.success("Order created successfully!");
           setOrderData(orderData);
-    
+
           // Handle payment
           if (paymentMethod === "bank") {
             const paymentResponse = await createPayment({
@@ -68,10 +70,11 @@ const Order = () => {
               name: "Your Name",
               orderId: orderData.orderId,
             });
-    
+            toast.success("Order created successfully!");
             window.location.href = paymentResponse.data;
           } else {
             toast.success("Your order has been placed with Cash on Delivery!");
+            navigate("/");
           }
         } else {
           // If orderId is missing
@@ -89,7 +92,6 @@ const Order = () => {
     } finally {
       setIsSubmitting(false);
     }
-    
   };
 
   const calculateTotal = () => {
@@ -102,7 +104,7 @@ const Order = () => {
   };
 
   if (!cartData) {
-    return <div>Loading cart data...</div>; 
+    return <div>Loading cart data...</div>;
   }
 
   return (

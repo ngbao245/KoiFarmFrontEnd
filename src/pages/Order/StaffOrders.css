@@ -14,7 +14,7 @@ td {
 .error-message {
   color: red;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 0;
 }
 
 .btn-primary,
