@@ -1,27 +1,32 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { useNavigate, useLocation } from "react-router-dom";
+import { fetchAllProducts } from "../../services/ProductService";
+import { getProdItemByProdId } from "../../services/ProductItemService";
+import { UserContext } from "../../contexts/UserContext";
+import "./header.css";
+
 import logo from "../../../public/assets/icon.png";
 import logo1 from "../../../public/assets/image 9.png";
 import search from "../../../public/icons/Search.png";
 import cart from "../../../public/icons/Shopping Cart.png";
 import list from "../../../public/icons/Group 201.png";
-import { useNavigate, useLocation } from "react-router-dom";
-import "./header.css";
-import { fetchAllProducts } from "../../services/ProductService";
-import { getProdItemByProdId } from "../../services/ProductItemService";
-import { toast } from "react-toastify";
-import { UserContext } from "../../contexts/UserContext";
 
 export const Header = () => {
-  const { logout, user } = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
+
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef(null);
+  const searchInputRef = useRef(null);
+  const searchButtonRef = useRef(null);
 
   const [choose, setChoose] = useState("home");
   const [showDropdown, setShowDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [listProducts, setListProducts] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -48,6 +53,23 @@ export const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownRef]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const keyword = params.get("keyword");
+    if (keyword) {
+      setSearchKeyword(keyword);
+    }
+  }, [location.search]);
+
+  useEffect(() => {
+    if (
+      location.pathname === "/product-item-search" &&
+      searchInputRef.current
+    ) {
+      searchInputRef.current.focus();
+    }
+  }, [location.pathname]);
 
   const handleChoose = (e) => {
     e.preventDefault();
@@ -123,6 +145,25 @@ export const Header = () => {
     navigate(`/${user.email}/detail`);
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchKeyword.trim()) {
+      navigate(`/product-item-search?keyword=${searchKeyword.trim()}`);
+    } else {
+      navigate("/");
+    }
+    searchInputRef.current.focus(); // Focus the search input after search
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchKeyword(e.target.value);
+    if (location.pathname === "/product-item-search") {
+      navigate(
+        `/product-item-search?keyword=${e.target.value}`
+      );
+    }
+  };
+
   return (
     <>
       <div className="nav-container">
@@ -132,15 +173,23 @@ export const Header = () => {
             <img src={logo1} className="logo1-image" alt="#" />
           </div>
           <div className="nav-search-grid">
-            <div className="nav-search-bar">
+            <form onSubmit={handleSearch} className="nav-search-bar">
               <input
                 type="text"
                 placeholder='Tìm kiếm "chú cá" phù hợp với bạn...'
+                value={searchKeyword}
+                onChange={handleSearchChange}
+                ref={searchInputRef}
               />
-            </div>
-            <div className="nav-search-btn">
-              <img src={search} />
-            </div>
+              <button 
+                type="submit" 
+                className="nav-search-btn"
+                ref={searchButtonRef}
+                onClick={() => searchInputRef.current.focus()}
+              >
+                <img src={search} alt="Search" />
+              </button>
+            </form>
           </div>
 
           <div className="d-flex flex-row gap-4 ">

@@ -22,6 +22,7 @@ import UserDetail from "../pages/User/UserDetail.jsx";
 import UserPayment from "../pages/User/UserPayment.jsx";
 import StaffOrders from "../pages/Order/StaffOrders.jsx";
 import AdminOrder from "../pages/Order/AdminOrder.jsx";
+import ProductItemSearch from "../pages/ProductItemSearch/ProductItemSearch";
 
 const AppRoutes = () => {
   return (
@@ -46,6 +47,7 @@ const AppRoutes = () => {
 
         <Route path="/koi/:productName" element={<ProductItem />} />
         <Route path="/koi/:productName/:id" element={<ProductItemDetail />} />
+        <Route path="/product-item-search" element={<ProductItemSearch />} />
 
         <Route path="/cart" element={<Cart />} />
         <Route path="order" element={<Order />} />
