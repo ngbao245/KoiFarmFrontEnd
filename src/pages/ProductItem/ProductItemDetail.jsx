@@ -5,6 +5,7 @@ import { Footer } from "../../layouts/footer/footer";
 import { getProdItemById } from "../../services/ProductItemService";
 import { addToCart } from "../../services/CartService";
 import { toast } from "react-toastify";
+import Reviews from "../../components/ReviewSection";
 
 const ProductItemDetail = () => {
   const { id } = useParams();
@@ -119,6 +120,9 @@ const ProductItemDetail = () => {
           </div>
         </div>
       </div>
+
+      <Reviews productItemId={id} />
+
       <Footer />
     </>
   );
