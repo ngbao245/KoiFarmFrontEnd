@@ -34,7 +34,7 @@ const AdminBlog = () => {
       }
     } catch (error) {
       console.error("Error fetching blogs:", error);
-      toast.error("Error fetching blogs.");
+      // toast.error("Error fetching blogs.");
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +56,7 @@ const AdminBlog = () => {
   };
 
   const handleUpdateBlogList = (newBlog) => {
-    setBlogs((prevBlogs) => [newBlog, ...prevBlogs]);
+    setBlogs((prevBlogs) => (Array.isArray(prevBlogs) ? [newBlog, ...prevBlogs] : [newBlog]));
     setIsUploading(false);
   };
 

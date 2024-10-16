@@ -32,12 +32,13 @@ export const Home = () => {
           const blogsToShow = blogResponse.data.slice(0, 2); // Show only the first two blogs
           setBlogs(blogsToShow);
         } else {
-          toast.error("Failed to fetch blogs.");
+          // toast.error("Failed to fetch blogs.");
+          console.error("Failed to fetch blogs.");
         }
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        toast.error("Error fetching data.");
+        // toast.error("Error fetching data.");
       })
       .finally(() => setIsLoading(false));
   }, []);
