@@ -60,12 +60,6 @@ const AdminOrder = () => {
   }, []);
 
   const handleAssignStaff = async (orderId, staffId) => {
-    const order = orders.find(o => o.orderId === orderId);
-    if (order.status.toLowerCase() !== "pending") {
-      toast.error("Can only assign staff to pending orders");
-      return;
-    }
-
     try {
       await assignStaff(orderId, staffId);
       toast.success("Staff assigned successfully!");
