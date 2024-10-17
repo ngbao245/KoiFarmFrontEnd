@@ -7,6 +7,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
+import { getUserInfo } from "../../services/UserService";
 import "./adminHeader.css";
 
 const AdminHeader = () => {
@@ -14,6 +15,7 @@ const AdminHeader = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef(null); // Create a ref for the dropdown
   const [showUserDropdown, setShowUserDropdown] = useState(false); // State for dropdown visibility
+  const [userDetails, setUserDetails] = useState(null);
 
   const handleLogout = () => {
     logout();
@@ -39,6 +41,22 @@ const AdminHeader = () => {
     };
   }, [dropdownRef]);
 
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (user && user.auth) {
+        try {
+          const response = await getUserInfo();
+          setUserDetails(response.data);
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+          toast.error("Failed to fetch user details");
+        }
+      }
+    };
+
+    fetchUserDetails();
+  }, [user]);
+
   return (
     <>
       <div className="admin-header-container">
@@ -57,51 +75,58 @@ const AdminHeader = () => {
               {((user && user.auth) || window.location.pathname === "/") && (
                 <>
                   <Nav className="me-auto">
-                    <NavLink
-                      className="nav-link"
-                      to="/admin"
-                      disabled={!user || !user.auth}
-                    >
-                      Staff Management
-                    </NavLink>
+                    {userDetails && userDetails.roleId === "1" && (
+                      <NavLink
+                        className="nav-link"
+                        to="/admin"
+                        disabled={!user || !user.auth}
+                      >
+                        Quán Lý Nhân Viên
+                      </NavLink>
+                    )}
                     <NavLink
                       className="nav-link"
                       to="/admin-product"
                       disabled={!user || !user.auth}
                     >
-                      Product Item
+                      Quản Lý Sản Phẩm
                     </NavLink>
                     <NavLink
                       className="nav-link"
                       to="/admin-blog"
                       disabled={!user || !user.auth}
                     >
-                      Blog
+                      Quản Lý Bài Đăng
                     </NavLink>
-                    <NavLink
-                      className="nav-link"
-                      to="/admin-order"
-                      disabled={!user || !user.auth}
-                    >
-                      Order
-                    </NavLink>
-                    <NavLink
-                      className="nav-link"
-                      to="/staff-orders"
-                      disabled={!user || !user.auth}
-                    >
-                      Staff Orders
-                    </NavLink>
+                    {userDetails && userDetails.roleId === "1" && (
+                      <NavLink
+                        className="nav-link"
+                        to="/admin-order"
+                        disabled={!user || !user.auth}
+                      >
+                        Quản Lý Đơn Đặt Hàng
+                      </NavLink>
+                    )}
+                    {userDetails && userDetails.roleId === "2" && (
+                      <NavLink
+                        className="nav-link"
+                        to="/staff-orders"
+                        disabled={!user || !user.auth}
+                      >
+                        Quản Lý Đơn Đặt Hàng Của Nhân Viên
+                      </NavLink>
+                    )}
                   </Nav>
                   <Nav>
                     {user && user.email && (
                       <span className="nav-link">
-                        Welcome: <span className="fw-bold"> {user.email}</span>
+                        <i class="fa-regular fa-user"></i> :{" "}
+                        <span className="fw-bold"> {user.email}</span>
                       </span>
                     )}
                     <div ref={dropdownRef}>
                       <NavDropdown
-                        title="Settings"
+                        title="Cài Đặt"
                         id="basic-nav-dropdown"
                         show={showUserDropdown}
                         onClick={() => setShowUserDropdown((prev) => !prev)}
@@ -109,11 +134,11 @@ const AdminHeader = () => {
                       >
                         {user && user.auth === true ? (
                           <NavDropdown.Item onClick={handleLogout}>
-                            Logout
+                            Đăng Xuất
                           </NavDropdown.Item>
                         ) : (
                           <NavLink className="dropdown-item" to="/login">
-                            Login
+                            Đăng Nhập
                           </NavLink>
                         )}
                       </NavDropdown>

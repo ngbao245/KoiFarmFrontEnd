@@ -127,7 +127,7 @@ const AdminOrder = () => {
               <th>Sản Phẩm</th>
               <th>Tổng Tiền</th>
               <th>Trạng Thái</th>
-              <th>Nhân Viên Giao Hàng</th>
+              <th>Chỉ Định Giao Hàng</th>
             </tr>
           </thead>
           <tbody>

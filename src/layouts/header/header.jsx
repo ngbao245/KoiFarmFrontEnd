@@ -158,9 +158,7 @@ export const Header = () => {
   const handleSearchChange = (e) => {
     setSearchKeyword(e.target.value);
     if (location.pathname === "/product-item-search") {
-      navigate(
-        `/product-item-search?keyword=${e.target.value}`
-      );
+      navigate(`/product-item-search?keyword=${e.target.value}`);
     }
   };
 
@@ -181,8 +179,8 @@ export const Header = () => {
                 onChange={handleSearchChange}
                 ref={searchInputRef}
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="nav-search-btn"
                 ref={searchButtonRef}
                 onClick={() => searchInputRef.current.focus()}
@@ -197,14 +195,15 @@ export const Header = () => {
               <>
                 <div className="nav-info user-select-none">
                   <span>
-                    Welcome: <span className="fw-bold">{user.email}</span>
+                    <i class="fa-regular fa-user"></i> :{" "}
+                    <span className="fw-bold">{user.email}</span>
                   </span>
                   <div ref={dropdownRef}>
                     <button
                       className="dropdown-toggle"
                       onClick={handleClickNav}
                     >
-                      Settings
+                      Cài Đặt
                     </button>
                     {showUserDropdown && (
                       <div className="dropdown-link">

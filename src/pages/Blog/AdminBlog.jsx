@@ -56,23 +56,26 @@ const AdminBlog = () => {
   };
 
   const handleUpdateBlogList = (newBlog) => {
-    setBlogs((prevBlogs) => (Array.isArray(prevBlogs) ? [newBlog, ...prevBlogs] : [newBlog]));
+    setBlogs((prevBlogs) =>
+      Array.isArray(prevBlogs) ? [newBlog, ...prevBlogs] : [newBlog]
+    );
     setIsUploading(false);
   };
 
   const handleDeleteBlog = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this blog?")) return;
+    if (!window.confirm("Bạn có chắc chắn muốn xóa bài viết này không?"))
+      return;
     try {
       const response = await deleteBlog(id);
       if (response.statusCode === 200) {
         setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
-        toast.success("Blog deleted successfully!");
+        toast.success("Xóa bài viết thành công!");
       } else {
         throw new Error();
       }
     } catch (error) {
-      console.error("Error deleting blog:", error);
-      toast.error("Error deleting blog.");
+      console.error("Lỗi khi xóa bài viết:", error);
+      toast.error("Lỗi khi xóa bài viết.");
     }
   };
 
@@ -84,10 +87,10 @@ const AdminBlog = () => {
           blog.id === selectedBlog.id ? { ...blog, ...updatedBlogData } : blog
         )
       );
-      toast.success("Blog updated successfully!");
+      toast.success("Cập nhật bài viết thành công!");
     } catch (error) {
-      console.error("Error updating blog:", error);
-      toast.error("Error updating blog.");
+      console.error("Lỗi khi cập nhật bài viết:", error);
+      toast.error("Lỗi khi cập nhật bài viết.");
     }
     setShowUpdateModal(false);
   };
@@ -98,13 +101,13 @@ const AdminBlog = () => {
       <div className="container">
         {isUploading && <FishSpinner />}
         <div className="my-3 add-new d-sm-flex">
-          <b>Manage Blogs</b>
+          <b>Quản lý Bài viết</b>
           <button
             className="btn btn-primary ms-auto"
             onClick={() => setShowModalCreate(true)}
             disabled={isUploading}
           >
-            <i className="fa-solid fa-circle-plus px-1"></i> Add new blog
+            <i className="fa-solid fa-circle-plus px-1"></i> Thêm Mới
           </button>
         </div>
 
@@ -112,23 +115,23 @@ const AdminBlog = () => {
           <table className="table table-striped text-center">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Content</th>
-                <th>Thumbnail</th>
-                <th>Actor</th>
-                <th>Actions</th>
+                <th>Tiêu đề</th>
+                <th>Nội dung</th>
+                <th>Hình ảnh</th>
+                <th>Tác giả</th>
+                <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan="5">Loading blogs...</td>
+                  <td colSpan="5">Đang tải bài viết...</td>
                 </tr>
               ) : blogs.length ? (
                 blogs.map((blog) => (
                   <tr key={blog.id}>
                     <td>{blog.title}</td>
-                    <td>{blog.description}</td>
+                    <td>{blog.description.substring(0, 100)}...</td>
                     <td>
                       {blog.imageUrl ? (
                         <img
@@ -141,10 +144,12 @@ const AdminBlog = () => {
                           }}
                         />
                       ) : (
-                        "No Image"
+                        "Không có hình ảnh"
                       )}
                     </td>
-                    <td>{userNames[blog.userId] || "Unknown User"}</td>
+                    <td>
+                      {userNames[blog.userId] || "Người dùng không xác định"}
+                    </td>
                     <td>
                       <button
                         className="btn btn-warning"
@@ -154,21 +159,21 @@ const AdminBlog = () => {
                         }}
                         disabled={isUploading}
                       >
-                        Edit
+                        <i class="fa-solid fa-wrench"></i>
                       </button>
                       <button
                         className="btn btn-danger ms-2"
                         onClick={() => handleDeleteBlog(blog.id)}
                         disabled={isUploading}
                       >
-                        Delete
+                        <i class="fa-solid fa-trash"></i>
                       </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5">No blogs available</td>
+                  <td colSpan="5">Không có bài viết nào</td>
                 </tr>
               )}
             </tbody>

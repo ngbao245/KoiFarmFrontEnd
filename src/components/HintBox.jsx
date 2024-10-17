@@ -13,9 +13,9 @@ const HintBox = () => {
   return (
     <div className="alert alert-warning hint-box">
       <b>
-        The default password is 123456. Employees{" "}
-        <span style={{ color: "#c70025" }}>MUST</span> change the password
-        immediately after receiving the account.
+        Mật khẩu mặc định là 123456. Nhân viên{" "}
+        <span style={{ color: "#c70025" }}>PHẢI</span> đổi mật khẩu
+        ngay sau khi nhận được tài khoản.
       </b>
       <button className="close-btn" onClick={handleClose}>
         &times;

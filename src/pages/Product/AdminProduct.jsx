@@ -97,7 +97,7 @@ const AdminProduct = () => {
       <div className="container">
         <div className="my-3 add-new d-sm-flex">
           <span>
-            <b>List Product Items:</b>
+            <b>Danh sách các mặt hàng sản phẩm:</b>
           </span>
           <div className="group-btns mt-sm-0 mt-2">
             <div>
@@ -114,7 +114,7 @@ const AdminProduct = () => {
             </div>
 
             <CSVLink
-              filename={"staff_export.csv"}
+              filename={"xuat_san_pham.csv"}
               className="btn btn-success"
               data={dataExport}
               asyncOnClick={true}
@@ -129,7 +129,7 @@ const AdminProduct = () => {
               onClick={() => setShowModalAddProduct(true)}
             >
               <i className="fa-solid fa-circle-plus px-1"></i>
-              <span className="px-1">Add new</span>
+              <span className="px-1">Thêm Mới</span>
             </button>
           </div>
         </div>
@@ -137,7 +137,7 @@ const AdminProduct = () => {
         <div className="col-12 col-sm-4 my-3">
           <input
             className="form-control"
-            placeholder="Search product item by name..."
+            placeholder="Tìm kiếm mặt hàng sản phẩm theo tên..."
             value={searchTerm}
             onChange={handleSearch}
           />
@@ -146,22 +146,22 @@ const AdminProduct = () => {
           <table className="table table-striped text-center">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Origin</th>
-                <th>Sex</th>
-                <th>Age</th>
-                <th>Size</th>
-                <th>Species</th>
-                <th>Personality</th>
-                <th>FoodAmount</th>
-                <th>WaterTemp</th>
-                <th>MineralContent</th>
+                <th>Tên SP</th>
+                <th>Giá</th>
+                <th>Loại</th>
+                <th>Nguồn Gốc</th>
+                <th>Giới tính</th>
+                <th>Tuổi</th>
+                <th>Kích thước</th>
+                <th>Loài</th>
+                <th>Tính cách</th>
+                <th>Lượng thức ăn</th>
+                <th>Nhiệt độ nước</th>
+                <th>Hàm lượng khoáng chất</th>
                 <th>pH</th>
-                <th>Quantity</th>
-                <th>Type</th>
-                <th>ProductId</th>
+                <th>Số lượng</th>
+                <th>Loại</th>
+                <th>Mã SP</th>
               </tr>
             </thead>
             <tbody>
@@ -188,7 +188,7 @@ const AdminProduct = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="16">No product items found</td>
+                  <td colSpan="16">Không tìm thấy sản phẩm nào</td>
                 </tr>
               )}
             </tbody>
@@ -201,17 +201,17 @@ const AdminProduct = () => {
             disabled={pageIndex === 1}
             onClick={() => handlePageChange(pageIndex - 1)}
           >
-            Previous
+            Trước
           </button>
           <span className="px-3">
-            Page {pageIndex} of {totalPages}
+            Trang {pageIndex} / {totalPages}
           </span>
           <button
             className="btn btn-secondary"
             disabled={pageIndex === totalPages}
             onClick={() => handlePageChange(pageIndex + 1)}
           >
-            Next
+            Sau
           </button>
         </div>
 
