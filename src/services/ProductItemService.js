@@ -1,7 +1,11 @@
 import axios from "./Customize-Axios";
 
 const fetchAllProdItem = () => {
-  return axios.get("ProductItem/get-all-product-items");
+  return axios.get(`ProductItem/get-all-product-items`);
+};
+
+const getAllProdItem = () => {
+  return axios.get(`ProductItem/get-all-product-items?pageSize=${1000000000}`);
 };
 
 const getProdItemById = (id) => {
@@ -18,7 +22,7 @@ const getProdItemByProdId = (prodId) => {
 };
 
 const createProdItem = (data) => {
-  return axios.post("ProductItem/create-product-item" , data);
+  return axios.post("ProductItem/create-product-item", data);
 };
 
 const updateProdItem = (id) => {
@@ -31,6 +35,7 @@ const deleteProdItem = (id) => {
 
 export {
   fetchAllProdItem,
+  getAllProdItem,
   getProdItemById,
   getProdItemByProdId,
   createProdItem,

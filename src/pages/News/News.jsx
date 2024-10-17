@@ -54,7 +54,6 @@ const News = () => {
   return (
     <>
       <Header />
-
       <div className="news-container">
         <main className="news-content animated user-select-none">
           <h1 className="news-title">Tin tức về Cá Koi</h1>
