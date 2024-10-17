@@ -70,6 +70,11 @@
   justify-content: center;
   gap: 1rem;
 }
+
+.thank-you-message {
+  width: 60%;
+  text-align: justify;
+}
 /* 
 .btn {
   padding: 0.5rem 1rem;

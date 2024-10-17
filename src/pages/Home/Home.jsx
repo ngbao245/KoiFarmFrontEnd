@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getProductById } from "../../services/ProductService";
 import { fetchAllBlogs } from "../../services/BlogService";
+import FishSpinner from "../../components/FishSpinner";
 
 export const Home = () => {
   const [productItems, setProductItems] = useState([]);
@@ -32,12 +33,7 @@ export const Home = () => {
         ) {
           const blogsToShow = blogResponse.data.slice(0, 2);
           setBlogs(blogsToShow);
-        } else {
-          console.error("Failed to fetch blogs.");
         }
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
       })
       .finally(() => setIsLoading(false));
   }, []);
@@ -135,7 +131,7 @@ export const Home = () => {
             </h2>
             <div className="homepage-news-list">
               {isLoading ? (
-                <div className="loading-spinner">Loading blogs...</div>
+                <><FishSpinner/></>
               ) : blogs.length > 0 ? (
                 blogs.map((blog) => (
                   <div className="homepage-news-card" key={blog.id}>
@@ -164,7 +160,9 @@ export const Home = () => {
                   </div>
                 ))
               ) : (
-                <p className="no-blogs-message">No blogs available</p>
+                <p className="no-blogs-message">
+                  Không có tin tức nào trong ngày hôm nay :(
+                </p>
               )}
             </div>
           </section>

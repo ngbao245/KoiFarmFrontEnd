@@ -16,17 +16,17 @@ const Payment = () => {
   const paymentId = searchParams.get("paymentId");
   const status = searchParams.get("status");
 
-  // useEffect(() => {
-  //   if (!orderId || !paymentId) {
-  //     navigate("/*");
-  //   }
-  // }, [orderId, paymentId]);
+  useEffect(() => {
+    if (!orderId || !paymentId) {
+      navigate("/*");
+    }
+  }, [orderId, paymentId]);
 
   return (
     <>
       <Header />
       <div className="payment-container">
-        <main className="payment-content">
+        <main className="payment-content animated user-select-none">
           <div className="payment-status-card">
             <TickSuccess />
 
@@ -42,7 +42,7 @@ const Payment = () => {
               </p>
             </div>
             <p className="thank-you-message">
-              Cảm ơn quý khách đã tin tưởng Koi Shop Hẹn gặp lại quý khách lần
+              Cảm ơn quý khách đã tin tưởng Koi Shop. Hẹn gặp lại quý khách lần
               sau.
             </p>
             <div className="action-buttons">

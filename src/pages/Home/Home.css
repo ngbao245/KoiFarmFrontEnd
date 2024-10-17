@@ -219,7 +219,7 @@
 /* done */
 .homepage-news-section {
   position: relative;
-  padding: 60px 20px;
+  padding: 60px 0;
 }
 
 .homepage-news-section::before {
@@ -353,9 +353,21 @@
   font-size: 1.2rem;
 }
 
+.no-blogs-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  background-color: var(--primary-red);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  font-size: var(--font-size-section);
+}
+
 button {
   padding: 10px 20px;
-  background-color: #ff0000;
+  background-color: var(--primary-red);
   color: white;
   border: none;
   border-radius: 6px;

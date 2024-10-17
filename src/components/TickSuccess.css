@@ -26,10 +26,10 @@
 
 @keyframes circle {
   from {
-    stroke-dashoffset: 597;
+    stroke-dashoffset: 0;
   }
   to {
-    stroke-dashoffset: 1194;
+    stroke-dashoffset: 1;
   }
 }
 
