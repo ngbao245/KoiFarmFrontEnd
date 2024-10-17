@@ -23,7 +23,13 @@ const UserDetail = () => {
     phone: "",
   });
 
+  const [activeTab, setActiveTab] = useState("Pending");
+
   const isPaymentPage = window.location.pathname.includes("/payments");
+
+  const filterOrdersByStatus = (status) => {
+    return orders.filter((order) => order.status === status);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -259,54 +265,91 @@ const UserDetail = () => {
       ) : (
         <>
           <h2>Đơn hàng của bạn</h2>
+
           {orders.length === 0 ? (
             <p>Bạn chưa có đơn hàng nào.</p>
           ) : (
-            <table className="order-table">
-              <thead>
-                <tr>
-                  <th>Mã đơn hàng</th>
-                  <th>Tổng tiền</th>
-                  <th>Trạng thái</th>
-                  <th>Số lượng sản phẩm</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => (
-                  <tr key={order.orderId}>
-                    <td>{order.orderId}</td>
-                    <td>{order.total.toLocaleString("vi-VN")} VND</td>
-                    <td>{order.status}</td>
-                    <td>
-                      {order.items.reduce(
-                        (sum, item) => sum + item.quantity,
-                        0
-                      )}
-                    </td>
-                    <td>
-                      {order.status === "Completed" && !order.isDelivered ? (
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => handleUpdateIsDelivered(order.orderId)}
-                        >
-                          Xác nhận đã nhận hàng
-                        </button>
-                      ) : (
-                        order.isDelivered && (
-                          <span style={{ color: "green", fontWeight: "bold" }}>✓ Đã nhận hàng</span>
-                        )
-                      )}
-                    </td>
+            <>
+              {/* Tabs */}
+              <div className="order-tabs">
+                <button
+                  className={`order-tab-button ${activeTab === "Pending" ? "active" : ""}`}
+                  onClick={() => setActiveTab("Pending")}
+                >
+                  Đang xử lý
+                </button>
+                <button
+                  className={`order-tab-button ${activeTab === "Delivering" ? "active" : ""}`}
+                  onClick={() => setActiveTab("Delivering")}
+                >
+                  Đang giao hàng
+                </button>
+                <button
+                  className={`order-tab-button ${activeTab === "Completed" ? "active" : ""}`}
+                  onClick={() => setActiveTab("Completed")}
+                >
+                  Đã hoàn thành
+                </button>
+              </div>
+
+              {/* Display filtered orders */}
+              <table className="order-table">
+                <thead>
+                  <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Số lượng sản phẩm</th>
+                    <th>Ngày mua</th>
+                    <th>Xác nhận</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filterOrdersByStatus(activeTab).map((order) => (
+                    <tr key={order.orderId}>
+                      <td>{order.orderId}</td>
+                      <td>{order.total.toLocaleString("vi-VN")} VND</td>
+                      <td>{order.status}</td>
+                      <td>
+                        {order.items.reduce((sum, item) => sum + item.quantity, 0)}
+                      </td>
+                      <td>{new Date(order.createdTime).toLocaleDateString()}</td>
+                      <td>
+                        {order.status === "Pending" && (
+                          <span style={{ color: "lightcoral", fontWeight: "bold" }}>
+                            Đang xử lý
+                          </span>
+                        )}
+
+                        {order.status === "Delivering" && (
+                          <span style={{ color: "orange", fontWeight: "bold" }}>
+                            Đang giao hàng
+                          </span>
+                        )}
+
+                        {order.status === "Completed" && !order.isDelivered ? (
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => handleUpdateIsDelivered(order.orderId)}
+                          >
+                            Xác nhận đã nhận hàng
+                          </button>
+                        ) : (
+                          order.isDelivered && (
+                            <span style={{ color: "green", fontWeight: "bold" }}>
+                              ✓ Đã nhận hàng
+                            </span>
+                          )
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
-          <button
-            onClick={handleNavigateToPayments}
-            className="btn btn-primary"
-          >
+
+          <button onClick={handleNavigateToPayments} className="btn btn-primary">
             Xem lịch sử thanh toán
           </button>
         </>
