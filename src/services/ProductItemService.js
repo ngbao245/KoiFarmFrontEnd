@@ -1,7 +1,13 @@
 import axios from "./Customize-Axios";
 
-const fetchAllProdItem = () => {
-  return axios.get(`ProductItem/get-all-product-items`);
+const fetchAllProdItem = (pageIndex, pageSize, searchQuery) => {
+  return axios.get(`ProductItem/get-all-product-items`,{
+    params:{
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      searchQuery: searchQuery
+    }
+  });
 };
 
 const getAllProdItem = () => {

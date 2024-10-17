@@ -186,7 +186,7 @@ const StaffOrders = () => {
                         }
                         disabled={isUpdating || order.status !== "Pending"}
                       >
-                        Start Delivery
+                        Bắt đầu giao hàng
                       </button>
                       <button
                         className="btn btn-success ms-2"
@@ -195,7 +195,7 @@ const StaffOrders = () => {
                         }
                         disabled={isUpdating || order.status !== "Delivering"}
                       >
-                        Complete Order
+                        Hoàn thành đơn hàng
                       </button>
                     </td>
                   </tr>

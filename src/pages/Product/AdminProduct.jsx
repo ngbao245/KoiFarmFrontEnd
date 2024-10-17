@@ -6,6 +6,7 @@ import Papa from "papaparse";
 import { toast } from "react-toastify";
 import { fetchAllProdItem } from "../../services/ProductItemService";
 import "../Admin/Admin.css";
+import { getProductById } from "../../services/ProductService";
 
 const AdminProduct = () => {
   const [dataExport, setDataExport] = useState([]);
@@ -22,7 +23,20 @@ const AdminProduct = () => {
     try {
       const response = await fetchAllProdItem(pageIndex, pageSize, searchQuery);
       if (response && response.data && response.data.entities) {
-        setListProductItems(response.data.entities);
+        
+        const productItems = response.data.entities;
+      
+      const detailedProductItems = await Promise.all(
+        productItems.map(async (item) => {
+          const productResponse = await getProductById(item.productId);
+          return {
+            ...item,
+            productName: productResponse?.data?.name || "Unknown"
+          };
+        })
+      );
+        
+        setListProductItems(detailedProductItems);
         setTotalPages(response.data.totalPages);
       } else {
         toast.error("Unexpected data format received");
@@ -82,7 +96,13 @@ const AdminProduct = () => {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPageIndex(newPage);
+      console.log("Changing page to:", newPage);
     }
+  };
+
+  const handlePageSizeChange = (e) => {
+    setPageSize(Number(e.target.value)); 
+    setPageIndex(1);
   };
 
   const filteredProductItems = Array.isArray(listProductItems)
@@ -161,7 +181,7 @@ const AdminProduct = () => {
                 <th>pH</th>
                 <th>Số lượng</th>
                 <th>Loại</th>
-                <th>Mã SP</th>
+                <th>Tên loại SP</th>
               </tr>
             </thead>
             <tbody>
@@ -183,7 +203,7 @@ const AdminProduct = () => {
                     <td>{item.ph}</td>
                     <td>{item.quantity}</td>
                     <td>{item.type}</td>
-                    <td>{item.productId}</td>
+                    <td>{item.productName}</td>
                   </tr>
                 ))
               ) : (
@@ -213,6 +233,18 @@ const AdminProduct = () => {
           >
             Sau
           </button>
+
+          <select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            className="ml-3"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={20}>20</option>
+          </select>
+
         </div>
 
         <ModalAddProductItem
