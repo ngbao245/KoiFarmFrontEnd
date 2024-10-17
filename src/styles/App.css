@@ -7,6 +7,21 @@
   --primary-grey: #f1f1f1;
   --primary-white: #ffffff;
   --primary-black: #281713;
+  --primary-transparent: transparent;
+
+  --border-default: 5px solid #c70025;
+
+  --radius-default: 6px;
+
+  --font-size-title: 64px;
+  --font-size-section: 32px;
+  --font-size-default: 24px;
+  --font-size-p: 16px;
+
+  --font-weight-title:700;
+
+  --primary-background-light: url("/public/assets/backgroundUpscale.png") no-repeat center
+  center fixed
 }
 
 *,
@@ -40,4 +55,12 @@ input::-ms-clear {
 
 textarea {
   resize: none !important;
+}
+
+img {  
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }

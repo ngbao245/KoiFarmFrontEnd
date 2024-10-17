@@ -131,7 +131,7 @@ const UserDetail = () => {
       <h1>{isPaymentPage ? "Lịch sử thanh toán" : "Thông tin người dùng"}</h1>
 
       {!isPaymentPage && (
-        <div className="user-info">
+        <div className="user-detail-info">
           {editMode ? (
             <form onSubmit={handleSubmit} className="edit-form">
               <div>

@@ -12,7 +12,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getProductById } from "../../services/ProductService";
 import { fetchAllBlogs } from "../../services/BlogService";
-import { toast } from "react-toastify";
 
 export const Home = () => {
   const [productItems, setProductItems] = useState([]);
@@ -24,7 +23,6 @@ export const Home = () => {
     Promise.all([getAllProdItem(), fetchAllBlogs()])
       .then(([productResponse, blogResponse]) => {
         const items = productResponse.data.entities;
-
         const shuffledItems = items.sort(() => 0.5 - Math.random()).slice(0, 4);
         setProductItems(shuffledItems);
 
@@ -47,7 +45,6 @@ export const Home = () => {
   const handleProductClick = async (productItem) => {
     try {
       const prodItemResponse = await getProdItemById(productItem.id);
-
       const productResponse = await getProductById(
         prodItemResponse.data.productId
       );
@@ -72,19 +69,21 @@ export const Home = () => {
       <div className="homepage">
         <main className="user-select-none animated-fadeIn">
           <div className="homepage-banner">
-            <img src="./public/assets/final.png" />
+            <img src="./public/assets/final.png" alt="Banner" />
           </div>
-          <h2 className="homepage-news-title">Tin tức cá koi - Tin tức Koi Shop</h2>
-          <section className="homepage-news-section">
-            <div className="homepage-news-info">
-              <p>
-                <div>
+          <h2 className="homepage-intro-title">
+            Tin tức cá koi - Tin tức Koi Shop
+          </h2>
+          <section className="homepage-intro-section">
+            <div className="homepage-intro-info">
+              <div>
+                <p>
                   Koi Shop không chỉ là nơi cung cấp các giống cá Koi hàng đầu
                   thế giới, mà chúng tôi còn cung cấp thông tin hữu ích và các
                   bài viết chuyên sâu cho người nuôi cá.
-                </div>
+                </p>
                 <br />
-                <div>
+                <p>
                   Cửa hàng Cá Koi của chúng tôi tự hào là nơi cung cấp những
                   giống cá Koi chất lượng cao, được nhập khẩu trực tiếp từ các
                   trại giống hàng đầu Nhật Bản. Với nhiều năm kinh nghiệm trong
@@ -94,75 +93,78 @@ export const Home = () => {
                   dịch vụ chuyên nghiệp như tư vấn chăm sóc, hồ nuôi, và dịch vụ
                   ký gửi. Đến với chúng tôi, bạn không chỉ sở hữu những chú cá
                   Koi tuyệt đẹp mà còn trải nghiệm sự tận tâm và chuyên nghiệp.
-                </div>
-              </p>
+                </p>
+              </div>
             </div>
-            <img className="homepage-news-image" src={fish} />
+            <img className="homepage-intro-image" src={fish} alt="Fish" />
           </section>
 
           <section className="best-sellers">
-            <h2>Bán Chạy</h2>
-            <div className="product-list d-flex flex-wrap justify-content-center">
+            <h2 className="homepage-best-sellers-title">Bán Chạy</h2>
+            <div className="product-list">
               {productItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="product-item rounded-2 border border-1 border-light-subtle p-1 bg-body-tertiary shadow mx-3"
-                >
-                  <div className="image-container rounded-2">
-                    <img
-                      className="rounded-1"
-                      src={item.imageUrl}
-                      alt={item.name}
-                    />
+                <div key={item.id} className="product-item-card">
+                  <div className="image-container">
+                    <img src={item.imageUrl} alt={item.name} />
                   </div>
-                  <div className="divider"></div>
-                  <div className="d-flex flex-column align-items-center">
-                    <p className="fs-4 fw-semibold">{item.name}</p>
-                    <p className="fs-5 fw-bold price">{item.price} VND</p>
-                    <p className="fw-normal origin">{item.origin}</p>
-                  </div>
-                  <div className="mb-2 d-flex flex-row gap-2 justify-content-center">
-                    <button className="buy-button rounded">Mua ngay</button>
-                    <button
-                      className="view-more-button rounded"
-                      onClick={() => handleProductClick(item)}
-                    >
-                      Xem thêm
-                    </button>
+                  <div className="product-card-info">
+                    <div>
+                      <p className="best-seller-name">{item.name}</p>
+                      <p className="best-seller-price">
+                        {item.price.toLocaleString("vi-VN")} VND
+                      </p>
+                    </div>
+                    <div className="button-container">
+                      <button className="buy-button">Mua ngay</button>
+                      <button
+                        className="view-more-button"
+                        onClick={() => handleProductClick(item)}
+                      >
+                        Xem thêm
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </section>
 
-          <section className="news-section">
-            <h2>Tin tức cá koi - Tin tức Koi Shop</h2>
-            <div className="news-list d-flex flex-row">
+          <section className="homepage-news-section">
+            <h2 className="homepage-news-title">
+              Tin tức cá koi - Tin tức Koi Shop
+            </h2>
+            <div className="homepage-news-list">
               {isLoading ? (
-                <p>Loading blogs...</p>
+                <div className="loading-spinner">Loading blogs...</div>
               ) : blogs.length > 0 ? (
                 blogs.map((blog) => (
-                  <div className="card mb-3 p-2 me-3" key={blog.id}>
-                    <img
-                      src={blog.imageUrl || "./public/assets/default.jpg"}
-                      className="card-img-top rounded"
-                      alt={blog.title}
-                    />
-                    <div className="card-body">
-                      <h5 className="card-title">{blog.title}</h5>
-                      <p className="card-text">
-                        {blog.description.substring(0, 50)}...
-                      </p>
-                      <p className="card-text">
-                        <small className="text-body-secondary">
-                          Last updated recently
-                        </small>
-                      </p>
+                  <div className="homepage-news-card" key={blog.id}>
+                    <div className="news-card-image-container">
+                      <img
+                        src={blog.imageUrl || "./public/assets/default.jpg"}
+                        alt={blog.title}
+                        className="news-card-image"
+                      />
+                      <div className="news-card-overlay">
+                        <span className="news-card-category">
+                          Tin Tức Cá Koi
+                        </span>
+                      </div>
+                    </div>
+                    <h5 className="news-card-title">{blog.title}</h5>
+                    <p className="news-card-text">
+                      {blog.description.substring(0, 200)}...
+                    </p>
+                    <div className="news-card-footer">
+                      <span className="news-card-date">
+                        {new Date().toLocaleDateString()}
+                      </span>
+                      <button className="news-card-button">Đọc thêm</button>
                     </div>
                   </div>
                 ))
               ) : (
-                <p>No blogs available</p>
+                <p className="no-blogs-message">No blogs available</p>
               )}
             </div>
           </section>

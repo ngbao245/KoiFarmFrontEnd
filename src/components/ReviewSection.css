@@ -77,7 +77,7 @@
     color: #333;
   }
   
-  .btn-primary {
+  /* .btn-primary {
     background-color: #C70025;
     color: white;
     padding: 10px 20px;
@@ -89,11 +89,11 @@
     margin-top: 15px;
     font-size: 16px;
     transition: background-color 0.3s ease;
-  }
+  } */
   
-  .btn-primary:hover {
+  /* .btn-primary:hover {
     background-color: #b50022;
-  }
+  } */
   
   .star-rating {
     display: inline-block;
