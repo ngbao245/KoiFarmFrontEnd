@@ -117,7 +117,7 @@
   flex-direction: column;
   width: calc(25% - 20px);
   height: auto;
-  border: 5px double #c70025 !important;
+  border: 5px double var(--primary-red) !important;
 }
 
 .product-item-card:hover {

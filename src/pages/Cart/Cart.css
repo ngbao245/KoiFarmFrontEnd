@@ -51,7 +51,7 @@
 
 .cart-table thead {
   background-color: #c70025;
-  color: #f1f1f1;
+  color: var(--primary-grey);
 }
 
 .cart-table th,
@@ -94,7 +94,7 @@
 
 .quantity-input {
   border: 0;
-  background-color: #f1f1f1;
+  background-color: var(--primary-grey);
 }
 
 input[type="number"]::-webkit-inner-spin-button,

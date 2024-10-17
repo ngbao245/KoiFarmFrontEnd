@@ -128,7 +128,7 @@
 }
 
 .read-more {
-  background-color: #c70025;
+  background-color: var(--primary-red);
   padding: 10px 20px;
   cursor: pointer;
   text-transform: uppercase;

@@ -1,12 +1,9 @@
 :root {
-  --primary-color: #c70025;
   --secondary-color: #8c6954;
-  --accent-color: #f1f1f1;
   --background-color: #f5f1ee;
   --text-color: #1a365d;
   --light-text-color: #6c5f5a;
   --border-color: #d0c3bc;
-  --button-color: #c70025;
 }
 
 .contact-container {
@@ -48,7 +45,7 @@
 
 .contact-frame {
   display: flex;
-  background-color: #f1f1f1;
+  background-color: var(--primary-grey);
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(40, 23, 19, 0.1);
 }
@@ -56,7 +53,7 @@
 .contact-info {
   flex: 0.75;
   background-color: var(--primary-color);
-  color: #f1f1f1;
+  color: var(--primary-grey);
   padding: 3rem;
   display: flex;
   flex-direction: column;
@@ -68,8 +65,7 @@
   margin-bottom: 2rem;
   font-size: 1.8rem;
   font-weight: 600;
-  /* color: #f1f1f1; */
-  color: #ffffff;
+  color: var(--primary-white);
 }
 
 .contact-info p {
@@ -93,7 +89,7 @@
 .contact-info li i {
   margin-right: 1rem;
   font-size: 1.2rem;
-  color: var(--accent-color);
+  color: var(--primary-grey);
 }
 
 .contact-form {
@@ -104,7 +100,7 @@
 .form-group {
   margin-bottom: 2rem;
   color: #ffffff;
-  color: #f1f1f1;
+  /* color: #f1f1f1; */
   /* color: #ffffff; */
 }
 
@@ -125,7 +121,7 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--accent-color);
+  border-color: var(--primary-grey);
   box-shadow: 0 0 0 3px rgba(199, 0, 37, 0.25);
 }
 
@@ -135,7 +131,7 @@
 }
 
 .submit-btn {
-  background-color: var(--button-color);
+  background-color: var(--primary-red);
   color: #fff;
   border: none;
   padding: 0.75rem 1.5rem;

@@ -60,7 +60,7 @@
 }
 
 .dropdown-content input:focus {
-  border-color: #c70025;
+  border-color: var(--primary-red);
 }
 
 .staff-list {
@@ -77,7 +77,7 @@
 }
 
 .staff-list-item:hover {
-  background-color: #f1f1f1;
+  background-color: var(--primary-grey);
 }
 
 .not-found-staff {

@@ -126,7 +126,7 @@ body {
 }
 
 .pg-Login a {
-  color: #c70025;
+  color: var(--primary-red);
   text-decoration: none;
   font-weight: bold;
 }
@@ -165,7 +165,7 @@ body {
 }
 
 .pg-Login .fa-arrow-left {
-  color: #c70025;
+  color: var(--primary-red);
   cursor: pointer;
 }
 
