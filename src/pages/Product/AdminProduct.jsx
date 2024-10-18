@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { fetchAllProdItem } from "../../services/ProductItemService";
 // import "../Admin/Admin.css";
 import { getProductById } from "../../services/ProductService";
+import FishSpinner from "../../components/FishSpinner";
 
 const AdminProduct = () => {
   const [dataExport, setDataExport] = useState([]);
@@ -18,6 +19,8 @@ const AdminProduct = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+
+  const [isUploading, setIsUploading] = useState(false);
 
   const fetchProductItems = async (searchQuery = "") => {
     try {
@@ -90,6 +93,7 @@ const AdminProduct = () => {
 
   const handleSubmitProduct = (newProduct) => {
     setFetchAgain((prev) => !prev);
+    setIsUploading(false);
     handleCloseAddNew();
   };
 
@@ -115,6 +119,7 @@ const AdminProduct = () => {
     <>
       <AdminHeader />
       <div className="container-fluid">
+      {isUploading && <FishSpinner />}
         <div className="my-3 add-new d-sm-flex">
           <span>
             <b>Danh sách các mặt hàng sản phẩm:</b>
@@ -147,6 +152,7 @@ const AdminProduct = () => {
             <button
               className="btn btn-primary"
               onClick={() => setShowModalAddProduct(true)}
+              disabled={isUploading}
             >
               <i className="fa-solid fa-circle-plus px-1"></i>
               <span className="px-1">Thêm Mới</span>
@@ -182,6 +188,7 @@ const AdminProduct = () => {
                 <th>Số lượng</th>
                 <th>Loại</th>
                 <th>Tên loại SP</th>
+                <th>Ảnh</th>
               </tr>
             </thead>
             <tbody>
@@ -204,6 +211,17 @@ const AdminProduct = () => {
                     <td>{item.quantity}</td>
                     <td>{item.type}</td>
                     <td>{item.productName}</td>
+                    <td>
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
+                          style={{ width: "50px", height: "50px" }}
+                        />
+                      ) : (
+                        "No Image"
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -251,6 +269,7 @@ const AdminProduct = () => {
           isOpen={showModalAddProduct}
           onClose={handleCloseAddNew}
           onSubmit={handleSubmitProduct}
+          setIsUploading={setIsUploading}
         />
       </div>
     </>
