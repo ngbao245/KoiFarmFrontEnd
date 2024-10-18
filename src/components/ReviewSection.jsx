@@ -75,7 +75,7 @@ const Reviews = ({ productItemId }) => {
                 setReviews((prevReviews = []) => {
                     return [...(Array.isArray(prevReviews) ? prevReviews : []), newReview];
                 });
-                
+
                 setDescription("");
                 setRating(0);
             } else {
@@ -98,13 +98,18 @@ const Reviews = ({ productItemId }) => {
 
     return (
         <div className="review-section">
-            <h3>Customer Reviews</h3>
+            <h3>Đánh giá của khách hàng</h3>
             {reviews.length > 0 ? (
                 reviews.map((review) => (
                     <div key={review.id} className="review-item">
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                <strong>{userNames[review.userId]}</strong>
+                                <p style={{
+                                    marginTop: 20
+                                }}>Khách hàng:</p>
+                                <strong style={{
+                                    marginTop: 5,
+                                }}>{userNames[review.userId]}</strong>
                                 <StarRatings
                                     rating={review.rating}
                                     starRatedColor="yellow"
@@ -115,18 +120,21 @@ const Reviews = ({ productItemId }) => {
                                 />
                             </div>
                         </div>
-                        <p>{review.description}</p>
+                        <p>Bình luận: {review.description}</p>
                     </div>
                 ))
             ) : (
-                <p>No reviews available.</p>
+                <p>Chưa có đánh giá nào.</p>
             )}
 
             {/* Form for submitting a new review */}
             <div className="review-form">
-                <h4>Leave a Review</h4>
+                <h4>Hãy để lại đánh giá</h4>
                 <div className="rating-input">
-                    <label>Rating:</label>
+                    <label style={{
+                        paddingTop: 15,
+                        paddingRight: 10
+                    }}>Sao đánh giá :</label>
                     <StarRatings
                         rating={rating}
                         changeRating={(newRating) => setRating(newRating)}
@@ -136,16 +144,16 @@ const Reviews = ({ productItemId }) => {
                     />
                 </div>
                 <div className="description-input">
-                    <label>Review:</label>
+                    <label>Bình luận:</label>
                     <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows="3"
-                        placeholder="Write your review here..."
+                        placeholder="Hãy viết đánh giá của bạn ở đây..."
                     />
                 </div>
                 <button className="btn btn-primary" onClick={handleReviewSubmit}>
-                    Submit Review
+                    Xác nhận
                 </button>
             </div>
         </div>
