@@ -64,6 +64,18 @@ const Reviews = ({ productItemId }) => {
 
             if (response.statusCode === 200 || response.statusCode === 201) {
                 toast.success("Review submitted!");
+
+                const newReview = {
+                    id: response.data.id,
+                    rating,
+                    description,
+                    userId: response.data.userId,
+                };
+
+                setReviews((prevReviews = []) => {
+                    return [...(Array.isArray(prevReviews) ? prevReviews : []), newReview];
+                });
+                
                 setDescription("");
                 setRating(0);
             } else {
