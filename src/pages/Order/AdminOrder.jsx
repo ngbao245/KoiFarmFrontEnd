@@ -14,6 +14,8 @@ const AdminOrder = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [activeTab, setActiveTab] = useState("Pending");
+
   const fetchData = async () => {
     try {
       const orderResponse = await fetchOrder();
@@ -59,6 +61,16 @@ const AdminOrder = () => {
     console.log(orders);
   }, []);
 
+  const filterOrdersByStatus = (status) => {
+    return orders
+      .filter((order) => order.status === status)
+      .filter(
+        (order) =>
+          order.orderId.toString().includes(searchTerm.toLowerCase()) ||
+          order.userName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+  };
+
   const handleAssignStaff = async (orderId, staffId) => {
     try {
       await assignStaff(orderId, staffId);
@@ -81,11 +93,11 @@ const AdminOrder = () => {
     }
   };
 
-  const filteredOrders = orders.filter(
-    (order) =>
-      order.orderId.toString().includes(searchTerm.toLowerCase()) ||
-      order.userName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredOrders = orders.filter(
+  //   (order) =>
+  //     order.orderId.toString().includes(searchTerm.toLowerCase()) ||
+  //     order.userName.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   const getStatusBadgeClass = (status) => {
     switch (status.toLowerCase()) {
@@ -117,6 +129,28 @@ const AdminOrder = () => {
           </div>
         </div>
 
+        {/* Tabs for filtering orders */}
+        <div className="order-tabs">
+          <button
+            className={`order-tab-button ${activeTab === "Pending" ? "active" : ""}`}
+            onClick={() => setActiveTab("Pending")}
+          >
+            Đang xử lý
+          </button>
+          <button
+            className={`order-tab-button ${activeTab === "Delivering" ? "active" : ""}`}
+            onClick={() => setActiveTab("Delivering")}
+          >
+            Đang giao hàng
+          </button>
+          <button
+            className={`order-tab-button ${activeTab === "Completed" ? "active" : ""}`}
+            onClick={() => setActiveTab("Completed")}
+          >
+            Đã hoàn thành
+          </button>
+        </div>
+
         <table className="table table-striped text-center">
           <thead>
             <tr>
@@ -131,8 +165,8 @@ const AdminOrder = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.length > 0 ? (
-              filteredOrders.map((order) => (
+            {filterOrdersByStatus(activeTab).length > 0 ? (
+              filterOrdersByStatus(activeTab).map((order) => (
                 <tr key={order.orderId}>
                   <td>{order.orderId}</td>
                   <td>{order.userName}</td>
