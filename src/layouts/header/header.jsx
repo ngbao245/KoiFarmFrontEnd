@@ -195,7 +195,7 @@ export const Header = () => {
               <>
                 <div className="nav-info user-select-none">
                   <span>
-                    <i class="fa-regular fa-user"></i> :{" "}
+                    <i className="fa-regular fa-user"></i> :{" "}
                     <span className="fw-bold">{user.email}</span>
                   </span>
                   <div ref={dropdownRef}>

@@ -115,7 +115,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  width: calc(25% - 20px);
+  width: calc(25% - 50px);
   height: auto;
   border: 5px double var(--primary-red) !important;
 }
@@ -127,14 +127,12 @@
 
 .image-container {
   width: 100%;
-  height: auto;
-  overflow: hidden;
 }
 
 .image-container img {
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  height: 500px;
+  object-fit: fill;
 }
 
 .product-item-card .product-card-info {
@@ -216,7 +214,6 @@
   }
 }
 
-/* done */
 .homepage-news-section {
   position: relative;
   padding: 60px 0;

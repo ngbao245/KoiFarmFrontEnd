@@ -104,7 +104,7 @@ const AdminOrder = () => {
   return (
     <>
       <AdminHeader />
-      <div className="container">
+      <div className="container-fluid">
         <div className="my-3">
           <b>Danh sách đơn đặt hàng:</b>
           <div className="col-12 col-sm-4 my-3">

@@ -5,7 +5,7 @@ import ModalAddProductItem from "../../components/ModalAddProductItem";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
 import { fetchAllProdItem } from "../../services/ProductItemService";
-import "../Admin/Admin.css";
+// import "../Admin/Admin.css";
 import { getProductById } from "../../services/ProductService";
 
 const AdminProduct = () => {
@@ -114,7 +114,7 @@ const AdminProduct = () => {
   return (
     <>
       <AdminHeader />
-      <div className="container">
+      <div className="container-fluid">
         <div className="my-3 add-new d-sm-flex">
           <span>
             <b>Danh sách các mặt hàng sản phẩm:</b>

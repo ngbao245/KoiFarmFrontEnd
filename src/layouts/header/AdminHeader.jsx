@@ -120,7 +120,7 @@ const AdminHeader = () => {
                   <Nav>
                     {user && user.email && (
                       <span className="nav-link">
-                        <i class="fa-regular fa-user"></i> :{" "}
+                        <i className="fa-regular fa-user"></i> :{" "}
                         <span className="fw-bold"> {user.email}</span>
                       </span>
                     )}

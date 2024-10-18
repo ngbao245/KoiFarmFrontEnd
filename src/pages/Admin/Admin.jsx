@@ -111,7 +111,7 @@ const Admin = () => {
   return (
     <>
       <AdminHeader />
-      <div className="container">
+      <div className="container-fluid">
         <div className="my-3 add-new d-sm-flex">
           <span>
             <b>Danh sách nhân viên:</b>
@@ -187,7 +187,7 @@ const Admin = () => {
                       className="btn btn-danger mx-3"
                       onClick={() => handleDelete(staff)}
                     >
-                      <i class="fa-solid fa-trash"></i>
+                      <i className="fa-solid fa-trash"></i>
                     </button>
                   </td>
                 </tr>

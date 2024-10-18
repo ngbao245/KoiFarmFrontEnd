@@ -98,7 +98,7 @@ const AdminBlog = () => {
   return (
     <>
       <AdminHeader />
-      <div className="container">
+      <div className="container-fluid">
         {isUploading && <FishSpinner />}
         <div className="my-3 add-new d-sm-flex">
           <b>Quản lý Bài viết</b>
@@ -131,7 +131,7 @@ const AdminBlog = () => {
                 blogs.map((blog) => (
                   <tr key={blog.id}>
                     <td>{blog.title}</td>
-                    <td>{blog.description.substring(0, 100)}...</td>
+                    <td>{blog.description.substring(0, 50)}...</td>
                     <td>
                       {blog.imageUrl ? (
                         <img
@@ -159,14 +159,14 @@ const AdminBlog = () => {
                         }}
                         disabled={isUploading}
                       >
-                        <i class="fa-solid fa-wrench"></i>
+                        <i className="fa-solid fa-wrench"></i>
                       </button>
                       <button
                         className="btn btn-danger ms-2"
                         onClick={() => handleDeleteBlog(blog.id)}
                         disabled={isUploading}
                       >
-                        <i class="fa-solid fa-trash"></i>
+                        <i className="fa-solid fa-trash"></i>
                       </button>
                     </td>
                   </tr>

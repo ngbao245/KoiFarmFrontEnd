@@ -38,7 +38,7 @@
 .dropdown-content {
   position: absolute;
   top: 1;
-  width: 150%;
+  width: 100%;
   margin-top: 0.25rem;
   background-color: #ffffff !important;
   border: 1px solid #ddd !important;

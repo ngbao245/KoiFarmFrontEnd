@@ -120,7 +120,7 @@ const StaffOrders = () => {
   return (
     <>
       <AdminHeader />
-      <div className="container">
+      <div className="container-fluid">
         <div className="my-3 add-new d-sm-flex">
           <span>
             <b>Đơn hàng được giao:</b>
@@ -147,7 +147,7 @@ const StaffOrders = () => {
                 <th>Sản Phẩm</th>
                 <th>Địa Chỉ</th>
                 <th>Ngày mua</th>
-                <th>Xác Nhận Đơn Hàng</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -186,7 +186,7 @@ const StaffOrders = () => {
                         }
                         disabled={isUpdating || order.status !== "Pending"}
                       >
-                        Bắt đầu giao hàng
+                        <i className="fa-solid fa-truck"></i>
                       </button>
                       <button
                         className="btn btn-success ms-2"
@@ -195,7 +195,7 @@ const StaffOrders = () => {
                         }
                         disabled={isUpdating || order.status !== "Delivering"}
                       >
-                        Hoàn thành đơn hàng
+                        <i className="fa-solid fa-clipboard-check"></i>
                       </button>
                     </td>
                   </tr>
