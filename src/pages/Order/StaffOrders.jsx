@@ -8,8 +8,8 @@ import { getNameOfProdItem } from "../../services/ProductItemService";
 import { getUserById } from "../../services/UserService";
 import AdminHeader from "../../layouts/header/AdminHeader";
 import { toast } from "react-toastify";
-import "./StaffOrders.css";
 import FishSpinner from "../../components/FishSpinner";
+import "./StaffOrders.css";
 
 const StaffOrders = () => {
   const { user } = useContext(UserContext);
@@ -115,12 +115,7 @@ const StaffOrders = () => {
 
   if (!user?.auth)
     return <div className="staff-orders">Please log in to view orders.</div>;
-  if (loading)
-    return (
-      <div className="staff-orders">
-        <FishSpinner />
-      </div>
-    );
+  if (loading) return <FishSpinner />;
   if (error)
     return (
       <>
@@ -132,7 +127,8 @@ const StaffOrders = () => {
   return (
     <>
       <AdminHeader />
-      <div className="container-fluid">
+
+      <div className="container">
         <div className="my-3 add-new d-sm-flex">
           <span>
             <b>Đơn hàng được giao:</b>
@@ -151,97 +147,113 @@ const StaffOrders = () => {
         {/* Tabs for filtering orders */}
         <div className="order-tabs">
           <button
-            className={`order-tab-button ${activeTab === "Pending" ? "active" : ""}`}
+            className={`order-tab-button ${
+              activeTab === "Pending" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("Pending")}
           >
             Đang xử lý
           </button>
           <button
-            className={`order-tab-button ${activeTab === "Delivering" ? "active" : ""}`}
+            className={`order-tab-button ${
+              activeTab === "Delivering" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("Delivering")}
           >
             Đang giao hàng
           </button>
           <button
-            className={`order-tab-button ${activeTab === "Completed" ? "active" : ""}`}
+            className={`order-tab-button ${
+              activeTab === "Completed" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("Completed")}
           >
             Đã hoàn thành
           </button>
         </div>
+      </div>
 
-        <div className="customize-table">
-          <table className="table table-striped text-center">
-            <thead>
-              <tr>
-                <th>Mã Đơn Hàng</th>
-                <th>Tên Khách Hàng</th>
-                <th>Tổng Tiền</th>
-                <th>Trạng Thái</th>
-                <th>Sản Phẩm</th>
-                <th>Địa Chỉ</th>
-                <th>Ngày mua</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filterOrdersByStatus(activeTab).length > 0 ? (
-                filterOrdersByStatus(activeTab).map((order) => (
-                  <tr key={order.orderId}>
-                    <td>{order.orderId}</td>
-                    <td>{order.userName}</td>
-                    <td>{order.total.toLocaleString("vi-VN")} VND</td>
-                    <td>
-                      <span
-                        className={`status-badge ${getStatusBadgeClass(
-                          order.status
-                        )}`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                    <td>
-                      {order.items.map((item, index) => (
-                        <div key={`${item.productItemId}-${index}`}>
-                          {productNames[item.productItemId] || "Unknown"} x
-                          {item.quantity}
-                        </div>
-                      ))}
-                    </td>
-                    <td>{order.address}</td>
-                    <td>
-                      {new Date(order.createdTime).toLocaleDateString("vi-VN")}
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-primary"
-                        onClick={() =>
-                          handleStatusChange(order.orderId, "Delivering")
-                        }
-                        disabled={isUpdating || order.status !== "Pending"}
-                      >
-                        <i className="fa-solid fa-truck"></i>
-                      </button>
-                      <button
-                        className="btn btn-success ms-2"
-                        onClick={() =>
-                          handleStatusChange(order.orderId, "Completed")
-                        }
-                        disabled={isUpdating || order.status !== "Delivering"}
-                      >
-                        <i className="fa-solid fa-clipboard-check"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8">No assigned orders available</td>
+      <div className="container-fluid">
+        <table className="table table-striped text-center">
+          <thead>
+            <tr>
+              <th>Mã Đơn Hàng</th>
+              <th>Tên Khách Hàng</th>
+              <th>Tổng Tiền</th>
+              <th>Trạng Thái</th>
+              <th>Sản Phẩm</th>
+              <th>Địa Chỉ</th>
+              <th>Ngày mua</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {filterOrdersByStatus(activeTab).length > 0 ? (
+              filterOrdersByStatus(activeTab).map((order) => (
+                <tr key={order.orderId}>
+                  <td>{order.orderId}</td>
+                  <td>{order.userName}</td>
+                  <td>{order.total.toLocaleString("vi-VN")} VND</td>
+                  <td>
+                    <span
+                      className={`status-badge ${getStatusBadgeClass(
+                        order.status
+                      )}`}
+                    >
+                      {order.status}
+                    </span>
+                  </td>
+                  <td>
+                    {order.items.map((item, index) => (
+                      <div key={`${item.productItemId}-${index}`}>
+                        {productNames[item.productItemId] || "Unknown"} x
+                        {item.quantity}
+                      </div>
+                    ))}
+                  </td>
+                  <td>{order.address}</td>
+                  <td>
+                    {new Date(order.createdTime).toLocaleDateString("vi-VN")}
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() =>
+                        handleStatusChange(order.orderId, "Delivering")
+                      }
+                      disabled={isUpdating || order.status !== "Pending"}
+                    >
+                      <i className="fa-solid fa-truck"></i>
+                    </button>
+                    <button
+                      className="btn btn-success ms-2"
+                      onClick={() =>
+                        handleStatusChange(order.orderId, "Completed")
+                      }
+                      disabled={isUpdating || order.status !== "Delivering"}
+                    >
+                      <i className="fa-solid fa-clipboard-check"></i>
+                    </button>
+                  </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <>
+                <tr>
+                  <td colSpan="8">Không tìm thấy đơn hàng chỉ định nào</td>
+                </tr>
+                <tr>
+                  <td colSpan="8">
+                    <i
+                      className="fa-regular fa-folder-open"
+                      style={{ fontSize: "30px", opacity: 0.2 }}
+                    ></i>
+                  </td>
+                </tr>
+              </>
+            )}
+          </tbody>
+        </table>
       </div>
     </>
   );

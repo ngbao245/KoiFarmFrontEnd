@@ -2,11 +2,6 @@
   padding: 20px;
 }
 
-.customize-table {
-  width: inherit;
-  overflow-x: auto;
-}
-
 td {
   vertical-align: middle;
 }

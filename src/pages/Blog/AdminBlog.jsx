@@ -95,10 +95,13 @@ const AdminBlog = () => {
     setShowUpdateModal(false);
   };
 
+  if (isLoading) return <FishSpinner />;
+
   return (
     <>
       <AdminHeader />
-      <div className="container-fluid">
+
+      <div className="container">
         {isUploading && <FishSpinner />}
         <div className="my-3 add-new d-sm-flex">
           <b>Quản lý Bài viết</b>
@@ -110,75 +113,85 @@ const AdminBlog = () => {
             <i className="fa-solid fa-circle-plus px-1"></i> Thêm Mới
           </button>
         </div>
+      </div>
 
-        <div className="customize-table">
-          <table className="table table-striped text-center">
-            <thead>
+      <div className="container-fluid">
+        <table className="table table-striped text-center">
+          <thead>
+            <tr>
+              <th>Tiêu đề</th>
+              <th>Nội dung</th>
+              <th>Hình ảnh</th>
+              <th>Tác giả</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
               <tr>
-                <th>Tiêu đề</th>
-                <th>Nội dung</th>
-                <th>Hình ảnh</th>
-                <th>Tác giả</th>
-                <th>Thao tác</th>
+                <td colSpan="5">Đang tải bài viết...</td>
               </tr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <tr>
-                  <td colSpan="5">Đang tải bài viết...</td>
-                </tr>
-              ) : blogs.length ? (
-                blogs.map((blog) => (
-                  <tr key={blog.id}>
-                    <td>{blog.title}</td>
-                    <td>{blog.description.substring(0, 50)}...</td>
-                    <td>
-                      {blog.imageUrl ? (
-                        <img
-                          src={blog.imageUrl}
-                          alt={blog.title}
-                          style={{
-                            width: "80px",
-                            height: "80px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        "Không có hình ảnh"
-                      )}
-                    </td>
-                    <td>
-                      {userNames[blog.userId] || "Người dùng không xác định"}
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => {
-                          setSelectedBlog(blog);
-                          setShowUpdateModal(true);
+            ) : blogs.length ? (
+              blogs.map((blog) => (
+                <tr key={blog.id}>
+                  <td>{blog.title}</td>
+                  <td>{blog.description.substring(0, 50)}...</td>
+                  <td>
+                    {blog.imageUrl ? (
+                      <img
+                        src={blog.imageUrl}
+                        alt={blog.title}
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                          objectFit: "cover",
                         }}
-                        disabled={isUploading}
-                      >
-                        <i className="fa-solid fa-wrench"></i>
-                      </button>
-                      <button
-                        className="btn btn-danger ms-2"
-                        onClick={() => handleDeleteBlog(blog.id)}
-                        disabled={isUploading}
-                      >
-                        <i className="fa-solid fa-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5">Không có bài viết nào</td>
+                      />
+                    ) : (
+                      "Không có hình ảnh"
+                    )}
+                  </td>
+                  <td>
+                    {userNames[blog.userId] || "Người dùng không xác định"}
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-warning"
+                      onClick={() => {
+                        setSelectedBlog(blog);
+                        setShowUpdateModal(true);
+                      }}
+                      disabled={isUploading}
+                    >
+                      <i className="fa-solid fa-wrench"></i>
+                    </button>
+                    <button
+                      className="btn btn-danger ms-2"
+                      onClick={() => handleDeleteBlog(blog.id)}
+                      disabled={isUploading}
+                    >
+                      <i className="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <>
+                <tr>
+                  <td colSpan={"5"}>Không tìm thấy bài viết nào</td>
+                </tr>
+                <tr>
+                  <td colSpan="5">
+                    <i
+                      className="fa-regular fa-folder-open"
+                      style={{ fontSize: "30px", opacity: 0.2 }}
+                    ></i>
+                  </td>
+                </tr>
+              </>
+            )}
+          </tbody>
+        </table>
 
         <ModalBlogCreate
           isOpen={showModalCreate}

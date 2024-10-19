@@ -26,19 +26,18 @@ const AdminProduct = () => {
     try {
       const response = await fetchAllProdItem(pageIndex, pageSize, searchQuery);
       if (response && response.data && response.data.entities) {
-        
         const productItems = response.data.entities;
-      
-      const detailedProductItems = await Promise.all(
-        productItems.map(async (item) => {
-          const productResponse = await getProductById(item.productId);
-          return {
-            ...item,
-            productName: productResponse?.data?.name || "Unknown"
-          };
-        })
-      );
-        
+
+        const detailedProductItems = await Promise.all(
+          productItems.map(async (item) => {
+            const productResponse = await getProductById(item.productId);
+            return {
+              ...item,
+              productName: productResponse?.data?.name || "Unknown",
+            };
+          })
+        );
+
         setListProductItems(detailedProductItems);
         setTotalPages(response.data.totalPages);
       } else {
@@ -105,7 +104,7 @@ const AdminProduct = () => {
   };
 
   const handlePageSizeChange = (e) => {
-    setPageSize(Number(e.target.value)); 
+    setPageSize(Number(e.target.value));
     setPageIndex(1);
   };
 
@@ -118,8 +117,9 @@ const AdminProduct = () => {
   return (
     <>
       <AdminHeader />
-      <div className="container-fluid">
-      {isUploading && <FishSpinner />}
+
+      <div className="container">
+        {isUploading && <FishSpinner />}
         <div className="my-3 add-new d-sm-flex">
           <span>
             <b>Danh sách các mặt hàng sản phẩm:</b>
@@ -168,110 +168,120 @@ const AdminProduct = () => {
             onChange={handleSearch}
           />
         </div>
-        <div className="customize-table">
-          <table className="table table-striped text-center">
-            <thead>
-              <tr>
-                <th>Tên SP</th>
-                <th>Giá</th>
-                <th>Loại</th>
-                <th>Nguồn Gốc</th>
-                <th>Giới tính</th>
-                <th>Tuổi</th>
-                <th>Kích thước</th>
-                <th>Loài</th>
-                <th>Tính cách</th>
-                <th>Lượng thức ăn</th>
-                <th>Nhiệt độ nước</th>
-                <th>Hàm lượng khoáng chất</th>
-                <th>pH</th>
-                <th>Số lượng</th>
-                <th>Loại</th>
-                <th>Tên loại SP</th>
-                <th>Ảnh</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProductItems.length > 0 ? (
-                filteredProductItems.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>{item.price}</td>
-                    <td>{item.category}</td>
-                    <td>{item.origin}</td>
-                    <td>{item.sex}</td>
-                    <td>{item.age}</td>
-                    <td>{item.size}</td>
-                    <td>{item.species}</td>
-                    <td>{item.personality}</td>
-                    <td>{item.foodAmount}</td>
-                    <td>{item.waterTemp}</td>
-                    <td>{item.mineralContent}</td>
-                    <td>{item.ph}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.type}</td>
-                    <td>{item.productName}</td>
-                    <td>
-                      {item.imageUrl ? (
-                        <img
-                          src={item.imageUrl}
-                          alt={item.name}
-                          style={{ width: "50px", height: "50px" }}
-                        />
-                      ) : (
-                        "No Image"
-                      )}
-                    </td>
-                  </tr>
-                ))
-              ) : (
+      </div>
+
+      <div className="container-fluid">
+        <table className="table table-striped text-center">
+          <thead>
+            <tr>
+              <th>Tên SP</th>
+              <th>Giá</th>
+              <th>Loại</th>
+              <th>Nguồn Gốc</th>
+              <th>Giới tính</th>
+              <th>Tuổi</th>
+              <th>Kích thước</th>
+              <th>Loài</th>
+              <th>Tính cách</th>
+              <th>Lượng thức ăn</th>
+              <th>Nhiệt độ nước</th>
+              <th>Khoáng chất</th>
+              <th>pH</th>
+              <th>Số lượng</th>
+              <th>Loại</th>
+              <th>Tên loại SP</th>
+              <th>Ảnh</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredProductItems.length > 0 ? (
+              filteredProductItems.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.name}</td>
+                  <td>{item.price}</td>
+                  <td>{item.category}</td>
+                  <td>{item.origin}</td>
+                  <td>{item.sex}</td>
+                  <td>{item.age}</td>
+                  <td>{item.size}</td>
+                  <td>{item.species}</td>
+                  <td>{item.personality}</td>
+                  <td>{item.foodAmount}</td>
+                  <td>{item.waterTemp}</td>
+                  <td>{item.mineralContent}</td>
+                  <td>{item.ph}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.type}</td>
+                  <td>{item.productName}</td>
+                  <td>
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                    ) : (
+                      "No Image"
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <>
                 <tr>
                   <td colSpan="16">Không tìm thấy sản phẩm nào</td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="pagination-controls">
-          <button
-            className="btn btn-secondary"
-            disabled={pageIndex === 1}
-            onClick={() => handlePageChange(pageIndex - 1)}
-          >
-            Trước
-          </button>
-          <span className="px-3">
-            Trang {pageIndex} / {totalPages}
-          </span>
-          <button
-            className="btn btn-secondary"
-            disabled={pageIndex === totalPages}
-            onClick={() => handlePageChange(pageIndex + 1)}
-          >
-            Sau
-          </button>
-
-          <select
-            value={pageSize}
-            onChange={handlePageSizeChange}
-            className="ml-3"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={15}>15</option>
-            <option value={20}>20</option>
-          </select>
-
-        </div>
-
-        <ModalAddProductItem
-          isOpen={showModalAddProduct}
-          onClose={handleCloseAddNew}
-          onSubmit={handleSubmitProduct}
-          setIsUploading={setIsUploading}
-        />
+                <tr>
+                  <td colSpan="16">
+                    <i
+                      className="fa-regular fa-folder-open"
+                      style={{ fontSize: "30px", opacity: 0.2 }}
+                    ></i>
+                  </td>
+                </tr>
+              </>
+            )}
+          </tbody>
+        </table>
       </div>
+
+      <div className="pagination-controls text-center user-select-none">
+        <button
+          className="btn btn-secondary"
+          disabled={pageIndex === 1}
+          onClick={() => handlePageChange(pageIndex - 1)}
+        >
+          Trước
+        </button>
+        <span className="px-3">
+          Trang {pageIndex} / {totalPages}
+        </span>
+        <button
+          className="btn btn-secondary"
+          disabled={pageIndex === totalPages}
+          onClick={() => handlePageChange(pageIndex + 1)}
+        >
+          Sau
+        </button>
+
+        <select
+          value={pageSize}
+          onChange={handlePageSizeChange}
+          className="ml-3"
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={15}>15</option>
+          <option value={20}>20</option>
+        </select>
+      </div>
+
+      <ModalAddProductItem
+        isOpen={showModalAddProduct}
+        onClose={handleCloseAddNew}
+        onSubmit={handleSubmitProduct}
+        setIsUploading={setIsUploading}
+      />
     </>
   );
 };

@@ -9,7 +9,12 @@
   --primary-black: #281713;
   --primary-transparent: transparent;
 
+  --error-color: #dc3545;
+  --warning-color: #ffa500;
+  --success-color: #28a745;
+
   --border-default: 6px solid #c70025;
+  --border-text-box: 2px solid #c70025;
 
   --radius-default: 6px;
 
@@ -18,10 +23,20 @@
   --font-size-default: 24px;
   --font-size-p: 16px;
 
-  --font-weight-title:700;
+  --font-weight-title: 700;
 
-  --primary-background-light: url("/public/assets/backgroundUpscale.png") no-repeat center
-  center fixed
+  --box-shadow-default: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  --spacing-small: 10px;
+  --spacing-medium: 20px;
+  --spacing-large: 30px;
+  --spacing-xlarge: 40px;
+  --spacing-xxlarge: 50px;
+
+  --margin-center: 0 auto;
+
+  --primary-background-light: url("/public/assets/backgroundUpscale.png")
+    no-repeat center center fixed;
 }
 
 *,
@@ -57,7 +72,7 @@ textarea {
   resize: none !important;
 }
 
-img {  
+img {
   user-select: none;
   -moz-user-select: none;
   -webkit-user-drag: none;

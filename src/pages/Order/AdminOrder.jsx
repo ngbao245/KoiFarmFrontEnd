@@ -5,8 +5,8 @@ import { fetchAllStaff, getUserById } from "../../services/UserService";
 import { getNameOfProdItem } from "../../services/ProductItemService";
 import StaffDropdown from "../../components/StaffDropdown";
 import { toast } from "react-toastify";
-import "./AdminOrder.css";
 import FishSpinner from "../../components/FishSpinner";
+import "./AdminOrder.css";
 
 const AdminOrder = () => {
   const [orders, setOrders] = useState([]);
@@ -48,9 +48,6 @@ const AdminOrder = () => {
 
       setOrders(detailedOrders);
       setStaffMembers(staffData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Failed to load data");
     } finally {
       setLoading(false);
     }
@@ -116,7 +113,7 @@ const AdminOrder = () => {
   return (
     <>
       <AdminHeader />
-      <div className="container-fluid">
+      <div className="container">
         <div className="my-3">
           <b>Danh sách đơn đặt hàng:</b>
           <div className="col-12 col-sm-4 my-3">
@@ -132,25 +129,33 @@ const AdminOrder = () => {
         {/* Tabs for filtering orders */}
         <div className="order-tabs">
           <button
-            className={`order-tab-button ${activeTab === "Pending" ? "active" : ""}`}
+            className={`order-tab-button ${
+              activeTab === "Pending" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("Pending")}
           >
             Đang xử lý
           </button>
           <button
-            className={`order-tab-button ${activeTab === "Delivering" ? "active" : ""}`}
+            className={`order-tab-button ${
+              activeTab === "Delivering" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("Delivering")}
           >
             Đang giao hàng
           </button>
           <button
-            className={`order-tab-button ${activeTab === "Completed" ? "active" : ""}`}
+            className={`order-tab-button ${
+              activeTab === "Completed" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("Completed")}
           >
             Đã hoàn thành
           </button>
         </div>
+      </div>
 
+      <div className="container-fluid">
         <table className="table table-striped text-center">
           <thead>
             <tr>
@@ -196,9 +201,19 @@ const AdminOrder = () => {
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan="8">No orders found</td>
-              </tr>
+              <>
+                <tr>
+                  <td colSpan="8">Không tìm thấy đơn hàng nào</td>
+                </tr>
+                <tr>
+                  <td colSpan="8">
+                    <i
+                      className="fa-regular fa-folder-open"
+                      style={{ fontSize: "30px", opacity: 0.2 }}
+                    ></i>
+                  </td>
+                </tr>
+              </>
             )}
           </tbody>
         </table>

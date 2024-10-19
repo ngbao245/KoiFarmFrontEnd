@@ -111,7 +111,8 @@ const Admin = () => {
   return (
     <>
       <AdminHeader />
-      <div className="container-fluid">
+
+      <div className="container">
         <div className="my-3 add-new d-sm-flex">
           <span>
             <b>Danh sách nhân viên:</b>
@@ -159,7 +160,9 @@ const Admin = () => {
             onChange={handleSearch}
           />
         </div>
+      </div>
 
+      <div className="container-fluid">
         <HintBox />
 
         <table className="table table-striped text-center">

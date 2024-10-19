@@ -19,11 +19,6 @@
   gap: 10px;
 }
 
-.customize-table {
-  width: inherit;
-  overflow-x: auto;
-}
-
 td {
   vertical-align: middle;
 }

@@ -9,7 +9,7 @@ const FishSpinner = () => {
           <div className="water"></div>
           <div className="fish"></div>
         </div>
-        <p>Loading...</p>
+        <p>Đang tải dữ liệu...</p>
       </div>
     </>
   );
