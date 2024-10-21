@@ -5,6 +5,8 @@ import { signin } from "../../services/UserService";
 import { UserContext } from "../../contexts/UserContext";
 import "./Login.css";
 import "../../styles/animation.css";
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import GoogleLoginButton from "../../components/GoogleLogin";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -54,6 +56,8 @@ const Login = () => {
   };
 
   return (
+    <GoogleOAuthProvider clientId="684900073655-mu5vsdorjg8j82vkcf9uiuu7conm57fh.apps.googleusercontent.com">
+
     <div className="pg-Login">
       <div className="login">
         <div className="back-arrow">
@@ -129,10 +133,14 @@ const Login = () => {
                 )}
               </button>
             </div>
+            <GoogleLoginButton />
+
           </div>
         </div>
       </div>
     </div>
+    </GoogleOAuthProvider>
+
   );
 };
 

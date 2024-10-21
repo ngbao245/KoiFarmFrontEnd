@@ -61,6 +61,14 @@ const getUserInfo = () => {
   });
 };
 
+const googleSignin = (data) => {
+  return axios.post("/Auth/google-signin", data,{
+    headers: {
+      'Content-Type': 'application/json',
+  },
+  });
+};
+
 export {
   signin,
   signup,
@@ -71,4 +79,5 @@ export {
   getUserById,
   updateUserInfo,
   getUserInfo,
+  googleSignin,
 };
