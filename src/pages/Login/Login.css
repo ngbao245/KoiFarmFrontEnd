@@ -172,19 +172,3 @@ body {
 .pg-Login .fa-arrow-left:hover {
   color: #ff0000;
 }
-
-.back-arrow {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-}
-
-.back-arrow i {
-  font-size: 24px;
-  color: #333 !important;
-  transition: color 0.3s ease;
-}
-
-.back-arrow i:hover {
-  color: #007bff !important;
-}

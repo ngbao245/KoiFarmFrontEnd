@@ -23,6 +23,7 @@ import UserPayment from "../pages/User/UserPayment.jsx";
 import StaffOrders from "../pages/Order/StaffOrders.jsx";
 import AdminOrder from "../pages/Order/AdminOrder.jsx";
 import ProductItemSearch from "../pages/ProductItemSearch/ProductItemSearch";
+import NewsDetail from "../pages/News/NewsDetail.jsx";
 
 const AppRoutes = () => {
   return (
@@ -31,6 +32,8 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/info" element={<Info />} />
         <Route path="/news" element={<News />} />
+        <Route path="/news/:id" element={<NewsDetail />} />
+
         <Route path="/contact" element={<Contact />} />
 
         <Route path="/login" element={<Login />} />

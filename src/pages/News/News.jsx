@@ -1,55 +1,46 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "../../layouts/header/header";
 import "./News.css";
 import "../../styles/animation.css";
 import { Footer } from "../../layouts/footer/footer";
+import { fetchAllBlogs } from "../../services/BlogService";
 
 const News = () => {
   const [news, setNews] = useState([]);
   const [featuredNews, setFeaturedNews] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNews = async () => {
-      const mockNews = [
-        {
-          id: 1,
-          title: "Tin Tức: Kỹ Thuật Nuôi Cá Koi Hiện Đại",
-          content:
-            "Các chuyên gia đã phát triển phương pháp nuôi cá Koi hiệu quả hơn, giúp tối ưu hóa môi trường sống cho cá...",
-          date: "2023-09-15",
-          image: "https://picsum.photos/800/400?random=1",
-        },
-        {
-          id: 2,
-          title: "Hướng Dẫn: Cách Chọn Cá Koi Chuẩn Đẹp",
-          content:
-            "Việc chọn cá Koi đẹp không chỉ dựa vào màu sắc mà còn phụ thuộc vào hình dáng và cách bơi của cá...",
-          date: "2023-09-14",
-          image: "https://picsum.photos/800/400?random=2",
-        },
-        {
-          id: 3,
-          title: "Sự Kiện: Triển Lãm Cá Koi Toàn Quốc",
-          content:
-            "Triển lãm cá Koi lớn nhất năm sẽ diễn ra vào tháng tới, thu hút hàng ngàn người tham gia, phóng viên...",
-          date: "2023-09-13",
-          image: "https://picsum.photos/800/400?random=3",
-        },
-        {
-          id: 4,
-          title: "Bí Quyết: Chăm Sóc Cá Koi Mùa Đông",
-          content:
-            "Để cá Koi khỏe mạnh qua mùa đông, người nuôi cần chú ý đến nhiệt độ nước và chế độ dinh dưỡng...",
-          date: "2023-09-12",
-          image: "https://picsum.photos/800/400?random=4",
-        },
-      ];
-      setFeaturedNews(mockNews[0]);
-      setNews(mockNews.slice(1));
+      try {
+        setIsLoading(true);
+        const response = await fetchAllBlogs();
+        if (response.statusCode === 200 && response.data.length > 0) {
+          setFeaturedNews(response.data[0]);
+          setNews(response.data.slice(1));
+        } else {
+          setError("No news available at the moment.");
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+        setError("Failed to fetch news. Please try again later.");
+        setIsLoading(false);
+      }
     };
 
     fetchNews();
   }, []);
+
+  const handleReadMore = (id) => {
+    navigate(`/news/${id}`);
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
@@ -59,14 +50,13 @@ const News = () => {
           <h1 className="news-title">Tin tức về Cá Koi</h1>
           {featuredNews && (
             <section className="featured-news">
-              <img src={featuredNews.image} />
+              <img src={featuredNews.imageUrl || "https://picsum.photos/800/400?random=1"} alt={featuredNews.title} />
               <div className="featured-news-content">
                 <h2>{featuredNews.title}</h2>
-                <p className="news-date">{featuredNews.date}</p>
                 <p className="news-excerpt">
-                  {featuredNews.content.substring(0, 150)}...
+                  {featuredNews.description ? `${featuredNews.description.substring(0, 150)}...` : 'No description available'}
                 </p>
-                <button className="read-more">Đọc Toàn Bộ Tin</button>
+                <button className="read-more" onClick={() => handleReadMore(featuredNews.id)}>Đọc Toàn Bộ Tin</button>
               </div>
             </section>
           )}
@@ -74,14 +64,13 @@ const News = () => {
           <section className="news-grid">
             {news.map((item) => (
               <article key={item.id} className="news-item">
-                <img src={item.image} alt={item.title} />
+                <img src={item.imageUrl || `https://picsum.photos/800/400?random=${item.id}`} alt={item.title} />
                 <div className="news-item-content">
                   <h3>{item.title}</h3>
-                  <p className="news-date">{item.date}</p>
                   <p className="news-excerpt">
-                    {item.content.substring(0, 100)}...
+                    {item.description ? `${item.description.substring(0, 100)}...` : 'No description available'}
                   </p>
-                  <button className="read-more">Đọc Thêm</button>
+                  <button className="read-more" onClick={() => handleReadMore(item.id)}>Đọc Thêm</button>
                 </div>
               </article>
             ))}

@@ -165,7 +165,7 @@ const UserDetail = () => {
     <div className="user-detail-container">
       <div className="back-arrow">
         <i
-          className="fa-solid fa-arrow-left cursor-pointer"
+          className="fa-solid fa-arrow-left"
           onClick={() => navigate(-1)}
         ></i>
       </div>
@@ -180,7 +180,7 @@ const UserDetail = () => {
             onClick={
               isPaymentPage ? handleNavigateToOrders : handleNavigateToPayments
             }
-            className="text-uppercase btn btn-primary"
+            className="text-uppercase btn"
           >
             {isPaymentPage ? (
               <>
@@ -189,8 +189,10 @@ const UserDetail = () => {
               </>
             ) : (
               <>
-                Lịch sử thanh toán
-                <i className="fa-solid fa-clock-rotate-left px-2"></i>
+                <button className="btn-view-payments">
+                  Lịch sử thanh toán
+                  <i className="fa-solid fa-clock-rotate-left px-2"></i>
+                </button>
               </>
             )}
           </button>
@@ -262,38 +264,42 @@ const UserDetail = () => {
             ) : (
               <>
                 <div className="user-info-grid">
-                  <div className="user-info-item">
-                    <strong>Email:</strong>
-                    <span>{user.email}</span>
+                  <div className="user-info-row">
+                    <div className="user-info-item">
+                      <strong>Email:</strong>
+                      <span>{user.email}</span>
+                    </div>
+                    <div className="user-info-item">
+                      <strong>Địa chỉ:</strong>
+                      <span>{updatedUser.address || "Chưa cung cấp"}</span>
+                    </div>
                   </div>
-                  <div className="user-info-item">
-                    <strong>Tên:</strong>
-                    <span>{updatedUser.name || "Chưa cung cấp"}</span>
-                  </div>
-                  <div className="user-info-item">
-                    <strong>Địa chỉ:</strong>
-                    <span>{updatedUser.address || "Chưa cung cấp"}</span>
-                  </div>
-                  <div className="user-info-item">
-                    <strong>Số điện thoại:</strong>
-                    <span>{updatedUser.phone || "Chưa cung cấp"}</span>
-                  </div>
-                  <div className="user-info-item">
-                    <strong>Trạng thái:</strong>
-                    <span
-                      className={`auth-status ${
-                        user.auth ? "authenticated" : "not-authenticated"
-                      }`}
+                  <div className="user-info-row">
+                    <div className="user-info-item">
+                      <strong>Tên:</strong>
+                      <span>{updatedUser.name || "Chưa cung cấp"}</span>
+                    </div>
+                    <div className="user-info-item">
+                      <strong>Số điện thoại:</strong>
+                      <span>{updatedUser.phone || "Chưa cung cấp"}</span>
+                    </div>
+                    <div className="user-info-item">
+                      <strong>Trạng thái:</strong>
+                      <span
+                        className={`auth-status ${
+                          user.auth ? "authenticated" : "not-authenticated"
+                        }`}
+                      >
+                        {user.auth ? "Đã xác thực" : "Chưa xác thực"}
+                      </span>
+                    </div>
+                    <button
+                      className="edit-info-btn"
+                      onClick={() => setEditMode(true)}
                     >
-                      {user.auth ? "Đã xác thực" : "Chưa xác thực"}
-                    </span>
+                      <i className="fa-solid fa-wrench"></i>
+                    </button>
                   </div>
-                  <button
-                    className="edit-info-btn"
-                    onClick={() => setEditMode(true)}
-                  >
-                    <i className="fa-solid fa-wrench"></i>
-                  </button>
                 </div>
               </>
             )}

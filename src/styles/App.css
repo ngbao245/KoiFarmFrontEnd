@@ -3,7 +3,9 @@
 
 :root {
   --primary-red: #c70025;
+  --primary-red-hover: #b30021;
   --primary-blue: #1c6197;
+  --primary-blue-hover: #164e79;
   --primary-grey: #f1f1f1;
   --primary-white: #ffffff;
   --primary-black: #281713;
@@ -78,4 +80,21 @@ img {
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+}
+
+.back-arrow {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+}
+
+.back-arrow i {
+  font-size: 24px;
+  color: #333 !important;
+  transition: color 0.3s ease;
+}
+
+.back-arrow i:hover {
+  color: #007bff !important;
 }

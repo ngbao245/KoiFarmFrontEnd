@@ -90,7 +90,7 @@ const Register = () => {
         >
           <div className="back-arrow">
             <i
-              className="fa-solid fa-arrow-left cursor-pointer"
+              className="fa-solid fa-arrow-left"
               onClick={() => navigate(-1)}
             ></i>
           </div>
