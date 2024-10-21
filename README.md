@@ -100,6 +100,10 @@ This project is licensed under the [MIT License](LICENSE).
 
 # Cửa Hàng Koi Farm
 
+## Điều hướng nhanh
+- [Phiên bản tiếng Anh](#koi-farm-shop-english)
+- [Phiên bản tiếng Việt](#cửa-hàng-koi-farm)
+
 ## Mục Lục
 - [Giới Thiệu](#giới-thiệu)
 - [Tính Năng](#tính-năng)
