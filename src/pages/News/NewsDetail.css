@@ -32,7 +32,8 @@
 }
 
 .news-detail-title {
-  font-size: var(--font-size-title);
+  text-wrap: balance;
+  font-size: 48px;
   text-transform: uppercase;
   color: var(--primary-blue);
   text-align: center;

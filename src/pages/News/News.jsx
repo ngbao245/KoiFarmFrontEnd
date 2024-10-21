@@ -66,7 +66,7 @@ const News = () => {
                     : "No description available"}
                 </p>
                 <button
-                  className="read-more"
+                  className="read-more-first"
                   onClick={() => handleReadMore(featuredNews.id)}
                 >
                   Đọc Toàn Bộ Tin
