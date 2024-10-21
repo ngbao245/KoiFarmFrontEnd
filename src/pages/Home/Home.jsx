@@ -36,6 +36,21 @@ export const Home = () => {
         }
       })
       .finally(() => setIsLoading(false));
+
+      //Chatbot
+      const script = document.createElement("script");
+      script.src = "https://app.tudongchat.com/js/chatbox.js";
+      script.async = true;
+      document.body.appendChild(script);
+  
+      script.onload = () => {
+        const tudong_chatbox = new TuDongChat('0gZTvtFBAwLSMw1Du_cQl');
+        tudong_chatbox.initial();
+      };
+  
+      return () => {
+        document.body.removeChild(script);
+      };
   }, []);
 
   const handleProductClick = async (productItem) => {
