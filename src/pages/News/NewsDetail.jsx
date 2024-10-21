@@ -21,7 +21,7 @@ const NewsDetail = () => {
         const newsResponse = await fetchBlogById(id);
         if (newsResponse.statusCode === 200) {
           setNews(newsResponse.data);
-          
+
           const authorResponse = await getUserById(newsResponse.data.userId);
           if (authorResponse.statusCode === 200) {
             setAuthor(authorResponse.data);
@@ -53,7 +53,7 @@ const NewsDetail = () => {
           ></i>
         </div>
 
-        <div className="news-detail-content">
+        <div className="news-detail-content animated">
           {news && (
             <article className="news-detail">
               <div className="news-detail-image-container">

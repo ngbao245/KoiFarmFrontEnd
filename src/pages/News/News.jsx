@@ -5,6 +5,7 @@ import "./News.css";
 import "../../styles/animation.css";
 import { Footer } from "../../layouts/footer/footer";
 import { fetchAllBlogs } from "../../services/BlogService";
+import FishSpinner from "../../components/FishSpinner";
 
 const News = () => {
   const [news, setNews] = useState([]);
@@ -39,7 +40,7 @@ const News = () => {
     navigate(`/news/${id}`);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <FishSpinner />;
   if (error) return <div>{error}</div>;
 
   return (
@@ -50,13 +51,26 @@ const News = () => {
           <h1 className="news-title">Tin tức về Cá Koi</h1>
           {featuredNews && (
             <section className="featured-news">
-              <img src={featuredNews.imageUrl || "https://picsum.photos/800/400?random=1"} alt={featuredNews.title} />
+              <img
+                src={
+                  featuredNews.imageUrl ||
+                  "https://picsum.photos/800/400?random=1"
+                }
+                alt={featuredNews.title}
+              />
               <div className="featured-news-content">
                 <h2>{featuredNews.title}</h2>
                 <p className="news-excerpt">
-                  {featuredNews.description ? `${featuredNews.description.substring(0, 150)}...` : 'No description available'}
+                  {featuredNews.description
+                    ? `${featuredNews.description.substring(0, 150)}...`
+                    : "No description available"}
                 </p>
-                <button className="read-more" onClick={() => handleReadMore(featuredNews.id)}>Đọc Toàn Bộ Tin</button>
+                <button
+                  className="read-more"
+                  onClick={() => handleReadMore(featuredNews.id)}
+                >
+                  Đọc Toàn Bộ Tin
+                </button>
               </div>
             </section>
           )}
@@ -64,13 +78,26 @@ const News = () => {
           <section className="news-grid">
             {news.map((item) => (
               <article key={item.id} className="news-item">
-                <img src={item.imageUrl || `https://picsum.photos/800/400?random=${item.id}`} alt={item.title} />
+                <img
+                  src={
+                    item.imageUrl ||
+                    `https://picsum.photos/800/400?random=${item.id}`
+                  }
+                  alt={item.title}
+                />
                 <div className="news-item-content">
                   <h3>{item.title}</h3>
                   <p className="news-excerpt">
-                    {item.description ? `${item.description.substring(0, 100)}...` : 'No description available'}
+                    {item.description
+                      ? `${item.description.substring(0, 100)}...`
+                      : "No description available"}
                   </p>
-                  <button className="read-more" onClick={() => handleReadMore(item.id)}>Đọc Thêm</button>
+                  <button
+                    className="read-more"
+                    onClick={() => handleReadMore(item.id)}
+                  >
+                    Đọc Thêm
+                  </button>
                 </div>
               </article>
             ))}
