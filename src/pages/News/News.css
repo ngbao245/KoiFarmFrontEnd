@@ -131,6 +131,7 @@
   color: #333;
   margin-bottom: 15px;
   line-height: 1.5;
+  text-wrap: pretty;
 }
 
 .read-more-first {

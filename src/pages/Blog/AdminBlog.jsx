@@ -74,23 +74,27 @@ const AdminBlog = () => {
         throw new Error();
       }
     } catch (error) {
-      console.error("Lỗi khi xóa bài viết:", error);
-      toast.error("Lỗi khi xóa bài viết.");
+      console.error(error);
+      toast.error("Bạn không phải là tác giả của bài viêt.");
     }
   };
 
   const handleSubmitBlogUpdate = async (updatedBlogData) => {
     try {
-      await updateBlog(selectedBlog.id, updatedBlogData);
-      setBlogs((prevBlogs) =>
-        prevBlogs.map((blog) =>
-          blog.id === selectedBlog.id ? { ...blog, ...updatedBlogData } : blog
-        )
-      );
-      toast.success("Cập nhật bài viết thành công!");
+      const response = await updateBlog(selectedBlog.id, updatedBlogData);
+      if (response && response.data) {
+        setBlogs((prevBlogs) =>
+          prevBlogs.map((blog) =>
+            blog.id === selectedBlog.id ? { ...blog, ...updatedBlogData } : blog
+          )
+        );
+        toast.success("Cập nhật bài viết thành công!");
+      } else {
+        throw new Error();
+      }
     } catch (error) {
-      console.error("Lỗi khi cập nhật bài viết:", error);
-      toast.error("Lỗi khi cập nhật bài viết.");
+      console.error(error);
+      toast.error("Bạn không phải là tác giả của bài viêt.");
     }
     setShowUpdateModal(false);
   };

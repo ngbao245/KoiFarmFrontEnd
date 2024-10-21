@@ -62,7 +62,7 @@ const News = () => {
                 <h2>{featuredNews.title}</h2>
                 <p className="news-excerpt">
                   {featuredNews.description
-                    ? `${featuredNews.description.substring(0, 150)}...`
+                    ? `${featuredNews.description.substring(0, 100)}...`
                     : "No description available"}
                 </p>
                 <button
