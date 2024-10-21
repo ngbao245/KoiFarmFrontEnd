@@ -74,6 +74,10 @@ export const Home = () => {
     }
   };
 
+  const handleReadMore = (id) => {
+    navigate(`/news/${id}`);
+  };
+
   return (
     <>
       <Header />
@@ -170,7 +174,10 @@ export const Home = () => {
                       <span className="news-card-date">
                         {new Date().toLocaleDateString()}
                       </span>
-                      <button className="news-card-button">Đọc thêm</button>
+                      <button 
+                      className="news-card-button"
+                      onClick={() => handleReadMore(blog.id)}
+                      >Đọc thêm</button>
                     </div>
                   </div>
                 ))
