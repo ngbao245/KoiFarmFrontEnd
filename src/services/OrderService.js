@@ -127,7 +127,7 @@ const updateIsDelivered = async (orderId) => {
     throw new Error("No token found! Please log in again.");
   }
 
-  return await axios.put(`Order/is-delivered?orderId=${orderId}`, 
+  return await axios.put(`Order/is-delivered/${orderId}`, 
     { isDelivered : true }, {
     headers: {
       Authorization: `${token}`,
