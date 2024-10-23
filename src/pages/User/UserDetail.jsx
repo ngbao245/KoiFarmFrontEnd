@@ -145,6 +145,14 @@ const UserDetail = () => {
     }
   };
 
+  const handleBackClick = () => {
+    if (editMode) {
+      setEditMode(false);
+    } else {
+      navigate(-1);
+    }
+  };
+
   if (!user.auth) {
     return (
       <div className="user-detail-container">
@@ -166,7 +174,7 @@ const UserDetail = () => {
       <div className="back-arrow">
         <i
           className="fa-solid fa-arrow-left"
-          onClick={() => navigate(-1)}
+          onClick={handleBackClick}
         ></i>
       </div>
 
