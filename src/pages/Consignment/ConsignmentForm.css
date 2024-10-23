@@ -1,16 +1,13 @@
-/* Wrapper for the form and the rules */
 .consignment-wrapper {
     display: flex;
     justify-content: center;
     gap: 10px;
 }
 
-/* Container for the form */
 .consignment-container {
     max-width: 900px;
 }
 
-/* Styling for the rules section */
 .consignment-rules {
     max-width: 800px;
     padding: 20px;
@@ -30,7 +27,6 @@
     line-height: 1.6;
 }
 
-/* Styling for form elements */
 .consignment-card {
     padding: 20px;
 }
