@@ -40,7 +40,6 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [paymentData, setPaymentData] = useState([]);
   const [activeTab, setActiveTab] = useState("overview");
-  const [dateRange, setDateRange] = useState("all");
   const [paymentChartData, setPaymentChartData] = useState([]);
   const [monthlyPaymentData, setMonthlyPaymentData] = useState([]);
   const [orderData, setOrderData] = useState([]);
@@ -153,19 +152,26 @@ const AdminDashboard = () => {
   const prepareMonthlyPaymentData = (payments) => {
     const monthlyTotals = payments.reduce((acc, payment) => {
       const date = new Date(payment.createdTime);
-      const monthYear = `${date.getFullYear()}-${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}`;
+      const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
       if (!acc[monthYear]) {
-        acc[monthYear] = 0;
+        acc[monthYear] = {
+          total: 0,
+          methods: {},
+          statuses: {}
+        };
       }
-      acc[monthYear] += payment.amount;
+      acc[monthYear].total += payment.amount;
+      acc[monthYear].methods[payment.method] = (acc[monthYear].methods[payment.method] || 0) + 1;
+      acc[monthYear].statuses[payment.status] = (acc[monthYear].statuses[payment.status] || 0) + 1;
       return acc;
     }, {});
 
-    return Object.entries(monthlyTotals)
-      .map(([date, total]) => ({ date, total }))
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    return Object.entries(monthlyTotals).map(([date, data]) => ({
+      date,
+      total: data.total,
+      method: Object.keys(data.methods).sort((a, b) => data.methods[b] - data.methods[a])[0],
+      paymentStatus: Object.keys(data.statuses).sort((a, b) => data.statuses[b] - data.statuses[a])[0]
+    })).sort((a, b) => new Date(a.date) - new Date(b.date));
   };
 
   const getMethodColor = (method) => {
@@ -178,41 +184,16 @@ const AdminDashboard = () => {
     }
   };
 
-  const filterData = (data) => {
-    if (!Array.isArray(data) || dateRange === "all") {
-      return data;
-    }
-
-    const now = new Date();
-    const startDate = new Date();
-
-    switch (dateRange) {
-      case "month":
-        startDate.setMonth(now.getMonth() - 1);
-        break;
-      case "week":
-        startDate.setDate(now.getDate() - 7);
-        break;
-      case "day":
-        startDate.setHours(0, 0, 0, 0);
-        break;
-      default:
-        return data;
-    }
-
-    return data.filter((item) => {
-      const itemDate = new Date(item.date || item.createdTime);
-      return itemDate >= startDate && itemDate <= now;
-    });
-  };
-
   const getPaymentMethodData = (data) => {
     const methodCounts = data.reduce((acc, payment) => {
       acc[payment.method] = (acc[payment.method] || 0) + 1;
       return acc;
     }, {});
 
-    return Object.entries(methodCounts).map(([name, value]) => ({ name, value }));
+    return Object.entries(methodCounts).map(([name, value]) => ({
+      name,
+      value,
+    }));
   };
 
   const renderOverviewTab = () => (
@@ -231,7 +212,7 @@ const AdminDashboard = () => {
         <DashboardCard
           icon={<BsFillGrid3X3GapFill />}
           title="Orders"
-          value={filterData(orderData).length}
+          value={orderData.length}
         />
         <DashboardCard
           icon={<BsFillBellFill />}
@@ -243,7 +224,7 @@ const AdminDashboard = () => {
       <div className="charts">
         <ChartCard title="Monthly Payment Totals">
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={filterData(monthlyPaymentData)}>
+            <BarChart data={monthlyPaymentData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
@@ -253,9 +234,10 @@ const AdminDashboard = () => {
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
+
         <ChartCard title="Payment Totals">
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={filterData(paymentData)}>
+            <LineChart data={paymentData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
@@ -280,7 +262,7 @@ const AdminDashboard = () => {
       <div className="charts">
         <ChartCard title="Daily Sales">
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={filterData(paymentChartData)}>
+            <BarChart data={paymentChartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
@@ -294,7 +276,7 @@ const AdminDashboard = () => {
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={getPaymentMethodData(filterData(paymentData))}
+                data={getPaymentMethodData(paymentData)}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
@@ -303,9 +285,14 @@ const AdminDashboard = () => {
                 fill="#8884d8"
                 label
               >
-                {getPaymentMethodData(filterData(paymentData)).map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
+                {getPaymentMethodData(paymentData).map(
+                  (entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  )
+                )}
               </Pie>
               <Tooltip />
               <Legend />
@@ -353,7 +340,7 @@ const AdminDashboard = () => {
       <div className="charts">
         <ChartCard title="Product Quantities">
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={filterData(chartData)}>
+            <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
@@ -364,7 +351,7 @@ const AdminDashboard = () => {
           </ResponsiveContainer>
         </ChartCard>
         <ChartCard title="Koi Distribution">
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={400}>
             <PieChart>
               <Pie
                 data={koiData}
@@ -372,7 +359,7 @@ const AdminDashboard = () => {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={80}
+                outerRadius={120}
                 fill="#8884d8"
                 label
               >
@@ -421,17 +408,6 @@ const AdminDashboard = () => {
     <>
       <AdminHeader />
       <div className="admin-dashboard">
-        <div className="dashboard-filters">
-          <select
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-          >
-            <option value="all">All Time</option>
-            <option value="month">This Month</option>
-            <option value="week">This Week</option>
-            <option value="day">Today</option>
-          </select>
-        </div>
         <div className="dashboard-tabs">
           <button
             onClick={() => setActiveTab("overview")}
@@ -477,8 +453,9 @@ const ChartCard = ({ title, children }) => (
   </div>
 );
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label }) => {    
   if (active && payload && payload.length) {
+    console.log(payload);
     return (
       <div
         className="custom-tooltip"
