@@ -25,6 +25,7 @@ import AdminOrder from "../pages/Order/AdminOrder.jsx";
 import ProductItemSearch from "../pages/ProductItemSearch/ProductItemSearch";
 import NewsDetail from "../pages/News/NewsDetail.jsx";
 import AdminDashboard from "../pages/Admin/AdminDashboard.jsx";
+import ConsignmentForm from "../pages/Consignment/Consignment.jsx";
 
 const AppRoutes = () => {
   return (
@@ -63,6 +64,9 @@ const AppRoutes = () => {
 
         <Route path="payment-success" element={<Payment />} />
         <Route path="payment-failed" element={<PaymentFailed />} />
+
+        <Route path="/create-consignment" element={<ConsignmentForm />} />
+
 
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>
