@@ -24,6 +24,7 @@ import StaffOrders from "../pages/Order/StaffOrders.jsx";
 import AdminOrder from "../pages/Order/AdminOrder.jsx";
 import ProductItemSearch from "../pages/ProductItemSearch/ProductItemSearch";
 import NewsDetail from "../pages/News/NewsDetail.jsx";
+import AdminDashboard from "../pages/Admin/AdminDashboard.jsx";
 
 const AppRoutes = () => {
   return (
@@ -45,6 +46,7 @@ const AppRoutes = () => {
         <Route path="/admin-product" element={<AdminProduct />} />
         <Route path="/admin-blog" element={<AdminBlog />} />
         <Route path="/admin-order" element={<AdminOrder />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
         <Route path="/product" element={<Product />} />
 

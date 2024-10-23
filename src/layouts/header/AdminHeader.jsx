@@ -116,6 +116,13 @@ const AdminHeader = () => {
                         Quản Lý Đơn Đặt Hàng Của Nhân Viên
                       </NavLink>
                     )}
+                    <NavLink
+                      className="nav-link"
+                      to="/admin-dashboard"
+                      disabled={!user || !user.auth}
+                    >
+                      Dashboard
+                    </NavLink>
                   </Nav>
                   <Nav>
                     {user && user.email && (
