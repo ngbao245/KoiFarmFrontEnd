@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { getConsignmentsForUser } from '../../services/ConsignmentService'; // Replace with actual service
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from "react-router-dom";
 
 const UserConsignment = () => {
     const [consignments, setConsignments] = useState([]);
     const [activeTab, setActiveTab] = useState('Pending');
     
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchConsignments = async () => {
             try {
@@ -28,6 +31,10 @@ const UserConsignment = () => {
     };
 
     return (
+        <>
+        <div className="back-arrow">
+                <i className="fa-solid fa-arrow-left" onClick={() => navigate(-1)}></i>
+            </div>
         <div className="container mt-5">
             <h1 className="text-center mb-4">Your Consignments</h1>
 
@@ -73,6 +80,7 @@ const UserConsignment = () => {
                 </tbody>
             </table>
         </div>
+        </>
     );
 };
 
