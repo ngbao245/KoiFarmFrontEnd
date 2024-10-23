@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
-import successGif from "../../../public/icons/success.gif";
 import { useLocation, Link, useNavigate } from "react-router-dom";
-import "./Payment.css"; // We'll create this file for styling
 import TickSuccess from "../../components/TickSuccess";
+import "./Payment.css";
 
 const Payment = () => {
   const location = useLocation();

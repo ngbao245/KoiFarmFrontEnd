@@ -108,139 +108,146 @@ const Order = () => {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "20px",
-        maxWidth: "1200px",
-        margin: "0 auto",
-      }}
-    >
+    <>
+      <div className="back-arrow">
+        <i className="fa-solid fa-arrow-left" onClick={() => navigate(-1)}></i>
+      </div>
+
       <div
         style={{
-          flex: "1",
+          display: "flex",
+          justifyContent: "space-between",
           padding: "20px",
-          backgroundColor: "#f9f9f9",
-          borderRadius: "8px",
+          maxWidth: "1200px",
+          margin: "0 auto",
         }}
       >
-        <h2>ĐƠN HÀNG CỦA BẠN</h2>
         <div
-          style={{ borderBottom: "1px solid #ddd", marginBottom: "20px" }}
-        ></div>
+          style={{
+            flex: "1",
+            padding: "20px",
+            backgroundColor: "#f9f9f9",
+            borderRadius: "8px",
+          }}
+        >
+          <h2>ĐƠN HÀNG CỦA BẠN</h2>
+          <div
+            style={{ borderBottom: "1px solid #ddd", marginBottom: "20px" }}
+          ></div>
 
-        {cartData.items && cartData.items.length > 0 ? (
-          cartData.items.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                display: "flex",
-                marginBottom: "20px",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={item.imageUrl}
-                alt={item.name}
+          {cartData.items && cartData.items.length > 0 ? (
+            cartData.items.map((item, index) => (
+              <div
+                key={index}
                 style={{
-                  width: "80px",
-                  height: "80px",
-                  objectFit: "cover",
-                  marginRight: "20px",
+                  display: "flex",
+                  marginBottom: "20px",
+                  alignItems: "center",
                 }}
-              />
-              <div style={{ flex: "1" }}>
-                <h5 style={{ margin: "0 0 5px" }}>{item.productName}</h5>
-                <p style={{ margin: "0", fontSize: "14px", color: "#666" }}>
-                  Số lượng: {item.quantity}
+              >
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                    marginRight: "20px",
+                  }}
+                />
+                <div style={{ flex: "1" }}>
+                  <h5 style={{ margin: "0 0 5px" }}>{item.productName}</h5>
+                  <p style={{ margin: "0", fontSize: "14px", color: "#666" }}>
+                    Số lượng: {item.quantity}
+                  </p>
+                </div>
+                <p style={{ fontWeight: "bold", color: "#C70025" }}>
+                  {item.price.toLocaleString()} VND
                 </p>
               </div>
-              <p style={{ fontWeight: "bold", color: "#C70025" }}>
-                {item.price.toLocaleString()} VND
-              </p>
-            </div>
-          ))
-        ) : (
-          <p>Giỏ hàng của bạn trống</p>
+            ))
+          ) : (
+            <p>Giỏ hàng của bạn trống</p>
+          )}
+
+          <div
+            style={{
+              marginTop: "20px",
+              paddingTop: "20px",
+              borderTop: "1px solid #ddd",
+            }}
+          >
+            <p>Tạm tính: {calculateTotal().toLocaleString()} VND</p>
+            <p>
+              Phí vận chuyển: {cartData.shippingFee?.toLocaleString() || "0"}{" "}
+              VND
+            </p>
+            <h3 style={{ color: "#C70025", marginTop: "10px" }}>
+              TỔNG CỘNG: {calculateTotal().toLocaleString()} VND
+            </h3>
+          </div>
+        </div>
+
+        {/* Payment Method Section */}
+        <div style={{ flex: "1", padding: "20px" }}>
+          <h2>Phương thức thanh toán</h2>
+          <div style={{ marginBottom: "20px" }}>
+            <label>
+              <input
+                type="radio"
+                value="cod"
+                checked={paymentMethod === "cod"}
+                onChange={handlePaymentMethodChange}
+              />
+              Thanh toán tiền mặt khi nhận hàng (COD)
+            </label>
+          </div>
+          <div style={{ marginBottom: "20px" }}>
+            <label>
+              <input
+                type="radio"
+                value="bank"
+                checked={paymentMethod === "bank"}
+                onChange={handlePaymentMethodChange}
+              />
+              Thanh toán bằng ngân hàng (Bank Transfer)
+            </label>
+          </div>
+
+          <button
+            onClick={handleCreateOrder}
+            disabled={isSubmitting}
+            style={{
+              padding: "15px 30px",
+              backgroundColor: "#C70025",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "16px",
+            }}
+          >
+            {isSubmitting ? "Đang xử lý..." : "ĐẶT HÀNG"}
+          </button>
+        </div>
+
+        {/* Display Order Details After Submission */}
+        {orderData && (
+          <div
+            style={{
+              marginTop: "20px",
+              paddingTop: "20px",
+              borderTop: "1px solid #ddd",
+            }}
+          >
+            <h2>Chi tiết đơn hàng</h2>
+            <p>Mã đơn hàng: {orderData.orderId}</p>
+            <p>Tổng tiền: {orderData.total.toLocaleString()} VND</p>
+            <p>Trạng thái: {orderData.status}</p>
+          </div>
         )}
-
-        <div
-          style={{
-            marginTop: "20px",
-            paddingTop: "20px",
-            borderTop: "1px solid #ddd",
-          }}
-        >
-          <p>Tạm tính: {calculateTotal().toLocaleString()} VND</p>
-          <p>
-            Phí vận chuyển: {cartData.shippingFee?.toLocaleString() || "0"} VND
-          </p>
-          <h3 style={{ color: "#C70025", marginTop: "10px" }}>
-            TỔNG CỘNG: {calculateTotal().toLocaleString()} VND
-          </h3>
-        </div>
       </div>
-
-      {/* Payment Method Section */}
-      <div style={{ flex: "1", padding: "20px" }}>
-        <h2>Phương thức thanh toán</h2>
-        <div style={{ marginBottom: "20px" }}>
-          <label>
-            <input
-              type="radio"
-              value="cod"
-              checked={paymentMethod === "cod"}
-              onChange={handlePaymentMethodChange}
-            />
-            Thanh toán tiền mặt khi nhận hàng (COD)
-          </label>
-        </div>
-        <div style={{ marginBottom: "20px" }}>
-          <label>
-            <input
-              type="radio"
-              value="bank"
-              checked={paymentMethod === "bank"}
-              onChange={handlePaymentMethodChange}
-            />
-            Thanh toán bằng ngân hàng (Bank Transfer)
-          </label>
-        </div>
-
-        <button
-          onClick={handleCreateOrder}
-          disabled={isSubmitting}
-          style={{
-            padding: "15px 30px",
-            backgroundColor: "#C70025",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontSize: "16px",
-          }}
-        >
-          {isSubmitting ? "Đang xử lý..." : "ĐẶT HÀNG"}
-        </button>
-      </div>
-
-      {/* Display Order Details After Submission */}
-      {orderData && (
-        <div
-          style={{
-            marginTop: "20px",
-            paddingTop: "20px",
-            borderTop: "1px solid #ddd",
-          }}
-        >
-          <h2>Chi tiết đơn hàng</h2>
-          <p>Mã đơn hàng: {orderData.orderId}</p>
-          <p>Tổng tiền: {orderData.total.toLocaleString()} VND</p>
-          <p>Trạng thái: {orderData.status}</p>
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 
