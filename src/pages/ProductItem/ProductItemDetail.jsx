@@ -76,7 +76,7 @@ const ProductItemDetail = () => {
               fontSize: 30,
             }}
           >
-            Giá: {productItem.price} VND
+            Giá: {productItem.price.toLocaleString("vi-VN")} VND
           </p>
           <ul>
             <li>Giới tính: {productItem.sex}</li>
