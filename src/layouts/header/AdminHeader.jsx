@@ -13,8 +13,8 @@ import "./adminHeader.css";
 const AdminHeader = () => {
   const { logout, user } = useContext(UserContext);
   const navigate = useNavigate();
-  const dropdownRef = useRef(null); // Create a ref for the dropdown
-  const [showUserDropdown, setShowUserDropdown] = useState(false); // State for dropdown visibility
+  const dropdownRef = useRef(null);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
 
   const handleLogout = () => {
@@ -62,12 +62,23 @@ const AdminHeader = () => {
       <div className="admin-header-container">
         <Navbar expand="lg" className="bg-body-tertiary">
           <Container>
-            <NavLink className="navbar-brand" to="#">
+            <NavLink
+              className={({ isActive }) =>
+                `navbar-brand ${isActive ? "fw-bold" : ""}`
+              }
+              to={userDetails && userDetails.roleId === "1" ? "/admin-dashboard" : "#"}
+              onClick={(e) => {
+                if (userDetails && userDetails.roleId !== "1") {
+                  e.preventDefault();
+                }
+              }}
+              style={userDetails && userDetails.roleId !== "1" ? { pointerEvents: 'none', opacity: 0.5 } : {}}
+            >
               <i
                 className="fa-solid fa-user-tie"
                 style={{ marginRight: "10px" }}
               ></i>
-              <span> Admin Dashboard</span>
+              <span>Admin Dashboard</span>
             </NavLink>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
@@ -116,13 +127,6 @@ const AdminHeader = () => {
                         Quản Lý Đơn Đặt Hàng Của Nhân Viên
                       </NavLink>
                     )}
-                    <NavLink
-                      className="nav-link"
-                      to="/admin-dashboard"
-                      disabled={!user || !user.auth}
-                    >
-                      Dashboard
-                    </NavLink>
                   </Nav>
                   <Nav>
                     {user && user.email && (

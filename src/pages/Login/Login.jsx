@@ -34,7 +34,7 @@ const Login = () => {
         if (roleId === "0") {
           navigate("/");
         } else if (roleId === "1") {
-          navigate("/admin");
+          navigate("/admin-dashboard  ");
         } else if (roleId === "2") {
           navigate("/admin-product");
         }

@@ -8,12 +8,11 @@
 }
 
 .admin-dashboard {
-  /* background-color: var(--primary-bg-color); */
   min-height: auto;
   padding: 20px;
 }
 
-.    {
+.admin-dashboard-container {
   position: relative;
 }
 
