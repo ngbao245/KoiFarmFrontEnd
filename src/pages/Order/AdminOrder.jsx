@@ -16,8 +16,6 @@ const AdminOrder = () => {
 
   const [activeTab, setActiveTab] = useState("Pending");
 
-  console.log(orders);
-
   const fetchData = async () => {
     try {
       const orderResponse = await fetchOrder();
@@ -129,7 +127,6 @@ const AdminOrder = () => {
           </div>
         </div>
 
-        {/* Updated Tabs for filtering orders */}
         <div className="order-tabs">
           <button
             className={`order-tab-button ${

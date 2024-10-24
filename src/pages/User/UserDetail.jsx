@@ -29,6 +29,8 @@ const UserDetail = () => {
     phone: "",
   });
 
+  console.log(orders);
+
   const [activeTab, setActiveTab] = useState("Pending");
 
   const isPaymentPage = window.location.pathname.includes("/payments");
@@ -55,18 +57,15 @@ const UserDetail = () => {
           password: "",
         });
 
-        // Fetch payments if on payment page, otherwise fetch orders
         if (isPaymentPage) {
           const paymentsResponse = await fetchAllPayment();
           setPayments(paymentsResponse.data?.data || []);
         } else {
           const ordersResponse = await getOrderByUser();
-          // Ensure the response is an array or fallback to an empty array
           setOrders(
             Array.isArray(ordersResponse.data) ? ordersResponse.data : []
           );
 
-          // Fetch product names for all items in all orders
           const fetchedOrders = Array.isArray(ordersResponse.data)
             ? ordersResponse.data
             : [];
@@ -161,6 +160,8 @@ const UserDetail = () => {
     try {
       await cancelOrder(orderId);
       const updatedOrders = orders.filter((order) => order.orderId !== orderId);
+      console.log(updatedOrders);
+      
       setOrders(updatedOrders);
     } catch (err) {
       console.error("Error cancelling order:", err);
@@ -190,13 +191,13 @@ const UserDetail = () => {
         <i className="fa-solid fa-arrow-left" onClick={handleBackClick}></i>
       </div>
 
-      <main className="user-detail-content animated user-select-none container-fluid">
+      <main className="user-detail-content animated user-select-none">
         <div className="user-detail-header">
           <h1 className="user-detail-title">
             {isPaymentPage ? "Lịch sử thanh toán" : "Thông tin người dùng"}
           </h1>
 
-          <button
+          <div
             onClick={
               isPaymentPage ? handleNavigateToOrders : handleNavigateToPayments
             }
@@ -208,14 +209,12 @@ const UserDetail = () => {
                 <i className="fa-solid fa-user px-2"></i>
               </>
             ) : (
-              <>
-                <button className="btn-view-payments">
-                  Lịch sử thanh toán
-                  <i className="fa-solid fa-clock-rotate-left px-2"></i>
-                </button>
-              </>
+              <div className="btn-view-payments">
+                Lịch sử thanh toán
+                <i className="fa-solid fa-clock-rotate-left px-2"></i>
+              </div>
             )}
-          </button>
+          </div>
         </div>
 
         {!isPaymentPage && (

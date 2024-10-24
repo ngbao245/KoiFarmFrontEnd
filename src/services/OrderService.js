@@ -144,11 +144,15 @@ const cancelOrder = async (orderId) => {
     throw new Error("No token found! Please log in again.");
   }
 
-  return await axios.put(`Order/cancel-order/${orderId}`, {
-    headers: {
-      Authorization: `${token}`,
-    },
-  });
+  return await axios.put(
+    `Order/cancel-order/${orderId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 export {
