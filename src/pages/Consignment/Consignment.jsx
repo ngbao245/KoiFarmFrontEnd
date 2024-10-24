@@ -10,13 +10,13 @@ const Consignment = () => {
   const navigate = useNavigate();
 
   const openForm = () => {
-    const email = localStorage.getItem('email');
-    const token = localStorage.getItem('token');
-    
+    const email = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+
     if (email && token) {
       setIsFormOpen(true);
     } else {
-      navigate('/login');
+      navigate("/login");
     }
   };
 
@@ -25,10 +25,9 @@ const Consignment = () => {
   return (
     <>
       <Header />
-      <div className="consignment-container animated user-select-none">
-        <h1 className="consign-title">Ký Gửi Cá Koi</h1>
-
-        <div className="consignment-content">
+      <div className="consignment-page-container">
+      <h1 className="consign-title">Ký Gửi Cá Koi</h1>
+        <div className="consignment-content animated user-select-none">
           <div className="consignment-rules">
             <h2>Quy định gửi hàng</h2>
             <ol>

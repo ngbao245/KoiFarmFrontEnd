@@ -1,12 +1,20 @@
-.consignment-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  margin-bottom: 4rem;
+.consignment-page-container {
+  position: relative;
 }
 
-.consignment-container h1 {
-  text-align: center;
-  color: #333;
+.consignment-page-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("/public/assets/backgroundUpscale.png") no-repeat center
+    center fixed;
+  background-size: cover;
+  filter: blur(5px);
+  z-index: -1;
+  opacity: 0.7;
 }
 
 .consign-title {
@@ -21,9 +29,11 @@
 }
 
 .consignment-content {
+  width: 1200px;
   display: flex;
-  justify-content: space-between;
   gap: 2rem;
+  margin: 0 auto;
+  padding-bottom: 4rem;
 }
 
 .consignment-rules,
@@ -31,14 +41,16 @@
   flex: 1;
   background-color: #f8f8f8;
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0;
 }
 
 .consignment-rules h2,
 .consignment-form-link h2 {
   color: #444;
   margin-bottom: 1rem;
+  font-size: var(--font-size-section) !important;
 }
 
 .consignment-rules ul {

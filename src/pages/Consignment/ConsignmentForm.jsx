@@ -62,6 +62,10 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
     setCurrentStep(currentStep - 1);
   };
 
+  const isFormValid = () => {
+    return Object.values(formData).every(value => value !== "" && value !== 0);
+  };
+
   const renderFormStep = () => {
     switch (currentStep) {
       case 1:
@@ -221,7 +225,11 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
                 </button>
               )}
               {currentStep === 3 && (
-                <button type="submit" className="btn-submit">
+                <button 
+                  type="submit" 
+                  className="btn-submit"
+                  disabled={!isFormValid()}
+                >
                   Submit
                 </button>
               )}

@@ -259,3 +259,13 @@
     padding: 20px;
   }
 }
+
+.btn-submit:disabled {
+  background-color: var(--primary-grey);
+  color: var(--primary-black);
+  cursor: not-allowed;
+}
+
+.btn-submit:disabled:hover {
+  opacity: 1;
+}
