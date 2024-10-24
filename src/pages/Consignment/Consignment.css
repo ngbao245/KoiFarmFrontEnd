@@ -1,0 +1,75 @@
+.consignment-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 4rem;
+}
+
+.consignment-container h1 {
+  text-align: center;
+  color: #333;
+}
+
+.consign-title {
+  margin: 0 auto;
+  padding: 4rem;
+  font-size: 3.5rem;
+  color: #1a365d;
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.consignment-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.consignment-rules,
+.consignment-form-link {
+  flex: 1;
+  background-color: #f8f8f8;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.consignment-rules h2,
+.consignment-form-link h2 {
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.consignment-rules ul {
+  padding-left: 1.5rem;
+}
+
+.consignment-rules li {
+  margin-bottom: 0.5rem;
+}
+
+.consignment-form-link p {
+  margin-bottom: 1rem;
+}
+
+.consignment-button {
+  display: inline-block;
+  background-color: #4caf50;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.consignment-button:hover {
+  background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+  .consignment-content {
+    flex-direction: column;
+  }
+}

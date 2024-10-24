@@ -71,6 +71,12 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (formData.price < 10000) {
+      toast.error('Price must be at least 10,000');
+      return;
+    }
+
     setIsLoading(true);
     onClose();
 
@@ -84,7 +90,7 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
         if (res && res.data && res.data.productId) {
           toast.success('Product created successfully!');
           setFormData({
-            name: '', price: 1, category: '', origin: '', sex: '', age: 0,
+            name: '', price: 10000, category: '', origin: '', sex: '', age: 0,
             size: '', species: '', personality: '', foodAmount: '', waterTemp: '',
             mineralContent: '', ph: '', imageUrl: '', quantity: 1, type: '', productId: ''
           });

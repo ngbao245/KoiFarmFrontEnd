@@ -88,6 +88,9 @@ export const Header = () => {
     if (value === "contact") {
       navigate("/contact");
     }
+    if (value === "consignment") {
+      navigate("/consignment");
+    }
     if (value === "product") {
       navigate("/product");
     }
@@ -314,6 +317,22 @@ export const Header = () => {
           >
             TIN TỨC
           </button>
+
+          <button
+            className="d-flex flex-row justify-content-center"
+            value={"consignment"}
+            style={{
+              background:
+                location.pathname === "/consignment"
+                  ? "#C70025"
+                  : "#281713",
+              width: 250,
+            }}
+            onClick={handleChoose}
+          >
+            Ký Gửi
+          </button>
+
           <button
             className="d-flex flex-row justify-content-center"
             value={"contact"}

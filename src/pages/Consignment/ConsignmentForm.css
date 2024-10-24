@@ -1,46 +1,261 @@
+.consignment-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
 .consignment-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .consignment-container {
-    max-width: 900px;
+  flex: 1;
+  max-width: 600px;
 }
 
 .consignment-rules {
-    max-width: 800px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-}
-
-.consignment-rules h2 {
-    font-size: 22px;
-    margin-bottom: 20px;
-}
-
-.consignment-rules p {
-    margin-bottom: 10px;
-    font-size: 16px;
-    line-height: 1.6;
+  flex: 0 0 300px;
+  margin-left: 2rem;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .consignment-card {
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.back-arrow {
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.progress-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.step {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.step.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.consignment-rules h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.consignment-rules ul {
+  padding-left: 1.5rem;
+}
+
+.consignment-rules li {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .consignment-wrapper {
+    flex-direction: column;
+  }
+
+  .consignment-rules {
+    margin-left: 0;
+    margin-top: 2rem;
+  }
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.consignment-form-container {
+  padding: 40px;
+}
+
+.consignment-form-container h1 {
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.progress-indicator {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.step {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.consignment-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.radio-group {
+  display: flex;
+  justify-content: start;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding-right: 2rem;
+}
+
+.radio-group input[type="radio"] {
+  margin-right: 8px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.btn-prev,
+.btn-next,
+.btn-submit {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-prev {
+  background-color: #f0f0f0;
+  color: #333;
+  margin-right: auto;
+}
+
+.btn-next,
+.btn-submit {
+  background-color: #2196f3;
+  color: #fff;
+  margin-left: auto;
+}
+
+.btn-submit {
+  background-color: #4caf50;
+}
+
+.btn-prev:hover,
+.btn-next:hover,
+.btn-submit:hover {
+  opacity: 0.9;
+}
+
+.error-message {
+  color: #f44336;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  color: #4caf50;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .popup-content {
+    width: 95%;
     padding: 20px;
-}
+  }
 
-.consignment-form-group label {
-    font-size: 14px;
+  .consignment-form-container {
+    padding: 20px;
+  }
 }
-
-.consignment-form-group input {
-    padding: 8px;
-    font-size: 14px;
-}
-/* 
-button {
-    padding: 10px 0;
-    font-size: 14px;
-} */
