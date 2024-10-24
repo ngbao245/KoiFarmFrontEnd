@@ -1,0 +1,46 @@
+.consignment-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.consignment-container {
+    max-width: 900px;
+}
+
+.consignment-rules {
+    max-width: 800px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.consignment-rules h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.consignment-rules p {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.consignment-card {
+    padding: 20px;
+}
+
+.consignment-form-group label {
+    font-size: 14px;
+}
+
+.consignment-form-group input {
+    padding: 8px;
+    font-size: 14px;
+}
+
+button {
+    padding: 10px 0;
+    font-size: 14px;
+}
