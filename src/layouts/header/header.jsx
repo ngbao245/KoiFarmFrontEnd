@@ -134,6 +134,16 @@ export const Header = () => {
     }
   };
 
+  const handleClickConsignment = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để xem sản phẩm trong giỏ hàng của bạn");
+      navigate("/login");
+    } else {
+      navigate("/user-consignment");
+    }
+  };
+
   const handleClickNav = () => {
     setShowUserDropdown((prev) => !prev);
   };
@@ -155,7 +165,7 @@ export const Header = () => {
     } else {
       navigate("/");
     }
-    searchInputRef.current.focus(); // Focus the search input after search
+    searchInputRef.current.focus();
   };
 
   const handleSearchChange = (e) => {
@@ -210,14 +220,20 @@ export const Header = () => {
                     </button>
                     {showUserDropdown && (
                       <div className="dropdown-link">
-                        <button className="nav-btn" onClick={handleClickCart}>
-                          Cart
-                        </button>
                         <button className="nav-btn" onClick={handleClickDetail}>
-                          Detail
+                          Thông tin cá nhân
+                        </button>
+                        <button className="nav-btn" onClick={handleClickCart}>
+                          Giỏ hàng của bạn
+                        </button>
+                        <button
+                          className="nav-btn"
+                          onClick={handleClickConsignment}
+                        >
+                          Cá Ký Gửi
                         </button>
                         <button className="nav-btn" onClick={handleLogout}>
-                          Logout
+                          Đăng xuất
                         </button>
                       </div>
                     )}
@@ -323,9 +339,7 @@ export const Header = () => {
             value={"consignment"}
             style={{
               background:
-                location.pathname === "/consignment"
-                  ? "#C70025"
-                  : "#281713",
+                location.pathname === "/consignment" ? "#C70025" : "#281713",
               width: 250,
             }}
             onClick={handleChoose}
