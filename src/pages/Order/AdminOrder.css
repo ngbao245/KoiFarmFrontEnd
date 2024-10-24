@@ -23,3 +23,8 @@
   color: white;
   pointer-events: none;
 }
+
+.status-badge.cancelled {
+  background-color: var(--primary-black);
+  color: var(--primary-white);
+}

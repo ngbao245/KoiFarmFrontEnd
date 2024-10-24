@@ -69,7 +69,6 @@ const AdminDashboard = () => {
           }));
         setChartData(productChartData);
 
-        // Calculate total Koi quantity and prepare chart data
         let total = 0;
         const koiData = productResponse.data.map((product) => {
           total += product.quantity;
@@ -87,11 +86,9 @@ const AdminDashboard = () => {
         const processedPaymentData = processPaymentData(paymentResponse.data);
         setPaymentData(processedPaymentData);
 
-        // Prepare data for the monthly payment chart
         const monthlyData = prepareMonthlyPaymentData(paymentResponse.data);
         setMonthlyPaymentData(monthlyData);
 
-        // Prepare data for the payment chart
         const chartData = preparePaymentChartData(processedPaymentData);
         setPaymentChartData(chartData);
       } catch (error) {
@@ -111,7 +108,6 @@ const AdminDashboard = () => {
     "#82ca9d",
   ];
 
-  // Function to process payment data for the chart
   const processPaymentData = (payments) => {
     if (!Array.isArray(payments)) {
       console.error("Expected an array of payments, received:", payments);
@@ -130,7 +126,6 @@ const AdminDashboard = () => {
       .sort((a, b) => new Date(a.date) - new Date(b.date));
   };
 
-  // New function to prepare data for the payment chart
   const preparePaymentChartData = (payments) => {
     const dailyTotals = payments.reduce((acc, payment) => {
       const date = payment.date;
@@ -182,16 +177,6 @@ const AdminDashboard = () => {
         )[0],
       }))
       .sort((a, b) => new Date(a.date) - new Date(b.date));
-  };
-
-  const getMethodColor = (method) => {
-    switch (method) {
-      case "VnPay":
-        return "#8884d8";
-      // Add more cases for other payment methods
-      default:
-        return "#82ca9d";
-    }
   };
 
   const getPaymentMethodData = (data) => {
@@ -268,7 +253,6 @@ const AdminDashboard = () => {
 
   const renderSalesTab = () => (
     <div className="sales-tab">
-      <h2>Sales Overview</h2>
       <div className="charts">
         <ChartCard title="Daily Sales">
           <ResponsiveContainer width="100%" height={300}>
@@ -313,7 +297,6 @@ const AdminDashboard = () => {
 
   const renderInventoryTab = () => (
     <div className="inventory-tab">
-      <h2>Inventory Overview</h2>
       <div className="charts">
         <ChartCard title="Product Quantities">
           <ResponsiveContainer width="100%" height={300}>

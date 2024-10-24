@@ -2,7 +2,11 @@ import React, { useContext, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import { updateUserInfo, getUserInfo } from "../../services/UserService";
-import { getOrderByUser, updateIsDelivered } from "../../services/OrderService";
+import {
+  getOrderByUser,
+  updateIsDelivered,
+  cancelOrder,
+} from "../../services/OrderService";
 import { fetchAllPayment } from "../../services/PaymentService";
 import { getNameOfProdItem } from "../../services/ProductItemService";
 import "./UserDetail.css";
@@ -153,6 +157,17 @@ const UserDetail = () => {
     }
   };
 
+  const handleCancelOrder = async (orderId) => {
+    try {
+      await cancelOrder(orderId);
+      const updatedOrders = orders.filter((order) => order.orderId !== orderId);
+      setOrders(updatedOrders);
+    } catch (err) {
+      console.error("Error cancelling order:", err);
+      setError("Failed to cancel order. Please try again.");
+    }
+  };
+
   if (!user.auth) {
     return (
       <div className="user-detail-container">
@@ -172,13 +187,10 @@ const UserDetail = () => {
   return (
     <div className="user-detail-container">
       <div className="back-arrow">
-        <i
-          className="fa-solid fa-arrow-left"
-          onClick={handleBackClick}
-        ></i>
+        <i className="fa-solid fa-arrow-left" onClick={handleBackClick}></i>
       </div>
 
-      <main className="user-detail-content animated user-select-none">
+      <main className="user-detail-content animated user-select-none container-fluid">
         <div className="user-detail-header">
           <h1 className="user-detail-title">
             {isPaymentPage ? "Lịch sử thanh toán" : "Thông tin người dùng"}
@@ -394,6 +406,7 @@ const UserDetail = () => {
                       <th>Ngày Mua</th>
                       <th>Trạng Thái</th>
                       {activeTab === "Completed" && <th>Xác Nhận Hàng</th>}
+                      {activeTab === "Pending" && <th>Hủy Đơn Hàng</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -459,6 +472,16 @@ const UserDetail = () => {
                                 ✓ Đã nhận hàng
                               </span>
                             )}
+                          </td>
+                        )}
+                        {activeTab === "Pending" && (
+                          <td>
+                            <button
+                              className="btn btn-danger"
+                              onClick={() => handleCancelOrder(order.orderId)}
+                            >
+                              Hủy đơn hàng
+                            </button>
                           </td>
                         )}
                       </tr>

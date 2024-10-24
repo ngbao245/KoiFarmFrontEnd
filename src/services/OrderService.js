@@ -127,8 +127,24 @@ const updateIsDelivered = async (orderId) => {
     throw new Error("No token found! Please log in again.");
   }
 
-  return await axios.put(`Order/is-delivered/${orderId}`, 
-    { isDelivered : true }, {
+  return await axios.put(
+    `Order/is-delivered/${orderId}`,
+    { isDelivered: true },
+    {
+      headers: {
+        Authorization: `${token}`,
+      },
+    }
+  );
+};
+
+const cancelOrder = async (orderId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+
+  return await axios.put(`Order/cancel-order/${orderId}`, {
     headers: {
       Authorization: `${token}`,
     },
@@ -146,4 +162,5 @@ export {
   getAssignedOrders,
   assignStaff,
   updateIsDelivered,
+  cancelOrder,
 };

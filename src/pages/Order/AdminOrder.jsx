@@ -16,6 +16,8 @@ const AdminOrder = () => {
 
   const [activeTab, setActiveTab] = useState("Pending");
 
+  console.log(orders);
+
   const fetchData = async () => {
     try {
       const orderResponse = await fetchOrder();
@@ -60,7 +62,7 @@ const AdminOrder = () => {
 
   const filterOrdersByStatus = (status) => {
     return orders
-      .filter((order) => order.status === status)
+      .filter((order) => order.status.toLowerCase() === status.toLowerCase())
       .filter(
         (order) =>
           order.orderId.toString().includes(searchTerm.toLowerCase()) ||
@@ -102,12 +104,13 @@ const AdminOrder = () => {
         return "completed";
       case "delivering":
         return "delivering";
+      case "cancelled":
+        return "cancelled";
       default:
         return "not-completed";
     }
   };
 
-  // if (loading) return <div>Đang tải...</div>;
   if (loading) return <FishSpinner />;
 
   return (
@@ -126,7 +129,7 @@ const AdminOrder = () => {
           </div>
         </div>
 
-        {/* Tabs for filtering orders */}
+        {/* Updated Tabs for filtering orders */}
         <div className="order-tabs">
           <button
             className={`order-tab-button ${
@@ -151,6 +154,14 @@ const AdminOrder = () => {
             onClick={() => setActiveTab("Completed")}
           >
             Đã hoàn thành
+          </button>
+          <button
+            className={`order-tab-button ${
+              activeTab === "Cancelled" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("Cancelled")}
+          >
+            Đã hủy
           </button>
         </div>
       </div>
