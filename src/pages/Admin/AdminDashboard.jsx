@@ -152,26 +152,36 @@ const AdminDashboard = () => {
   const prepareMonthlyPaymentData = (payments) => {
     const monthlyTotals = payments.reduce((acc, payment) => {
       const date = new Date(payment.createdTime);
-      const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+      const monthYear = `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+      ).padStart(2, "0")}`;
       if (!acc[monthYear]) {
         acc[monthYear] = {
           total: 0,
           methods: {},
-          statuses: {}
+          statuses: {},
         };
       }
       acc[monthYear].total += payment.amount;
-      acc[monthYear].methods[payment.method] = (acc[monthYear].methods[payment.method] || 0) + 1;
-      acc[monthYear].statuses[payment.status] = (acc[monthYear].statuses[payment.status] || 0) + 1;
+      acc[monthYear].methods[payment.method] =
+        (acc[monthYear].methods[payment.method] || 0) + 1;
+      acc[monthYear].statuses[payment.status] =
+        (acc[monthYear].statuses[payment.status] || 0) + 1;
       return acc;
     }, {});
 
-    return Object.entries(monthlyTotals).map(([date, data]) => ({
-      date,
-      total: data.total,
-      method: Object.keys(data.methods).sort((a, b) => data.methods[b] - data.methods[a])[0],
-      paymentStatus: Object.keys(data.statuses).sort((a, b) => data.statuses[b] - data.statuses[a])[0]
-    })).sort((a, b) => new Date(a.date) - new Date(b.date));
+    return Object.entries(monthlyTotals)
+      .map(([date, data]) => ({
+        date,
+        total: data.total,
+        method: Object.keys(data.methods).sort(
+          (a, b) => data.methods[b] - data.methods[a]
+        )[0],
+        paymentStatus: Object.keys(data.statuses).sort(
+          (a, b) => data.statuses[b] - data.statuses[a]
+        )[0],
+      }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
   };
 
   const getMethodColor = (method) => {
@@ -285,51 +295,18 @@ const AdminDashboard = () => {
                 fill="#8884d8"
                 label
               >
-                {getPaymentMethodData(paymentData).map(
-                  (entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  )
-                )}
+                {getPaymentMethodData(paymentData).map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
               </Pie>
               <Tooltip />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
-      </div>
-      <div className="sales-table">
-        <h3>Recent Sales</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Amount</th>
-              <th>Method</th>
-              <th>Order Status</th>
-              <th>Payment Status</th>
-              <th>User ID</th>
-              <th>Staff ID</th>
-              <th>Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paymentData.slice(0, 10).map((payment) => (
-              <tr key={payment.id}>
-                <td>{payment.date}</td>
-                <td>${payment.amount}</td>
-                <td>{payment.method}</td>
-                <td>{payment.orderStatus}</td>
-                <td>{payment.paymentStatus}</td>
-                <td>{payment.userId}</td>
-                <td>{payment.staffId}</td>
-                <td>{payment.address}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );
@@ -407,30 +384,32 @@ const AdminDashboard = () => {
   return (
     <>
       <AdminHeader />
-      <div className="admin-dashboard">
-        <div className="dashboard-tabs">
-          <button
-            onClick={() => setActiveTab("overview")}
-            className={activeTab === "overview" ? "active" : ""}
-          >
-            Overview
-          </button>
-          <button
-            onClick={() => setActiveTab("sales")}
-            className={activeTab === "sales" ? "active" : ""}
-          >
-            Sales
-          </button>
-          <button
-            onClick={() => setActiveTab("inventory")}
-            className={activeTab === "inventory" ? "active" : ""}
-          >
-            Inventory
-          </button>
+      <div className="admin-dashboard-container">
+        <div className="admin-dashboard user-select-none">
+          <div className="dashboard-tabs">
+            <button
+              onClick={() => setActiveTab("overview")}
+              className={activeTab === "overview" ? "active" : ""}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab("sales")}
+              className={activeTab === "sales" ? "active" : ""}
+            >
+              Sales
+            </button>
+            <button
+              onClick={() => setActiveTab("inventory")}
+              className={activeTab === "inventory" ? "active" : ""}
+            >
+              Inventory
+            </button>
+          </div>
+          {activeTab === "overview" && renderOverviewTab()}
+          {activeTab === "sales" && renderSalesTab()}
+          {activeTab === "inventory" && renderInventoryTab()}
         </div>
-        {activeTab === "overview" && renderOverviewTab()}
-        {activeTab === "sales" && renderSalesTab()}
-        {activeTab === "inventory" && renderInventoryTab()}
       </div>
     </>
   );
@@ -453,7 +432,7 @@ const ChartCard = ({ title, children }) => (
   </div>
 );
 
-const CustomTooltip = ({ active, payload, label }) => {    
+const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     console.log(payload);
     return (

@@ -8,9 +8,28 @@
 }
 
 .admin-dashboard {
-  background-color: var(--primary-bg-color);
-  min-height: 100vh;
+  /* background-color: var(--primary-bg-color); */
+  min-height: auto;
   padding: 20px;
+}
+
+.    {
+  position: relative;
+}
+
+.admin-dashboard-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("/public/assets/backgroundUpscale.png") no-repeat center
+    center fixed;
+  background-size: cover;
+  filter: blur(5px);
+  z-index: -1;
+  opacity: 0.7;
 }
 
 .dashboard-content {
@@ -172,7 +191,7 @@
   background-color: white;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .payment-table table {
@@ -180,7 +199,8 @@
   border-collapse: collapse;
 }
 
-.payment-table th, .payment-table td {
+.payment-table th,
+.payment-table td {
   text-align: left;
   padding: 12px;
   border-bottom: 1px solid #ddd;
@@ -207,12 +227,12 @@
 .dashboard-tabs button {
   padding: 10px 20px;
   border: none;
-  background-color: #f0f0f0;
+  background-color: var(--primary-blue);
   cursor: pointer;
 }
 
 .dashboard-tabs button.active {
-  background-color: var(--accent-color);
+  background-color: var(--primary-blue-hover);
   color: white;
 }
 
@@ -235,4 +255,65 @@
 .chart-card h3 {
   margin-top: 0;
   margin-bottom: 15px;
+}
+
+.custom-tooltip {
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.custom-tooltip p {
+  margin: 0;
+  padding: 3px 0;
+}
+
+.inventory-table {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+.inventory-table h3 {
+  margin-bottom: 1rem;
+}
+
+.inventory-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inventory-table th,
+.inventory-table td {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.inventory-table th {
+  background-color: #f7fafc;
+  font-weight: bold;
+  color: var(--secondary-text-color);
+}
+
+.inventory-table tr:last-child td {
+  border-bottom: none;
+}
+
+.inventory-table tr:hover {
+  background-color: #f7fafc;
+}
+
+@media (max-width: 768px) {
+  .dashboard-cards,
+  .charts {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-table {
+    font-size: 0.9rem;
+  }
 }
