@@ -10,6 +10,8 @@ import AdminHeader from "../../layouts/header/AdminHeader";
 import { toast } from "react-toastify";
 import FishSpinner from "../../components/FishSpinner";
 import "./StaffOrders.css";
+import { fetchAllPayment, createPaymentForCOD } from "../../services/PaymentService";
+
 
 const StaffOrders = () => {
   const { user } = useContext(UserContext);
@@ -22,9 +24,12 @@ const StaffOrders = () => {
   const [activeTab, setActiveTab] = useState("Pending");
   const [expandedRows, setExpandedRows] = useState([]);
 
+  const [payments, setPayments] = useState([]);
+
   useEffect(() => {
     if (!user.auth) return;
     fetchData();
+    fetchPayments();
   }, [user]);
 
   const fetchData = async () => {
@@ -48,6 +53,17 @@ const StaffOrders = () => {
       setError("Không có đơn hàng nào được chỉ định.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPayments = async () => {
+    try {
+      const { data: allPayments} = await fetchAllPayment();
+      console.log("Fetched payments:", allPayments);
+      setPayments(allPayments);
+    } catch (error) {
+      console.error("Error fetching payments:", error);
+      toast.error("Không thể tải danh sách thanh toán.");
     }
   };
 
@@ -78,8 +94,23 @@ const StaffOrders = () => {
           order.orderId === orderId ? { ...order, status: newStatus } : order
         )
       );
+
+      if (newStatus === "Completed") {
+        const orderPayments = payments.filter((p) => p.orderId === orderId);
+        if (orderPayments.length === 0) { // Check if no payments exist
+          // Create a new payment
+          await createPaymentForCOD({
+            orderId: orderId,
+          });
+          console.log("Payment created for orderId:", orderId);
+          console.success("Đã tạo thanh toán mới cho đơn hàng.");
+        } else {
+          console.info("Đơn hàng hoàn tất nhưng thanh toán đã tồn tại.");
+        }
+      }
       toast.success("Cập nhật trạng thái đơn hàng thành công!");
     } catch {
+      console.error(error);
       toast.error("Cập nhật trạng thái đơn hàng thất bại");
     } finally {
       setIsUpdating(false);
@@ -129,8 +160,7 @@ const StaffOrders = () => {
             {order.items
               .map(
                 (item) =>
-                  `${productNames[item.productItemId] || "Không xác định"} x${
-                    item.quantity
+                  `${productNames[item.productItemId] || "Không xác định"} x${item.quantity
                   }`
               )
               .join(", ")}
@@ -179,33 +209,29 @@ const StaffOrders = () => {
 
         <div className="order-tabs">
           <button
-            className={`order-tab-button ${
-              activeTab === "Pending" ? "active" : ""
-            }`}
+            className={`order-tab-button ${activeTab === "Pending" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("Pending")}
           >
             Đang xử lý
           </button>
           <button
-            className={`order-tab-button ${
-              activeTab === "Delivering" ? "active" : ""
-            }`}
+            className={`order-tab-button ${activeTab === "Delivering" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("Delivering")}
           >
             Đang giao hàng
           </button>
           <button
-            className={`order-tab-button ${
-              activeTab === "Completed" ? "active" : ""
-            }`}
+            className={`order-tab-button ${activeTab === "Completed" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("Completed")}
           >
             Đã hoàn thành
           </button>
           <button
-            className={`order-tab-button ${
-              activeTab === "Cancelled" ? "active" : ""
-            }`}
+            className={`order-tab-button ${activeTab === "Cancelled" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("Cancelled")}
           >
             Đã hủy

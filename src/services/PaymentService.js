@@ -43,4 +43,10 @@ const createPayment = ({ orderDescription, orderType, name, orderId }) => {
   );
 };
 
-export { fetchAllPayment, callBackPayment, createPayment, fetchUserPayment };
+const createPaymentForCOD = ( { orderId } ) => {
+  return axios.post("Payment/create-payment",{
+    orderId,
+  });
+};
+
+export { fetchAllPayment, callBackPayment, createPayment, fetchUserPayment, createPaymentForCOD };

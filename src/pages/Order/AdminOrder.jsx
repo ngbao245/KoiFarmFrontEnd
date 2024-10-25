@@ -132,6 +132,8 @@ const AdminOrder = () => {
     }
   };
 
+ 
+
   const getStatusBadgeClass = (status) => {
     switch (status.toLowerCase()) {
       case "completed":
