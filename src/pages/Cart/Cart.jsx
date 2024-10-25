@@ -6,11 +6,15 @@ import { Footer } from "../../layouts/footer/footer";
 import "./Cart.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 const Cart = () => {
   const [cart, setCart] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +44,11 @@ const Cart = () => {
   };
 
   const handleQuantityChange = async (cartId, item, newQuantity) => {
-    if (newQuantity === 0 && !window.confirm("Are you sure you want to remove this item from the cart?")) return;
+    if (newQuantity === 0) {
+      setItemToRemove({ cartId, item });
+      setIsConfirmModalOpen(true);
+      return;
+    }
 
     try {
       const response = await updateCartItem(cartId, item.productItemId, newQuantity);
@@ -77,6 +85,25 @@ const Cart = () => {
 
   const handleContinue = () => {
     navigate("/product");
+  };
+
+  const confirmRemoveItem = async () => {
+    if (!itemToRemove) return;
+
+    try {
+      const response = await updateCartItem(itemToRemove.cartId, itemToRemove.item.productItemId, 0);
+      if (response.statusCode == 200) {
+        setCartItems((prevItems) => prevItems.filter((i) => i.productItemId !== itemToRemove.item.productItemId));
+        toast.success(`Item ${itemToRemove.item.productName} removed from cart`);
+      } else {
+        toast.error(response.data.messageError);
+      }
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setIsConfirmModalOpen(false);
+      setItemToRemove(null);
+    }
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -191,6 +218,12 @@ const Cart = () => {
           </div>
         </main>
       </div>
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={confirmRemoveItem}
+        message="Are you sure you want to remove this item from the cart?"
+      />
       <Footer />
     </>
   );

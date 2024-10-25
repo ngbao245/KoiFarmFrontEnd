@@ -11,6 +11,8 @@ import { fetchAllPayment } from "../../services/PaymentService";
 import { getNameOfProdItem } from "../../services/ProductItemService";
 import "./UserDetail.css";
 import FishSpinner from "../../components/FishSpinner";
+import { toast } from "react-toastify";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -29,13 +31,14 @@ const UserDetail = () => {
     phone: "",
   });
 
-  console.log(orders);
-
   const [activeTab, setActiveTab] = useState("Pending");
 
   const isPaymentPage = window.location.pathname.includes("/payments");
 
   const [productNames, setProductNames] = useState({});
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [orderIdToCancel, setOrderIdToCancel] = useState(null);
 
   const filterOrdersByStatus = (status) => {
     return orders.filter((order) => order.status === status);
@@ -157,15 +160,30 @@ const UserDetail = () => {
   };
 
   const handleCancelOrder = async (orderId) => {
+    setOrderIdToCancel(orderId);
+    setIsConfirmModalOpen(true);
+  };
+
+  const confirmCancelOrder = async () => {
     try {
-      await cancelOrder(orderId);
-      const updatedOrders = orders.filter((order) => order.orderId !== orderId);
-      console.log(updatedOrders);
+      const response = await cancelOrder(orderIdToCancel);
       
-      setOrders(updatedOrders);
+      if (response.statusCode === 200) {
+        const updatedOrders = orders.map(order => 
+          order.orderId === orderIdToCancel ? { ...order, status: 'Cancelled' } : order
+        );
+        setOrders(updatedOrders);
+        setError(null);
+        toast.success("Bạn đã huỷ đơn hàng thành công, tiền sẽ được chuyển lại vào tài khoản của khách hàng trễ nhất 48 giờ.");
+      } else {
+        setError("Unexpected response when cancelling order. Please try again.");
+      }
     } catch (err) {
       console.error("Error cancelling order:", err);
       setError("Failed to cancel order. Please try again.");
+    } finally {
+      setIsConfirmModalOpen(false);
+      setOrderIdToCancel(null);
     }
   };
 
@@ -394,6 +412,12 @@ const UserDetail = () => {
                   >
                     Đã hoàn thành
                   </button>
+                  <button
+                    className={`order-tab-button ${activeTab === "Cancelled" ? "active" : ""}`}
+                    onClick={() => setActiveTab("Cancelled")}
+                  >
+                    Đã hủy
+                  </button>
                 </div>
 
                 <table className="order-table">
@@ -452,6 +476,13 @@ const UserDetail = () => {
                               Đã Giao Hàng
                             </span>
                           )}
+                          {order.status === "Cancelled" && (
+                            <span
+                              style={{ color: "red", fontWeight: "bold" }}
+                            >
+                              Đã Hủy
+                            </span>
+                          )}
                         </td>
                         {activeTab === "Completed" && (
                           <td>
@@ -492,6 +523,12 @@ const UserDetail = () => {
           </>
         )}
       </main>
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={confirmCancelOrder}
+        message="Bạn có chắc chắn muốn hủy đơn hàng này không?"
+      />
     </div>
   );
 };

@@ -19,8 +19,8 @@ const StaffOrders = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [productNames, setProductNames] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
-
   const [activeTab, setActiveTab] = useState("Pending");
+  const [expandedRows, setExpandedRows] = useState([]);
 
   useEffect(() => {
     if (!user.auth) return;
@@ -38,7 +38,7 @@ const StaffOrders = () => {
           const userResponse = await getUserById(order.userId);
           return {
             ...order,
-            userName: userResponse?.data?.name || "Unknown User",
+            userName: userResponse?.data?.name || "Không xác định",
           };
         })
       );
@@ -55,12 +55,12 @@ const StaffOrders = () => {
     const promises = orders.flatMap((order) =>
       order.items.map(async (item) => {
         try {
-          const { name = "Unknown" } = await getNameOfProdItem(
+          const { name = "Không xác định" } = await getNameOfProdItem(
             item.productItemId
           );
           return { [item.productItemId]: name };
         } catch {
-          return { [item.productItemId]: "Unknown" };
+          return { [item.productItemId]: "Không xác định" };
         }
       })
     );
@@ -78,19 +78,13 @@ const StaffOrders = () => {
           order.orderId === orderId ? { ...order, status: newStatus } : order
         )
       );
-      toast.success("Order status updated successfully!");
+      toast.success("Cập nhật trạng thái đơn hàng thành công!");
     } catch {
-      toast.error("Failed to update order status");
+      toast.error("Cập nhật trạng thái đơn hàng thất bại");
     } finally {
       setIsUpdating(false);
     }
   };
-
-  // const filteredOrders = orders.filter(
-  //   (order) =>
-  //     order.orderId.toString().includes(searchTerm.toLowerCase()) ||
-  //     order.userName.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
 
   const filterOrdersByStatus = (status) => {
     return orders
@@ -108,13 +102,52 @@ const StaffOrders = () => {
         return "completed";
       case "delivering":
         return "delivering";
+      case "cancelled":
+        return "cancelled";
       default:
         return "not-completed";
     }
   };
 
+  const toggleExpandedRow = (orderId) => {
+    setExpandedRows((prev) =>
+      prev.includes(orderId)
+        ? prev.filter((id) => id !== orderId)
+        : [...prev, orderId]
+    );
+  };
+
+  const renderExpandedRow = (order) => (
+    <tr>
+      <td colSpan="8">
+        <div className="expanded-row-content">
+          <p>
+            <strong>Địa chỉ:</strong> {order.address}
+          </p>
+          <p>
+            <strong>Sản phẩm:</strong>{" "}
+            {order.items
+              .map(
+                (item) =>
+                  `${productNames[item.productItemId] || "Không xác định"} x${
+                    item.quantity
+                  }`
+              )
+              .join(", ")}
+          </p>
+          <p>
+            <strong>Tổng cộng:</strong> {order.total.toLocaleString("vi-VN")}{" "}
+            VND
+          </p>
+        </div>
+      </td>
+    </tr>
+  );
+
   if (!user?.auth)
-    return <div className="staff-orders">Please log in to view orders.</div>;
+    return (
+      <div className="staff-orders">Vui lòng đăng nhập để xem đơn hàng.</div>
+    );
   if (loading) return <FishSpinner />;
   if (error)
     return (
@@ -144,7 +177,6 @@ const StaffOrders = () => {
           />
         </div>
 
-        {/* Tabs for filtering orders */}
         <div className="order-tabs">
           <button
             className={`order-tab-button ${
@@ -170,90 +202,113 @@ const StaffOrders = () => {
           >
             Đã hoàn thành
           </button>
+          <button
+            className={`order-tab-button ${
+              activeTab === "Cancelled" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("Cancelled")}
+          >
+            Đã hủy
+          </button>
         </div>
       </div>
 
       <div className="container-fluid">
-        <table className="table table-striped text-center">
-          <thead>
-            <tr>
-              <th>Mã Đơn Hàng</th>
-              <th>Tên Khách Hàng</th>
-              <th>Tổng Tiền</th>
-              <th>Trạng Thái</th>
-              <th>Sản Phẩm</th>
-              <th>Địa Chỉ</th>
-              <th>Ngày mua</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {filterOrdersByStatus(activeTab).length > 0 ? (
-              filterOrdersByStatus(activeTab).map((order) => (
-                <tr key={order.orderId}>
-                  <td>{order.orderId}</td>
-                  <td>{order.userName}</td>
-                  <td>{order.total.toLocaleString("vi-VN")} VND</td>
-                  <td>
-                    <span
-                      className={`status-badge ${getStatusBadgeClass(
-                        order.status
-                      )}`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-                  <td>
-                    {order.items.map((item, index) => (
-                      <div key={`${item.productItemId}-${index}`}>
-                        {productNames[item.productItemId] || "Unknown"} x
-                        {item.quantity}
-                      </div>
-                    ))}
-                  </td>
-                  <td>{order.address}</td>
-                  <td>
-                    {new Date(order.createdTime).toLocaleDateString("vi-VN")}
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() =>
-                        handleStatusChange(order.orderId, "Delivering")
-                      }
-                      disabled={isUpdating || order.status !== "Pending"}
-                    >
-                      <i className="fa-solid fa-truck"></i>
-                    </button>
-                    <button
-                      className="btn btn-success ms-2"
-                      onClick={() =>
-                        handleStatusChange(order.orderId, "Completed")
-                      }
-                      disabled={isUpdating || order.status !== "Delivering"}
-                    >
-                      <i className="fa-solid fa-clipboard-check"></i>
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <>
-                <tr>
-                  <td colSpan="8">Không tìm thấy đơn hàng chỉ định nào</td>
-                </tr>
-                <tr>
-                  <td colSpan="8">
-                    <i
-                      className="fa-regular fa-folder-open"
-                      style={{ fontSize: "30px", opacity: 0.2 }}
-                    ></i>
-                  </td>
-                </tr>
-              </>
-            )}
-          </tbody>
-        </table>
+        <div className="table-responsive">
+          <table className="table table-striped text-center">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Mã Đơn Hàng</th>
+                <th>Tên Khách Hàng</th>
+                <th>Ngày Đặt Hàng</th>
+                <th>Trạng Thái</th>
+                {activeTab !== "Cancelled" && <th>Xác Nhận</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {filterOrdersByStatus(activeTab).length > 0 ? (
+                filterOrdersByStatus(activeTab).map((order) => (
+                  <React.Fragment key={order.orderId}>
+                    <tr>
+                      <td>
+                        <button
+                          title="Xem chi tiết"
+                          className="btn btn-sm mr-2"
+                          onClick={() => toggleExpandedRow(order.orderId)}
+                        >
+                          <i className="fas fa-info-circle"></i>
+                        </button>
+                      </td>
+                      <td>{order.orderId}</td>
+                      <td>{order.userName}</td>
+                      <td>
+                        {new Date(order.createdTime).toLocaleDateString(
+                          "vi-VN"
+                        )}
+                      </td>
+                      <td>
+                        <span
+                          className={`status-badge ${getStatusBadgeClass(
+                            order.status
+                          )}`}
+                        >
+                          {order.status}
+                        </span>
+                      </td>
+                      <td>
+                        {order.status !== "Cancelled" && (
+                          <>
+                            <button
+                              className="btn btn-primary"
+                              onClick={() =>
+                                handleStatusChange(order.orderId, "Delivering")
+                              }
+                              disabled={
+                                isUpdating || order.status !== "Pending"
+                              }
+                              title="Xác nhận đơn hàng bắt đầu vận chuyển"
+                            >
+                              <i className="fa-solid fa-truck"></i>
+                            </button>
+                            <button
+                              className="btn btn-success ms-2"
+                              onClick={() =>
+                                handleStatusChange(order.orderId, "Completed")
+                              }
+                              disabled={
+                                isUpdating || order.status !== "Delivering"
+                              }
+                              title="Xác nhận đơn hàng đã đến tay khách hàng"
+                            >
+                              <i className="fa-solid fa-clipboard-check"></i>
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                    {expandedRows.includes(order.orderId) &&
+                      renderExpandedRow(order)}
+                  </React.Fragment>
+                ))
+              ) : (
+                <>
+                  <tr>
+                    <td colSpan="8">Không tìm thấy đơn hàng chỉ định nào</td>
+                  </tr>
+                  <tr>
+                    <td colSpan="8">
+                      <i
+                        className="fa-regular fa-folder-open"
+                        style={{ fontSize: "30px", opacity: 0.2 }}
+                      ></i>
+                    </td>
+                  </tr>
+                </>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );

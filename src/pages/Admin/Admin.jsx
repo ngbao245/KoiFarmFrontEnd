@@ -187,6 +187,7 @@ const Admin = () => {
                   <td>Staff</td>
                   <td>
                     <button
+                      title="Xoá nhân viên"
                       className="btn btn-danger mx-3"
                       onClick={() => handleDelete(staff)}
                     >

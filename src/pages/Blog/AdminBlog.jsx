@@ -160,6 +160,7 @@ const AdminBlog = () => {
                   </td>
                   <td>
                     <button
+                      title="Chỉnh sửa bài viết"
                       className="btn btn-warning"
                       onClick={() => {
                         setSelectedBlog(blog);
@@ -170,6 +171,7 @@ const AdminBlog = () => {
                       <i className="fa-solid fa-wrench"></i>
                     </button>
                     <button
+                      title="Xoá bài viết"
                       className="btn btn-danger ms-2"
                       onClick={() => handleDeleteBlog(blog.id)}
                       disabled={isUploading}

@@ -28,3 +28,13 @@
   background-color: var(--primary-black);
   color: var(--primary-white);
 }
+
+tbody {
+  text-align: center;
+  text-wrap: balance;
+}
+
+.expanded-row-content {
+  padding: 10px;
+  background-color: #f8f9fa;
+}

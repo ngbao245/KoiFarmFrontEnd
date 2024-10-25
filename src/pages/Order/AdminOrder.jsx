@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import AdminHeader from "../../layouts/header/AdminHeader";
-import { fetchOrder, assignStaff } from "../../services/OrderService";
+import {
+  fetchOrder,
+  assignStaff,
+  cancelOrder,
+} from "../../services/OrderService";
 import { fetchAllStaff, getUserById } from "../../services/UserService";
 import { getNameOfProdItem } from "../../services/ProductItemService";
 import StaffDropdown from "../../components/StaffDropdown";
+import ConfirmationModal from "../../components/ConfirmationModal";
 import { toast } from "react-toastify";
 import FishSpinner from "../../components/FishSpinner";
 import "./AdminOrder.css";
@@ -15,6 +20,11 @@ const AdminOrder = () => {
   const [loading, setLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState("Pending");
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [orderToCancel, setOrderToCancel] = useState(null);
+
+  const [expandedRows, setExpandedRows] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -37,10 +47,10 @@ const AdminOrder = () => {
 
           return {
             ...order,
-            userName: userResponse?.data?.name || "Unknown",
+            userName: userResponse?.data?.name || "Không xác định",
             assignedStaffName:
               staffData.find((s) => s.id === order.staffId)?.name ||
-              "Not assigned",
+              "Chưa phân công",
             products: productDetails.join(", "),
           };
         })
@@ -71,7 +81,7 @@ const AdminOrder = () => {
   const handleAssignStaff = async (orderId, staffId) => {
     try {
       await assignStaff(orderId, staffId);
-      toast.success("Staff assigned successfully!");
+      toast.success("Phân công nhân viên thành công!");
 
       const updatedOrders = orders.map((order) =>
         order.orderId === orderId
@@ -80,21 +90,47 @@ const AdminOrder = () => {
               staffId,
               assignedStaffName:
                 staffMembers.find((s) => s.id === staffId)?.name ||
-                "Not assigned",
+                "Chưa phân công",
             }
           : order
       );
       setOrders(updatedOrders);
     } catch (error) {
-      toast.error("Failed to assign staff");
+      toast.error("Phân công nhân viên thất bại");
     }
   };
 
-  // const filteredOrders = orders.filter(
-  //   (order) =>
-  //     order.orderId.toString().includes(searchTerm.toLowerCase()) ||
-  //     order.userName.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
+  const handleCancelOrder = (order) => {
+    setOrderToCancel(order);
+    setIsConfirmModalOpen(true);
+  };
+
+  const confirmCancelOrder = async () => {
+    if (!orderToCancel) return;
+
+    try {
+      const response = await cancelOrder(orderToCancel.orderId);
+      if (response.statusCode === 200) {
+        const updatedOrders = orders.map((order) =>
+          order.orderId === orderToCancel.orderId
+            ? { ...order, status: "Cancelled" }
+            : order
+        );
+        setOrders(updatedOrders);
+        toast.success(
+          "Đã hủy đơn hàng thành công. Số lượng sản phẩm đã được cập nhật."
+        );
+      } else {
+        toast.error("Không thể hủy đơn hàng. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Đã xảy ra lỗi khi hủy đơn hàng.");
+    } finally {
+      setIsConfirmModalOpen(false);
+      setOrderToCancel(null);
+    }
+  };
 
   const getStatusBadgeClass = (status) => {
     switch (status.toLowerCase()) {
@@ -107,6 +143,33 @@ const AdminOrder = () => {
       default:
         return "not-completed";
     }
+  };
+
+  const renderExpandedRow = (order) => (
+    <tr>
+      <td colSpan="8">
+        <div className="expanded-row-content">
+          <p>
+            <strong>Địa chỉ:</strong> {order.address}
+          </p>
+          <p>
+            <strong>Sản phẩm:</strong> {order.products}
+          </p>
+          <p>
+            <strong>Tổng cộng:</strong> {order.total.toLocaleString("vi-VN")}{" "}
+            VND
+          </p>
+        </div>
+      </td>
+    </tr>
+  );
+
+  const toggleExpandedRow = (orderId) => {
+    setExpandedRows((prev) =>
+      prev.includes(orderId)
+        ? prev.filter((id) => id !== orderId)
+        : [...prev, orderId]
+    );
   };
 
   if (loading) return <FishSpinner />;
@@ -167,54 +230,74 @@ const AdminOrder = () => {
         <table className="table table-striped text-center">
           <thead>
             <tr>
+              <th></th>
               <th>Mã Đơn Hàng</th>
               <th>Tên Khách Hàng</th>
-              <th>Địa Chỉ</th>
-              <th>Ngày Tạo Đơn</th>
-              <th>Sản Phẩm</th>
-              <th>Tổng Tiền</th>
+              <th>Ngày Đặt Hàng</th>
               <th>Trạng Thái</th>
-              <th>Chỉ Định Giao Hàng</th>
+              <th>Nhân viên Chỉ Định</th>
+              {activeTab === "Pending" && <th>Huỷ Đơn Hàng</th>}
             </tr>
           </thead>
           <tbody>
             {filterOrdersByStatus(activeTab).length > 0 ? (
               filterOrdersByStatus(activeTab).map((order) => (
-                <tr key={order.orderId}>
-                  <td>{order.orderId}</td>
-                  <td>{order.userName}</td>
-                  <td>{order.address}</td>
-                  <td>{new Date(order.createdTime).toLocaleDateString()}</td>
-                  <td>{order.products}</td>
-                  <td>{order.total.toLocaleString("vi-VN")} VND</td>
-                  <td>
-                    <span
-                      className={`status-badge ${getStatusBadgeClass(
-                        order.status
-                      )}`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-                  <td>
-                    <StaffDropdown
-                      staffMembers={staffMembers}
-                      currentStaffId={order.staffId}
-                      onAssign={(staffId) =>
-                        handleAssignStaff(order.orderId, staffId)
-                      }
-                      disabled={order.status.toLowerCase() !== "pending"}
-                    />
-                  </td>
-                </tr>
+                <React.Fragment key={order.orderId}>
+                  <tr>
+                    <td>
+                      <button
+                        title="Xem chi tiết"
+                        className="btn btn-sm mr-2"
+                        onClick={() => toggleExpandedRow(order.orderId)}
+                      >
+                        <i className="fas fa-info-circle"></i>
+                      </button>
+                    </td>
+                    <td>{order.orderId}</td>
+                    <td>{order.userName}</td>
+                    <td>{new Date(order.createdTime).toLocaleDateString()}</td>
+                    <td>
+                      <span
+                        className={`status-badge ${getStatusBadgeClass(
+                          order.status
+                        )}`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
+                    <td>
+                      <StaffDropdown
+                        staffMembers={staffMembers}
+                        currentStaffId={order.staffId}
+                        onAssign={(staffId) =>
+                          handleAssignStaff(order.orderId, staffId)
+                        }
+                        disabled={order.status.toLowerCase() !== "pending"}
+                      />
+                    </td>
+                    <td>
+                      {order.status.toLowerCase() === "pending" && (
+                        <button
+                          title="Huỷ đơn hàng"
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleCancelOrder(order)}
+                        >
+                          <i className="fa-solid fa-ban"></i>
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                  {expandedRows.includes(order.orderId) &&
+                    renderExpandedRow(order)}
+                </React.Fragment>
               ))
             ) : (
               <>
                 <tr>
-                  <td colSpan="8">Không tìm thấy đơn hàng nào</td>
+                  <td colSpan="9">Không tìm thấy đơn hàng nào</td>
                 </tr>
                 <tr>
-                  <td colSpan="8">
+                  <td colSpan="9">
                     <i
                       className="fa-regular fa-folder-open"
                       style={{ fontSize: "30px", opacity: 0.2 }}
@@ -226,6 +309,13 @@ const AdminOrder = () => {
           </tbody>
         </table>
       </div>
+
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={confirmCancelOrder}
+        message={`Bạn có chắc chắn muốn hủy đơn hàng #${orderToCancel?.orderId}?`}
+      />
     </>
   );
 };
