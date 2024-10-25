@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { createConsignment } from "../../services/ConsignmentService";
 import { toast } from "react-toastify";
+import { uploadImageCloudinary } from "../../services/CloudinaryService"; // Import the image upload service
 import "./ConsignmentForm.css";
+import FishSpinner from "../../components/FishSpinner";
+
+const folder = import.meta.env.VITE_FOLDER_CONSIGNMENT;
 
 const ConsignmentForm = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -12,7 +16,12 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
     age: 0,
     size: "",
     species: "",
+    imageUrl: null,
   });
+
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [error, setError] = useState(null);
@@ -22,35 +31,71 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: value || "",
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    } else {
+      setImageFile(null);
+      setImagePreview(null);
+    }
+  };
+
+  const uploadImage = async () => {
+    try {
+      if (imageFile) {
+        const response = await uploadImageCloudinary(imageFile, folder);
+        return response.secure_url;
+      }
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      toast.error("Image upload failed. Please try again.");
+    }
+    return null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await createConsignment(formData);
+    setIsLoading(true);
 
-      if (response.statusCode === 201) {
-        setSuccess(true);
-        setFormData({
-          name: "",
-          category: "",
-          origin: "",
-          sex: "",
-          age: 0,
-          size: "",
-          species: "",
-        });
-        toast.success("Successfully created a consignment");
-        setError(null);
-        setTimeout(() => {
-          onClose();
-        }, 2000);
+    try {
+      const uploadedImageUrl = await uploadImage();
+      if (uploadedImageUrl) {
+        const newConsignmentData = { ...formData, imageUrl: uploadedImageUrl };
+        const response = await createConsignment(newConsignmentData);
+
+        if (response.statusCode === 201) {
+          setSuccess(true);
+          setFormData({
+            name: "",
+            category: "",
+            origin: "",
+            sex: "",
+            age: 0,
+            size: "",
+            species: "",
+            imageUrl: null,
+          });
+          setImageFile(null);
+          setImagePreview(null);
+          setCurrentStep(1);
+          toast.success("Successfully created a consignment");
+          setError(null);
+          setTimeout(() => {
+            onClose();
+          }, 2000);
+        }
       }
     } catch (err) {
       toast.error("Failed to create consignment item. Please try again.");
       setSuccess(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,11 +104,25 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
   };
 
   const prevStep = () => {
+    setImagePreview(null);
     setCurrentStep(currentStep - 1);
   };
 
   const isFormValid = () => {
-    return Object.values(formData).every(value => value !== "" && value !== 0);
+    // return Object.values(formData).every(
+    //   (value) => value !== "" && value !== 0
+    // );
+    const requiredFieldsFilled =
+      formData.name &&
+      formData.category &&
+      formData.origin &&
+      formData.sex &&
+      formData.size &&
+      formData.species &&
+      imageFile;
+    const ageIsValid = formData.age > 0;
+
+    return requiredFieldsFilled && ageIsValid;
   };
 
   const renderFormStep = () => {
@@ -77,7 +136,7 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
                 type="text"
                 id="name"
                 name="name"
-                value={formData.name}
+                value={formData.name || ""}
                 onChange={handleChange}
                 required
               />
@@ -88,7 +147,7 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
                 type="text"
                 id="category"
                 name="category"
-                value={formData.category}
+                value={formData.category || ""}
                 onChange={handleChange}
                 required
               />
@@ -104,7 +163,7 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
                 type="text"
                 id="origin"
                 name="origin"
-                value={formData.origin}
+                value={formData.origin || ""}
                 onChange={handleChange}
                 required
               />
@@ -147,7 +206,7 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
                 type="number"
                 id="age"
                 name="age"
-                value={formData.age}
+                value={formData.age || 0}
                 onChange={handleChange}
                 required
               />
@@ -158,7 +217,7 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
                 type="text"
                 id="size"
                 name="size"
-                value={formData.size}
+                value={formData.size || ""}
                 onChange={handleChange}
                 required
               />
@@ -169,11 +228,33 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
                 type="text"
                 id="species"
                 name="species"
-                value={formData.species}
+                value={formData.species || ""}
                 onChange={handleChange}
                 required
               />
             </div>
+          </>
+        );
+      case 4:
+        return (
+          <>
+            <div className="form-group">
+              <label htmlFor="imageUrl">Choose file:</label>
+              <input
+                id="imageUrl"
+                name="imageUrl"
+                type="file"
+                accept="image/png, image/jpg, image/jpeg"
+                onChange={handleImageChange}
+                className="text-dark"
+                required
+              />
+            </div>
+            {imagePreview && (
+              <div className="image-preview">
+                <img src={imagePreview} alt="Preview" className="w-100" />
+              </div>
+            )}
           </>
         );
       default:
@@ -181,60 +262,72 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleClose = () => {
+    setCurrentStep(1);  
+    onClose();  
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className="popup-overlay">
       <div className="popup-content">
-        <button className="close-btn" onClick={onClose}>
+        <button className="close-btn" onClick={handleClose}>
           &times;
         </button>
         <div className="consignment-form-container">
           <h1>Create Consignment Item</h1>
 
-          {error && <p className="error-message">{error}</p>}
-          {success && (
-            <p className="success-message">
-              Consignment Item created successfully!
-            </p>
-          )}
-
-          <div className="progress-indicator">
-            {[1, 2, 3].map((step) => (
-              <div
-                key={step}
-                className={`step ${currentStep >= step ? "active" : ""}`}
-              >
-                {step}
+          {isLoading ? (
+            <FishSpinner />
+          ) : (
+            <>
+              <div className="progress-indicator">
+                {[1, 2, 3, 4].map((step) => (
+                  <div
+                    key={step}
+                    className={`step ${currentStep >= step ? "active" : ""}`}
+                  >
+                    {step}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <form onSubmit={handleSubmit} className="consignment-form">
-            {renderFormStep()}
+              <form onSubmit={handleSubmit} className="consignment-form">
+                {renderFormStep()}
 
-            <div className="button-group">
-              {currentStep > 1 && (
-                <button type="button" onClick={prevStep} className="btn-prev">
-                  Previous
-                </button>
-              )}
-              {currentStep < 3 && (
-                <button type="button" onClick={nextStep} className="btn-next">
-                  Next
-                </button>
-              )}
-              {currentStep === 3 && (
-                <button 
-                  type="submit" 
-                  className="btn-submit"
-                  disabled={!isFormValid()}
-                >
-                  Submit
-                </button>
-              )}
-            </div>
-          </form>
+                <div className="button-group">
+                  {currentStep > 1 && (
+                    <button
+                      type="button"
+                      onClick={prevStep}
+                      className="btn-prev"
+                    >
+                      Previous
+                    </button>
+                  )}
+                  {currentStep < 4 && (
+                    <button
+                      type="button"
+                      onClick={nextStep}
+                      className="btn-next"
+                    >
+                      Next
+                    </button>
+                  )}
+                  {currentStep === 4 && (
+                    <button
+                      type="submit"
+                      className="btn-submit"
+                      disabled={!isFormValid()}
+                    >
+                      Submit
+                    </button>
+                  )}
+                </div>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </div>
