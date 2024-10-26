@@ -13,10 +13,10 @@
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
+  color: var(--primary-black);
 }
 
 .payment-table th {
-  background-color: #eb0f0f;
   font-weight: bold;
 }
 
@@ -32,4 +32,3 @@
   color: red;
   font-weight: bold;
 }
-

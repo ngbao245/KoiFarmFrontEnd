@@ -97,20 +97,29 @@ const StaffOrders = () => {
 
       if (newStatus === "Completed") {
         const orderPayments = payments.filter((p) => p.orderId === orderId);
+        console.log(orderPayments);
+        
         if (orderPayments.length === 0) { // Check if no payments exist
-          // Create a new payment
-          await createPaymentForCOD({
-            orderId: orderId,
-          });
-          console.log("Payment created for orderId:", orderId);
-          console.success("Đã tạo thanh toán mới cho đơn hàng.");
+          try {
+            const response = await createPaymentForCOD({ orderId: orderId });
+            if (response && response.data) {
+              console.log("Payment created for orderId:", orderId);
+              toast.success("Đã tạo thanh toán mới cho đơn hàng.");
+            } else {
+              console.warn("Payment creation response is empty or invalid");
+              toast.warn("Không thể xác nhận thanh toán. Vui lòng kiểm tra lại.");
+            }
+          } catch (paymentError) {
+            console.error("Error creating payment:", paymentError);
+            toast.error("Lỗi khi tạo thanh toán. Vui lòng thử lại sau.");
+          }
         } else {
-          console.info("Đơn hàng hoàn tất nhưng thanh toán đã tồn tại.");
+          console.info("Đơn hàng hoàn tất và thanh toán đã tồn tại.");
         }
       }
       toast.success("Cập nhật trạng thái đơn hàng thành công!");
-    } catch {
-      console.error(error);
+    } catch (error) {
+      console.error("Error updating order status:", error);
       toast.error("Cập nhật trạng thái đơn hàng thất bại");
     } finally {
       setIsUpdating(false);

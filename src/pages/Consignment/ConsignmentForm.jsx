@@ -263,6 +263,7 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
   };
 
   const handleClose = () => {
+    setImagePreview(null)
     setCurrentStep(1);  
     onClose();  
   };
