@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { getProductById } from "../../services/ProductService";
 import { fetchAllBlogs } from "../../services/BlogService";
 import FishSpinner from "../../components/FishSpinner";
+import { addToCart } from "../../services/CartService";
+import { toast } from "react-toastify";
 
 export const Home = () => {
   const [productItems, setProductItems] = useState([]);
@@ -37,20 +39,20 @@ export const Home = () => {
       })
       .finally(() => setIsLoading(false));
 
-      //Chatbot
-      const script = document.createElement("script");
-      script.src = "https://app.tudongchat.com/js/chatbox.js";
-      script.async = true;
-      document.body.appendChild(script);
-  
-      script.onload = () => {
-        const tudong_chatbox = new TuDongChat('0gZTvtFBAwLSMw1Du_cQl');
-        tudong_chatbox.initial();
-      };
-  
-      return () => {
-        document.body.removeChild(script);
-      };
+    //Chatbot
+    const script = document.createElement("script");
+    script.src = "https://app.tudongchat.com/js/chatbox.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      const tudong_chatbox = new TuDongChat('0gZTvtFBAwLSMw1Du_cQl');
+      tudong_chatbox.initial();
+    };
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   const handleProductClick = async (productItem) => {
@@ -62,8 +64,7 @@ export const Home = () => {
       const productName = productResponse.data.name;
 
       navigate(
-        `/koi/${productName.toLowerCase().replace(/\s+/g, "")}/${
-          productItem.id
+        `/koi/${productName.toLowerCase().replace(/\s+/g, "")}/${productItem.id
         }`,
         {
           state: { response: prodItemResponse.data, productName },
@@ -71,6 +72,27 @@ export const Home = () => {
       );
     } catch (error) {
       console.error("Error fetching product item:", error);
+    }
+  };
+
+  const handleAddToCart = async (quantity, itemId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng của bạn");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await addToCart(quantity, itemId, token);
+      console.log(response);
+      if (response.data && response.data.cartId) {
+        toast.success(`Đã thêm ${productItem.name} vào giỏ hàng`);
+      } else {
+        toast.error("Sản phẩm đã hết hàng");
+      }
+    } catch (error) {
+      toast.error(error);
     }
   };
 
@@ -130,7 +152,13 @@ export const Home = () => {
                       </p>
                     </div>
                     <div className="button-container">
-                      <button className="buy-button">Mua ngay</button>
+                      <button
+                        className="buy-button"
+                        onClick={() => {
+                          handleAddToCart(1, item.id);
+                          navigate("/order");
+                        }}
+                      >Mua ngay</button>
                       <button
                         className="view-more-button"
                         onClick={() => handleProductClick(item)}
@@ -150,7 +178,7 @@ export const Home = () => {
             </h2>
             <div className="homepage-news-list">
               {isLoading ? (
-                <><FishSpinner/></>
+                <><FishSpinner /></>
               ) : blogs.length > 0 ? (
                 blogs.map((blog) => (
                   <div className="homepage-news-card" key={blog.id}>
@@ -174,9 +202,9 @@ export const Home = () => {
                       <span className="news-card-date">
                         {new Date().toLocaleDateString()}
                       </span>
-                      <button 
-                      className="news-card-button"
-                      onClick={() => handleReadMore(blog.id)}
+                      <button
+                        className="news-card-button"
+                        onClick={() => handleReadMore(blog.id)}
                       >Đọc thêm</button>
                     </div>
                   </div>

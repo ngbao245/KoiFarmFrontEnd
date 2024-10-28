@@ -99,6 +99,10 @@ const ProductItemDetail = () => {
                 borderRadius: "5px",
                 cursor: "pointer",
               }}
+              onClick={() => {
+                handleAddToCart(1, productItem.id);
+                navigate("/order");
+              }}
             >
               Đặt Mua Nhanh
             </button>
