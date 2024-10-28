@@ -151,15 +151,6 @@
   border: none;
 }
 
-/* .fa-arrow-left {
-  color: var(--primary-red);
-  cursor: pointer;
-}
-
-.fa-arrow-left:hover {
-  color: #ff0000;
-}  */
-
 .password-input-container {
   position: relative;
   width: 100%;

@@ -20,6 +20,7 @@ const Register = () => {
     password: "",
     confirmPassword: "",
   });
+  const [isShowPassword, setIsShowPassword] = useState(true);
 
   const handleNext = () => setStep(step + 1);
   const handlePrev = () => setStep(step - 1);
@@ -70,16 +71,13 @@ const Register = () => {
     if (e.key === "Enter") {
       e.preventDefault();
 
-      // Find first empty field
       const emptyField = currentInputs.find((field) => !formData[field].trim());
 
       if (emptyField) {
-        // Focus the first empty input
         document.querySelector(`input[name="${emptyField}"]`).focus();
         return;
       }
 
-      // If all fields in current step are filled
       if (step < 3) {
         handleNext();
       } else if (
@@ -97,6 +95,9 @@ const Register = () => {
 
   return (
     <div className="register-container">
+      <div className="back-arrow">
+        <i className="fa-solid fa-arrow-left" onClick={() => navigate(-1)}></i>
+      </div>
       <main className="register-content animated user-select-none">
         <div className="register-form">
           <div className="register-title">
@@ -142,6 +143,7 @@ const Register = () => {
                     type="button"
                     onClick={handleNext}
                     className="register-button"
+                    disabled={!formData.lastName || !formData.firstName}
                   >
                     Tiếp theo
                   </button>
@@ -184,6 +186,7 @@ const Register = () => {
                     type="button"
                     onClick={handleNext}
                     className="register-button"
+                    disabled={!formData.Email || !formData.address}
                   >
                     Tiếp theo
                   </button>
@@ -198,16 +201,24 @@ const Register = () => {
                   handleKeyPress(e, ["password", "confirmPassword"])
                 }
               >
-                <div>
+                <div className="password-input-container">
                   <label>Mật khẩu</label>
                   <input
                     autoFocus={true}
-                    type="password"
+                    type={isShowPassword ? "password" : "text"}
                     name="password"
                     placeholder="Vui lòng nhập mật khẩu"
                     value={formData.password}
                     onChange={handleChange}
                   />
+                  <i
+                    className={
+                      isShowPassword
+                        ? "fa-solid fa-eye-slash"
+                        : "fa-solid fa-eye"
+                    }
+                    onClick={() => setIsShowPassword(!isShowPassword)}
+                  ></i>
                 </div>
                 <div>
                   <label>Nhập lại mật khẩu</label>

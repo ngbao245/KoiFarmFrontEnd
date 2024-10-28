@@ -30,11 +30,6 @@
   border-radius: 8px;
 }
 
-.back-arrow {
-  font-size: 1.5rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-}
 
 .progress-indicator {
   display: flex;

@@ -121,3 +121,22 @@
   margin: 3px 0;
   font-size: 14px;
 }
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.password-input-container i {
+  position: absolute;
+  right: 10px;
+  top: 72%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.5;
+}

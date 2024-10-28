@@ -50,18 +50,17 @@ const Login = () => {
   };
 
   const handlePressEnter = (event) => {
-    if (event && event.key === "Enter") {
+    if (event && event.key === "Enter" && email && password) {
       handleLogin();
     }
   };
 
   return (
     <GoogleOAuthProvider clientId="684900073655-mu5vsdorjg8j82vkcf9uiuu7conm57fh.apps.googleusercontent.com">
-      <div className="back-arrow">
-        <i className="fa-solid fa-arrow-left" onClick={() => navigate(-1)}></i>
-      </div>
-
       <div className="login-container">
+        <div className="back-arrow">
+          <i className="fa-solid fa-arrow-left" onClick={() => navigate(-1)}></i>
+        </div>
         <main className="login-content animated user-select-none">
           <div className="login-form">
             <div className="login-title">
@@ -84,7 +83,7 @@ const Login = () => {
               <label>Mật khẩu</label>
                 <input
                   type={isShowPassword ? "password" : "text"}
-                  placeholder="Vui lòng nhập mật khẩu"
+                  placeholder="Vui lng nhập mật khẩu"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={handlePressEnter}
