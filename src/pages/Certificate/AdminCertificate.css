@@ -1,0 +1,16 @@
+.btn-info {
+  color: white;
+}
+
+.btn-info:hover {
+  color: white;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table button {
+  margin: 0 2px;
+}
+

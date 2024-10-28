@@ -92,7 +92,7 @@ const AdminHeader = () => {
                         to="/admin"
                         disabled={!user || !user.auth}
                       >
-                        Quán Lý Nhân Viên
+                        Nhân Viên
                       </NavLink>
                     )}
                     <NavLink
@@ -100,14 +100,21 @@ const AdminHeader = () => {
                       to="/admin-product"
                       disabled={!user || !user.auth}
                     >
-                      Quản Lý Sản Phẩm
+                      Sản Phẩm
                     </NavLink>
                     <NavLink
                       className="nav-link"
                       to="/admin-blog"
                       disabled={!user || !user.auth}
                     >
-                      Quản Lý Bài Đăng
+                      Bài Đăng
+                    </NavLink>
+                    <NavLink
+                      className="nav-link"
+                      to="/admin-certificate"
+                      disabled={!user || !user.auth}
+                    >
+                      Chứng Chỉ
                     </NavLink>
                     {userDetails && userDetails.roleId === "1" && (
                       <NavLink
@@ -115,7 +122,7 @@ const AdminHeader = () => {
                         to="/admin-order"
                         disabled={!user || !user.auth}
                       >
-                        Quản Lý Đơn Đặt Hàng
+                        Đơn Đặt Hàng
                       </NavLink>
                     )}
                     {userDetails && userDetails.roleId === "2" && (
@@ -124,7 +131,7 @@ const AdminHeader = () => {
                         to="/staff-orders"
                         disabled={!user || !user.auth}
                       >
-                        Quản Lý Đơn Đặt Hàng Của Nhân Viên
+                        Đơn Đặt Hàng Của Nhân Viên
                       </NavLink>
                     )}
                   </Nav>

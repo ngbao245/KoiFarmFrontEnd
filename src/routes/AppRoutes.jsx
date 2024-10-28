@@ -28,6 +28,7 @@ import AdminDashboard from "../pages/Admin/AdminDashboard.jsx";
 import ConsignmentForm from "../pages/Consignment/ConsignmentForm.jsx";
 import UserConsignment from "../pages/Consignment/UserConsignment.jsx";
 import Consignment from "../pages/Consignment/Consignment.jsx";
+import AdminCertificate from "../pages/Certificate/AdminCertificate.jsx";
 
 const AppRoutes = () => {
   return (
@@ -48,6 +49,7 @@ const AppRoutes = () => {
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin-product" element={<AdminProduct />} />
         <Route path="/admin-blog" element={<AdminBlog />} />
+        <Route path="/admin-certificate" element={<AdminCertificate />} />
         <Route path="/admin-order" element={<AdminOrder />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
