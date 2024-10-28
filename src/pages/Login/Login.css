@@ -1,59 +1,54 @@
-html,
-body {
-  height: 100%;
-  margin: 0;
-}
-
-.pg-Login .login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
+.login-container {
   position: relative;
-  padding-bottom: 3.2rem;
 }
 
-.pg-Login .login::before {
+.login-container::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("/public/assets/backgroundUpscale.png") no-repeat center
-    center fixed;
+  background: var(--primary-background-light);
   background-size: cover;
   filter: blur(5px);
   z-index: -1;
   opacity: 0.7;
 }
 
-.pg-Login .login-container {
+.login-content {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 850px;
+  width: 1000px;
   padding: 40px;
   background: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 30px;
+  box-shadow: var(--box-shadow-default);
+  border-radius: var(--radius-form);
   position: relative;
+  height: 450px;
 }
 
-.pg-Login .login-title {
+.login-title {
   flex: 1;
   text-align: left;
   padding-right: 40px;
 }
 
-.pg-Login .login-title h2 {
+.login-title h2 {
   font-size: 36px;
   margin-bottom: 20px;
 }
 
-.pg-Login .form {
+.login-input {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -61,12 +56,12 @@ body {
   margin-right: 25px;
 }
 
-.pg-Login .form > div {
+.login-input > div {
   width: 100%;
   margin-bottom: 20px;
 }
 
-.pg-Login label {
+.login-container label {
   display: block;
   font-size: 14px;
   font-weight: bold;
@@ -74,9 +69,9 @@ body {
   text-align: left;
 }
 
-.pg-Login input[type="email"],
-.pg-Login input[type="text"],
-.pg-Login input[type="password"] {
+.login-container input[type="email"],
+.login-container input[type="text"],
+.login-container input[type="password"] {
   width: 100%;
   padding: 12px 15px;
   border: 1px solid #ccc;
@@ -85,90 +80,101 @@ body {
   height: 45px;
 }
 
-.pg-Login .button-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.pg-Login button {
+.login-button {
+  width: 150px;
   padding: 10px 20px;
-  background-color: #ff0000;
-  color: white;
+  background-color: var(--primary-red);
+  color: var(--primary-white);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-default);
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.pg-Login button:hover {
+.login-button:hover {
   background-color: none;
 }
 
-.pg-Login button:not(.empty) {
-  background: #ff0000;
+.login-button:not(.empty) {
+  background: var(--primary-red);
 }
 
-.pg-Login button:not(.empty):hover {
-  background: #ff0000;
+.login-button:not(.empty):active {
+  background: var(--primary-red);
 }
 
-.pg-Login button:not(.empty):active {
-  background: #ff0000;
+.login-button:not(.empty):hover {
+  background: var(--primary-red-hover);
 }
 
-.pg-Login p {
+.login-container p {
   text-align: left;
   margin: 0;
 }
 
-.pg-Login a {
+.login-container a {
   color: var(--primary-red);
   text-decoration: none;
   font-weight: bold;
 }
 
-.pg-Login a:hover {
+.login-container a:hover {
   text-decoration: underline;
 }
 
-.pg-Login .link-button-wrapper {
+.link-button-wrapper {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-top: 20px;
 }
 
-.pg-Login .link-section {
+.link-section {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
 }
 
-.pg-Login .link-section p {
+.link-section span {
+  margin-right: 10px;
+}
+
+.link-section p {
   margin: 3px 0;
   font-size: 14px;
 }
 
-.pg-Login .cursor-pointer {
-  cursor: pointer;
-}
-
-.pg-Login .empty {
+.empty {
   color: #16182357;
   background: #1618230f;
   cursor: not-allowed;
   border: none;
 }
 
-.pg-Login .fa-arrow-left {
+/* .fa-arrow-left {
   color: var(--primary-red);
   cursor: pointer;
 }
 
-.pg-Login .fa-arrow-left:hover {
+.fa-arrow-left:hover {
   color: #ff0000;
+}  */
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.password-input-container i {
+  position: absolute;
+  right: 10px;
+  top: 72%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.5;
 }

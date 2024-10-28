@@ -254,11 +254,11 @@ const StaffOrders = () => {
             <thead>
               <tr>
                 <th></th>
-                <th>Mã Đơn Hàng</th>
-                <th>Tên Khách Hàng</th>
-                <th>Ngày Đặt Hàng</th>
-                <th>Trạng Thái</th>
-                {activeTab !== "Cancelled" && <th>Xác Nhận</th>}
+                <th>Mã đơn hàng</th>
+                <th>Khách hàng</th>
+                <th>Ngày đặt hàng</th>
+                <th>Trạng thái</th>
+                {activeTab !== "Cancelled" && <th>Xác nhận</th>}
               </tr>
             </thead>
             <tbody>

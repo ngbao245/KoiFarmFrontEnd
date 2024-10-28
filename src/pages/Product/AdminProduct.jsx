@@ -5,7 +5,6 @@ import ModalAddProductItem from "../../components/ModalAddProductItem";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
 import { fetchAllProdItem } from "../../services/ProductItemService";
-// import "../Admin/Admin.css";
 import { getProductById } from "../../services/ProductService";
 import FishSpinner from "../../components/FishSpinner";
 
@@ -174,10 +173,10 @@ const AdminProduct = () => {
         <table className="table table-striped text-center">
           <thead>
             <tr>
-              <th>Tên SP</th>
+              <th>Cá Koi</th>
               <th>Giá</th>
               <th>Loại</th>
-              <th>Nguồn Gốc</th>
+              <th>Nguồn gốc</th>
               <th>Giới tính</th>
               <th>Tuổi</th>
               <th>Kích thước</th>
@@ -188,8 +187,8 @@ const AdminProduct = () => {
               <th>Khoáng chất</th>
               <th>pH</th>
               <th>Số lượng</th>
-              <th>Loại</th>
-              <th>Tên loại SP</th>
+              <th>Giống</th>
+              <th>Loại cá</th>
               <th>Ảnh</th>
             </tr>
           </thead>

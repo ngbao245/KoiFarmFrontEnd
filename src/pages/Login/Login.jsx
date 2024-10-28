@@ -5,7 +5,7 @@ import { signin } from "../../services/UserService";
 import { UserContext } from "../../contexts/UserContext";
 import "./Login.css";
 import "../../styles/animation.css";
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import GoogleLoginButton from "../../components/GoogleLogin";
 
 const Login = () => {
@@ -34,7 +34,7 @@ const Login = () => {
         if (roleId === "0") {
           navigate("/");
         } else if (roleId === "1") {
-          navigate("/admin-dashboard  ");
+          navigate("/admin-dashboard");
         } else if (roleId === "2") {
           navigate("/admin-product");
         }
@@ -57,90 +57,80 @@ const Login = () => {
 
   return (
     <GoogleOAuthProvider clientId="684900073655-mu5vsdorjg8j82vkcf9uiuu7conm57fh.apps.googleusercontent.com">
-
-    <div className="pg-Login">
-      <div className="login">
-        <div className="back-arrow">
-          <i
-            className="fa-solid fa-arrow-left"
-            onClick={() => navigate(-1)}
-          ></i>
-        </div>
-
-        <div className="login-container animated">
-          <div className="login-title">
-            <h2>Đăng nhập</h2>
-            <p>Chào mừng bạn quay trở lại!</p>
-          </div>
-
-          <div className="form">
-            <div>
-              <label>Email/ SĐT</label>
-              <input
-                type="text"
-                placeholder="Vui lòng nhập email hoặc SĐT của bạn"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(event) => handlePressEnter(event)}
-              />
-            </div>
-            <div>
-              <label>Mật Khẩu</label>
-              <input
-                type={isShowPassword === true ? "password" : "text"}
-                placeholder="Vui lòng nhập mật khẩu"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(event) => handlePressEnter(event)}
-              />
-              <i
-                className={
-                  isShowPassword === true
-                    ? "fa-solid fa-eye"
-                    : "fa-solid fa-eye-slash"
-                }
-                onClick={() => setIsShowPassword(!isShowPassword)}
-              ></i>
-            </div>
-
-            <div className="link-button-wrapper">
-              <div className="link-section">
-                <p>
-                  Chưa có tài khoản?{" "}
-                  <a
-                    className="primary cursor-pointer"
-                    onClick={() => {
-                      navigate("/register");
-                    }}
-                  >
-                    Đăng Ký Ngay
-                  </a>
-                </p>
-                <p>
-                  <a href="#">Quên mật khẩu</a>
-                </p>
-              </div>
-              <button
-                type="button"
-                className={email && password ? "" : "empty"}
-                disabled={!(email && password)}
-                onClick={() => handleLogin()}
-              >
-                {isLoading ? (
-                  <i className="fas fa-spinner fa-spin"></i>
-                ) : (
-                  "Đăng nhập"
-                )}
-              </button>
-            </div>
-            <GoogleLoginButton />
-
-          </div>
-        </div>
+      <div className="back-arrow">
+        <i className="fa-solid fa-arrow-left" onClick={() => navigate(-1)}></i>
       </div>
-    </div>
-    </GoogleOAuthProvider>
 
+      <div className="login-container">
+        <main className="login-content animated user-select-none">
+          <div className="login-form">
+            <div className="login-title">
+              <h2>Đăng nhập</h2>
+              <p>Chào mừng bạn quay trở lại!</p>
+            </div>
+
+            <div className="login-input">
+              <div>
+                <label>Email</label>
+                <input
+                  type="text"
+                  placeholder="Vui lòng nhập email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(event) => handlePressEnter(event)}
+                />
+              </div>
+              <div className="password-input-container">
+              <label>Mật khẩu</label>
+                <input
+                  type={isShowPassword ? "password" : "text"}
+                  placeholder="Vui lòng nhập mật khẩu"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={handlePressEnter}
+                />
+                <i
+                  className={isShowPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"}
+                  onClick={() => setIsShowPassword(!isShowPassword)}
+                ></i>
+              </div>
+
+              <div className="link-button-wrapper">
+                <div className="link-section">
+                  <p>
+                    <span>Chưa có tài khoản?</span>
+                    <a
+                      className="primary cursor-pointer"
+                      onClick={() => {
+                        navigate("/register");
+                      }}
+                    >
+                      Đăng Ký Ngay
+                    </a>
+                  </p>
+                  <p>
+                    <a href="#">Quên mật khẩu</a>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className={`${email && password ? "" : "empty"} login-button`}
+                  disabled={!(email && password)}
+                  onClick={() => handleLogin()}
+                >
+                  {isLoading ? (
+                    <i className="fas fa-spinner fa-spin"></i>
+                  ) : (
+                    "Đăng nhập"
+                  )}
+                </button>
+              </div>
+              <GoogleLoginButton />
+            </div>
+          </div>
+        </main>
+      </div>
+    </GoogleOAuthProvider>
   );
 };
 

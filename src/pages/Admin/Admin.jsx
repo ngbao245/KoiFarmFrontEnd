@@ -8,6 +8,7 @@ import AdminHeader from "../../layouts/header/AdminHeader";
 import { fetchAllStaff } from "../../services/UserService";
 import ModalConfirm from "../../components/ModalConfirm";
 import HintBox from "../../components/HintBox";
+import FishSpinner from "../../components/FishSpinner";
 
 const Admin = () => {
   const [listStaffs, setListStaffs] = useState([]);
@@ -17,9 +18,11 @@ const Admin = () => {
   const [fetchAgain, setFetchAgain] = useState(false);
   const [isShowModalConfirm, setIsShowModalConfirm] = useState(false);
   const [dataStaffDelete, setDataStaffDelete] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchStaff = async () => {
+      setIsLoading(true);
       try {
         const response = await fetchAllStaff();
         if (response && response.data) {
@@ -29,6 +32,8 @@ const Admin = () => {
         }
       } catch (error) {
         toast.error("Failed to fetch staff members");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchStaff();
@@ -108,6 +113,8 @@ const Admin = () => {
     setIsShowModalConfirm(false);
   };
 
+  if (isLoading) return <FishSpinner />;
+
   return (
     <>
       <AdminHeader />
@@ -168,11 +175,11 @@ const Admin = () => {
         <table className="table table-striped text-center">
           <thead>
             <tr>
-              <th>Tên Nhân Viên</th>
+              <th>Nhân viên</th>
               <th>Email</th>
-              <th>Địa Chỉ</th>
-              <th>Số Điện Thoại</th>
-              <th>Chức Vụ</th>
+              <th>Địa chỉ</th>
+              <th>Số điện thoại</th>
+              <th>Chức vụ</th>
               <th>Thao tác</th>
             </tr>
           </thead>

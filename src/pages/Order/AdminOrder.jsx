@@ -233,12 +233,12 @@ const AdminOrder = () => {
           <thead>
             <tr>
               <th></th>
-              <th>Mã Đơn Hàng</th>
-              <th>Tên Khách Hàng</th>
-              <th>Ngày Đặt Hàng</th>
-              <th>Trạng Thái</th>
-              <th>Nhân viên Chỉ Định</th>
-              {activeTab === "Pending" && <th>Huỷ Đơn Hàng</th>}
+              <th>Mã đơn hàng</th>
+              <th>Khách hàng</th>
+              <th>Ngày đặt hàng</th>
+              <th>Trạng thái</th>
+              <th>Nhân viên chỉ định</th>
+              {activeTab === "Pending" && <th>Huỷ đơn hàng</th>}
             </tr>
           </thead>
           <tbody>

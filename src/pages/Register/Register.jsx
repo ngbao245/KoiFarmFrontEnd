@@ -1,15 +1,13 @@
 import React, { useContext, useState } from "react";
-import { Container, Form, Button, Row, Col } from "react-bootstrap";
-import { signin, signup } from "../../services/UserService";
-import { toast } from "react-toastify";
-import { UserContext } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { signin, signup } from "../../services/UserService";
+import { UserContext } from "../../contexts/UserContext";
 import "./Register.css";
 import "../../styles/animation.css";
 
 const Register = () => {
   const { loginContext } = useContext(UserContext);
-
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -22,13 +20,9 @@ const Register = () => {
     password: "",
     confirmPassword: "",
   });
-  const handleNext = () => {
-    setStep(step + 1);
-  };
 
-  const handlePrev = () => {
-    setStep(step - 1);
-  };
+  const handleNext = () => setStep(step + 1);
+  const handlePrev = () => setStep(step - 1);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,8 +44,7 @@ const Register = () => {
       toast.error("All fields are required!");
       return;
     }
-    if (formData.password === formData.confirmPassword) {
-    } else {
+    if (formData.password !== formData.confirmPassword) {
       toast.error("Password not match!");
       return;
     }
@@ -63,7 +56,6 @@ const Register = () => {
       phone: "",
       address: formData.address,
     });
-    console.log(res);
     if (res && res.data && res.statusCode === 201) {
       let res = await signin(formData.Email.trim(), formData.password.trim());
       if (res && res.data.token) {
@@ -74,361 +66,190 @@ const Register = () => {
     } else toast.error(res.data);
   };
 
+  const handleKeyPress = (e, currentInputs) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      // Find first empty field
+      const emptyField = currentInputs.find((field) => !formData[field].trim());
+
+      if (emptyField) {
+        // Focus the first empty input
+        document.querySelector(`input[name="${emptyField}"]`).focus();
+        return;
+      }
+
+      // If all fields in current step are filled
+      if (step < 3) {
+        handleNext();
+      } else if (
+        formData.lastName &&
+        formData.firstName &&
+        formData.Email &&
+        formData.address &&
+        formData.password &&
+        formData.confirmPassword
+      ) {
+        handleSubmit(e);
+      }
+    }
+  };
+
   return (
-    <>
-      <div className="register-container">
-        <div
-          style={{
-            // backgroundImage: "url(/public/assets/background.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            height: "100vh",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div className="back-arrow">
-            <i
-              className="fa-solid fa-arrow-left"
-              onClick={() => navigate(-1)}
-            ></i>
+    <div className="register-container">
+      <main className="register-content animated user-select-none">
+        <div className="register-form">
+          <div className="register-title">
+            <h2>Register</h2>
+            <p>Hãy điền thông tin cần thiết để tạo tài khoản.</p>
           </div>
 
-          <Container
-            className="animated"
-            style={{
-              backgroundColor: "white",
-              padding: "40px",
-              borderRadius: "30px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-              width: "850px",
-              height: "394px",
-              display: "flex",
-              alignItems: "center", // Ensures vertical centering
-            }}
-          >
-            <Row style={{ width: "100%" }}>
-              <Col
-                md={3}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "flex-start",
-                  paddingLeft: "20px",
-                }}
+          <div className="register-input">
+            {step === 1 && (
+              <form
+                onKeyPress={(e) => handleKeyPress(e, ["lastName", "firstName"])}
               >
-                <h2 style={{ margin: 0 }}>Register</h2>
-                <p
-                  style={{ fontSize: "14px", color: "#666", marginTop: "5px" }}
-                >
-                  Hãy điền thông tin cần thiết để tạo tài khoản.
-                </p>
-              </Col>
-              <Col md={9}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    height: "100%",
-                  }}
-                >
-                  {step === 1 && (
-                    <Form style={{ width: "100%" }}>
-                      <Form.Group className="mb-3">
-                        <Form.Label
-                          style={{
-                            paddingLeft: 170,
-                          }}
-                        >
-                          Họ
-                        </Form.Label>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <Form.Control
-                            type="text"
-                            name="lastName"
-                            placeholder="Vui lòng nhập họ của bạn"
-                            value={formData.lastName}
-                            onChange={handleChange}
-                            style={{
-                              padding: "16px 20px",
-                              borderRadius: "8px",
-                              fontSize: "16px",
-                              height: "50px",
-                              width: "70%", // Shorter text field
-                            }}
-                          />
-                        </div>
-                      </Form.Group>
-                      <Form.Group className="mb-3">
-                        <Form.Label
-                          style={{
-                            paddingLeft: 170,
-                          }}
-                        >
-                          Tên
-                        </Form.Label>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <Form.Control
-                            type="text"
-                            name="firstName"
-                            placeholder="Vui lòng nhập tên của bạn"
-                            value={formData.firstName}
-                            onChange={handleChange}
-                            style={{
-                              padding: "16px 20px",
-                              borderRadius: "8px",
-                              fontSize: "16px",
-                              height: "50px",
-                              width: "70%",
-                            }}
-                          />
-                        </div>
-                      </Form.Group>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <Button
-                          onClick={() => navigate(-1)}
-                          style={{
-                            backgroundColor: "#6d6d6d",
-                            borderColor: "#6d6d6d",
-                            padding: "12px 30px",
-                            fontSize: "16px",
-                            marginRight: "10px",
-                          }}
-                        >
-                          Quay lại
-                        </Button>
-                        <Button
-                          onClick={handleNext}
-                          style={{
-                            backgroundColor: "#6d6d6d",
-                            borderColor: "#6d6d6d",
-                            padding: "12px 30px",
-                            fontSize: "16px",
-                          }}
-                        >
-                          Tiếp theo
-                        </Button>
-                      </div>
-                    </Form>
-                  )}
-
-                  {step === 2 && (
-                    <Form style={{ width: "100%" }}>
-                      <Form.Group className="mb-3">
-                        <Form.Label
-                          style={{
-                            paddingLeft: 170,
-                          }}
-                        >
-                          Số điện thoại/ Email
-                        </Form.Label>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <Form.Control
-                            type="text"
-                            name="Email"
-                            placeholder="Vui lòng nhập số điện thoại hoặc email"
-                            value={formData.Email}
-                            onChange={handleChange}
-                            style={{
-                              padding: "16px 20px",
-                              borderRadius: "8px",
-                              fontSize: "16px",
-                              height: "50px",
-                              width: "70%", // Shorter text field
-                            }}
-                          />
-                        </div>
-                      </Form.Group>
-                      <Form.Group className="mb-3">
-                        <Form.Label
-                          style={{
-                            paddingLeft: 170,
-                          }}
-                        >
-                          Địa chỉ
-                        </Form.Label>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <Form.Control
-                            type="text"
-                            name="address"
-                            placeholder="Vui lòng nhập địa chỉ"
-                            value={formData.address}
-                            onChange={handleChange}
-                            style={{
-                              padding: "16px 20px",
-                              borderRadius: "8px",
-                              fontSize: "16px",
-                              height: "50px",
-                              width: "70%", // Shorter text field
-                            }}
-                          />
-                        </div>
-                      </Form.Group>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <Button
-                          onClick={handlePrev}
-                          style={{
-                            backgroundColor: "#6d6d6d",
-                            borderColor: "#6d6d6d",
-                            padding: "12px 30px",
-                            fontSize: "16px",
-                            marginRight: "10px",
-                          }}
-                        >
-                          Quay lại
-                        </Button>
-                        <Button
-                          onClick={handleNext}
-                          style={{
-                            backgroundColor: "#6d6d6d",
-                            borderColor: "#6d6d6d",
-                            padding: "12px 30px",
-                            fontSize: "16px",
-                          }}
-                        >
-                          Tiếp theo
-                        </Button>
-                      </div>
-                    </Form>
-                  )}
-
-                  {step === 3 && (
-                    <Form style={{ width: "100%" }} onSubmit={handleSubmit}>
-                      <Form.Group className="mb-3">
-                        <Form.Label
-                          style={{
-                            paddingLeft: 170,
-                          }}
-                        >
-                          Mật khẩu
-                        </Form.Label>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <Form.Control
-                            type="password"
-                            name="password"
-                            placeholder="Vui lòng nhập mật khẩu"
-                            value={formData.password}
-                            onChange={handleChange}
-                            style={{
-                              padding: "16px 20px",
-                              borderRadius: "8px",
-                              fontSize: "16px",
-                              height: "50px",
-                              width: "70%", // Shorter text field
-                            }}
-                          />
-                        </div>
-                      </Form.Group>
-                      <Form.Group className="mb-3">
-                        <Form.Label
-                          style={{
-                            paddingLeft: 170,
-                          }}
-                        >
-                          Nhập lại mật khẩu
-                        </Form.Label>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <Form.Control
-                            type="password"
-                            name="confirmPassword"
-                            placeholder="Vui lòng nhập lại mật khẩu"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            style={{
-                              padding: "16px 20px",
-                              borderRadius: "8px",
-                              fontSize: "16px",
-                              height: "50px",
-                              width: "70%",
-                            }}
-                          />
-                        </div>
-                      </Form.Group>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <Button
-                          onClick={handlePrev}
-                          style={{
-                            backgroundColor: "#6d6d6d",
-                            borderColor: "#6d6d6d",
-                            padding: "12px 30px",
-                            fontSize: "16px",
-                            marginRight: "10px",
-                          }}
-                        >
-                          Quay lại
-                        </Button>
-                        <Button
-                          type="submit"
-                          style={{
-                            backgroundColor: "#6d6d6d",
-                            borderColor: "#6d6d6d",
-                            padding: "12px 30px",
-                            fontSize: "16px",
-                          }}
-                        >
-                          Tạo tài khoản
-                        </Button>
-                      </div>
-                    </Form>
-                  )}
+                <div>
+                  <label>Họ</label>
+                  <input
+                    autoFocus={true}
+                    type="text"
+                    name="lastName"
+                    placeholder="Vui lòng nhập họ"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                  />
                 </div>
-              </Col>
-            </Row>
-          </Container>
+                <div>
+                  <label>Tên</label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="Vui lòng nhập tên"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="link-button-wrapper">
+                  <button
+                    type="button"
+                    onClick={() => navigate(-1)}
+                    className="register-button"
+                  >
+                    Trở về
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="register-button"
+                  >
+                    Tiếp theo
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {step === 2 && (
+              <form onKeyPress={(e) => handleKeyPress(e, ["Email", "address"])}>
+                <div>
+                  <label>Email</label>
+                  <input
+                    autoFocus={true}
+                    type="text"
+                    name="Email"
+                    placeholder="Vui lòng nhập email"
+                    value={formData.Email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label>Địa chỉ</label>
+                  <input
+                    type="text"
+                    name="address"
+                    placeholder="Vui lòng nhập địa chỉ"
+                    value={formData.address}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="link-button-wrapper">
+                  <button
+                    type="button"
+                    onClick={handlePrev}
+                    className="register-button"
+                  >
+                    Quay lại
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="register-button"
+                  >
+                    Tiếp theo
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {step === 3 && (
+              <form
+                onSubmit={handleSubmit}
+                onKeyPress={(e) =>
+                  handleKeyPress(e, ["password", "confirmPassword"])
+                }
+              >
+                <div>
+                  <label>Mật khẩu</label>
+                  <input
+                    autoFocus={true}
+                    type="password"
+                    name="password"
+                    placeholder="Vui lòng nhập mật khẩu"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label>Nhập lại mật khẩu</label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Vui lòng nhập lại mật khẩu"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="link-button-wrapper">
+                  <button
+                    type="button"
+                    onClick={handlePrev}
+                    className="register-button"
+                  >
+                    Quay lại
+                  </button>
+                  <button
+                    type="submit"
+                    className="register-button"
+                    disabled={
+                      !(
+                        formData.lastName &&
+                        formData.firstName &&
+                        formData.Email &&
+                        formData.address &&
+                        formData.password &&
+                        formData.confirmPassword
+                      )
+                    }
+                  >
+                    Tạo tài khoản
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 
