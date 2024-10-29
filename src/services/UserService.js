@@ -69,6 +69,28 @@ const googleSignin = (data) => {
   });
 };
 
+const requestPasswordReset = (email) => {
+  return axios.post("User/request-password-reset", email,{
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+};
+
+const resetPassword = (email, token, newPassword) => {
+  return axios.post("User/reset-password", {
+    email,
+    token,
+    newPassword,
+  },{
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+};
+
+
+
 export {
   signin,
   signup,
@@ -80,4 +102,6 @@ export {
   updateUserInfo,
   getUserInfo,
   googleSignin,
+  requestPasswordReset,
+  resetPassword,
 };

@@ -108,7 +108,7 @@ const Login = () => {
                     </a>
                   </p>
                   <p>
-                    <a href="#">Quên mật khẩu</a>
+                    <a href="/forgot-password">Quên mật khẩu</a>
                   </p>
                 </div>
                 <button
