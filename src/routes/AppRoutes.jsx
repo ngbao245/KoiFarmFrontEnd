@@ -31,6 +31,7 @@ import Consignment from "../pages/Consignment/Consignment.jsx";
 import AdminCertificate from "../pages/Certificate/AdminCertificate.jsx";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword.jsx";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword.jsx";
+import ProductComparison from "../pages/ProductItemComparison/ProductComparison.jsx";
 
 const AppRoutes = () => {
   return (
@@ -76,6 +77,9 @@ const AppRoutes = () => {
 
         <Route path="/forgot-password" element={<ForgotPassword/>} />
         <Route path="/reset-password" element={<ResetPassword/>} />
+
+        <Route path="/productItem-comparison" element={<ProductComparison/>} />
+
 
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>
