@@ -1,0 +1,47 @@
+.consignment-tabs {
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.tab-button.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8em;
+}
+
+.status-badge.pending {
+    background-color: #ffc107;
+    color: black;
+}
+
+.status-badge.approved {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-badge.checkedout {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.expanded-content {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin: 10px 0;
+} 

@@ -32,9 +32,10 @@ const fetchAllConsignments = () => {
     throw new Error("No token found! Please log in again.");
   }
 
-  return axios.get("Consignment/update-item-status", {
+  return axios.get("Consignment/all-consignments", {
     headers: {
       Authorization: `${token}`,
+      "Content-Type": "application/json",
     },
   });
 };
