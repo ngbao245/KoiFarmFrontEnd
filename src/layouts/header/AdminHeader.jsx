@@ -116,6 +116,13 @@ const AdminHeader = () => {
                     >
                       Chứng Chỉ
                     </NavLink>
+                    <NavLink
+                      className="nav-link"
+                      to="/admin-consignment"
+                      disabled={!user || !user.auth}
+                    >
+                      Ký Gửi
+                    </NavLink>
                     {userDetails && userDetails.roleId === "1" && (
                       <NavLink
                         className="nav-link"
