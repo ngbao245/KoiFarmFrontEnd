@@ -70,7 +70,7 @@ const googleSignin = (data) => {
 };
 
 const requestPasswordReset = (email) => {
-  return axios.post("User/request-password-reset", email,{
+  return axios.post("User/request-password-reset", {email},{
     headers: {
       'Content-Type': 'application/json'
     }
