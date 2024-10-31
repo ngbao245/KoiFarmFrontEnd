@@ -41,7 +41,7 @@
 }
 
 .cart-table {
-  width: 70%;
+  width: 69%;
   border-collapse: collapse;
   text-align: center;
 
@@ -89,7 +89,16 @@
 
 .quantity-btn {
   font-size: larger;
-  background-color: #c70025;
+  background-color: var(--primary-red);
+}
+
+.quantity-btn:hover {
+  background-color: var(--primary-red-hover);
+}
+
+.quantity-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .quantity-input {
@@ -103,7 +112,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .order-summary {
-  width: 30%;
+  width: 31%;
   height: fit-content;
   background-color: #ffffff;
   padding: 30px;
@@ -168,4 +177,36 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .continue-btn:hover {
   background-color: #004494;
+}
+
+.empty-cart-container {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 40px;
+  margin: 20px auto;
+  max-width: 400px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.empty-cart-text {
+  font-size: 18px;
+  color: #666;
+  margin: 15px 0;
+}
+
+.shop-now-btn {
+  width: 80%;
+  background-color: var(--primary-red);
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.shop-now-btn:hover {
+  background-color: var(--primary-red-hover);
 }

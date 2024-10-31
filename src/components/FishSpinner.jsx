@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./FishSpinner.css";
 
 const FishSpinner = () => {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   return (
     <>
       <div className="loading-overlay">
