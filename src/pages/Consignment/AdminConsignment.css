@@ -55,26 +55,6 @@
     margin: 10px 0;
 }
 
-.table {
-    margin-top: 20px;
-    background-color: white;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.table thead th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
-    text-align: center;
-    padding: 12px;
-}
-
-.table tbody td {
-    vertical-align: middle;
-    padding: 12px;
-    text-align: center;
-}
-
 .btn-info-circle {
     color: #6c757d;
     background: none;
