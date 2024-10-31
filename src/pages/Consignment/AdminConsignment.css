@@ -1,47 +1,108 @@
 .consignment-tabs {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 20px;
+    background-color: #f1f3f5;
+    border-radius: 8px;
+    padding: 5px;
 }
 
-.tab-button {
-    padding: 8px 16px;
-    margin-right: 10px;
+.consignment-tab-button {
+    flex: 1;
+    padding: 10px;
     border: none;
-    border-radius: 4px;
-    background-color: #f0f0f0;
+    background-color: transparent;
+    color: #495057;
     cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
-.tab-button.active {
-    background-color: var(--primary-color);
+.consignment-tab-button.active {
+    background-color: var(--primary-blue);
     color: white;
+    border-radius: 4px;
 }
 
-.status-badge {
+.consignment-badge {
     padding: 5px 10px;
     border-radius: 20px;
     font-weight: bold;
     text-transform: uppercase;
     font-size: 0.8em;
+    pointer-events: none;
 }
 
-.status-badge.pending {
-    background-color: #ffc107;
-    color: black;
+.consignment-badge.pending {
+    background-color: var(--error-color);
+    color: var(--primary-white);
 }
 
-.status-badge.approved {
-    background-color: #28a745;
-    color: white;
+.consignment-badge.approved {
+    background-color: var(--success-color);
+    color: var(--primary-white);
 }
 
-.status-badge.checkedout {
-    background-color: #17a2b8;
-    color: white;
+.consignment-badge.checkedout {
+    background-color: var(--warning-color);
+    color: var(--primary-white);
 }
 
-.expanded-content {
-    padding: 15px;
+.consignment-expanded-content {
+    padding: 20px;
     background-color: #f8f9fa;
     border-radius: 4px;
     margin: 10px 0;
+}
+
+.table {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    text-align: center;
+    padding: 12px;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    padding: 12px;
+    text-align: center;
+}
+
+.btn-info-circle {
+    color: #6c757d;
+    background: none;
+    border: none;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.btn-info-circle:hover {
+    color: #0d6efd;
+}
+
+.btn-approve {
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-approve:hover {
+    background-color: #218838;
+}
+
+.search-input {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 8px 12px;
+    width: 100%;
 } 

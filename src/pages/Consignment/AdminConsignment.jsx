@@ -4,6 +4,7 @@ import {
   fetchAllConsignments,
   updateConsignmentItemStatus,
 } from "../../services/ConsignmentService";
+import { getUserById } from "../../services/UserService";
 import { toast } from "react-toastify";
 import FishSpinner from "../../components/FishSpinner";
 import "./AdminConsignment.css";
@@ -13,7 +14,7 @@ const AdminConsignment = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("Pending");
-  const [expandedRows, setExpandedRows] = useState([]);
+  const [userNames, setUserNames] = useState({});
   
   useEffect(() => {
     fetchData();
@@ -26,6 +27,26 @@ const AdminConsignment = () => {
       
       if (response.data) {
         setConsignments(response.data);
+        
+        // Fetch user names for all unique userIds
+        const uniqueUserIds = [...new Set(response.data.map(c => c.userId))];
+        const userPromises = uniqueUserIds.map(async (userId) => {
+          try {
+            const userResponse = await getUserById(userId);
+            return { userId, name: userResponse.data.name };
+          } catch (error) {
+            console.error(`Error fetching user ${userId}:`, error);
+            return { userId, name: 'Unknown User' };
+          }
+        });
+        
+        const users = await Promise.all(userPromises);
+        const userNameMap = users.reduce((acc, user) => {
+          acc[user.userId] = user.name;
+          return acc;
+        }, {});
+        
+        setUserNames(userNameMap);
       }
     } catch (error) {
       console.error("Error fetching consignments:", error);
@@ -63,32 +84,41 @@ const AdminConsignment = () => {
   const filterConsignmentsByStatus = (status) => {
     if (!consignments) return [];
     
-    return consignments.filter(consignment =>
-      consignment.items.some(item => {
+    return consignments.map(consignment => ({
+      ...consignment,
+      items: consignment.items.filter(item => {
         const searchTermLower = searchTerm.toLowerCase();
-        return item.status === status && 
-          (
-            (consignment.consignmentId && consignment.consignmentId.toString().includes(searchTermLower)) ||
-            (item.name && item.name.toLowerCase().includes(searchTermLower))
-          );
+        
+        // Kiểm tra trạng thái
+        let statusMatch = false;
+        switch(status) {
+          case "Pending":
+            statusMatch = item.status === "Pending";
+            break;
+          case "Approved":
+            statusMatch = item.status === "Approved";
+            break;
+          case "CheckedOut":
+            statusMatch = item.checkedout === true;
+            break;
+          default:
+            statusMatch = false;
+        }
+
+        const searchMatch = searchTerm === "" || 
+          consignment.consignmentId.toLowerCase().includes(searchTermLower) ||
+          item.name.toLowerCase().includes(searchTermLower);
+
+        return statusMatch && searchMatch;
       })
-    );
+    })).filter(consignment => consignment.items.length > 0);
   };
 
-  // Thêm useEffect để log khi activeTab thay đổi
   useEffect(() => {
     console.log("Active tab changed to:", activeTab);
     const filteredData = filterConsignmentsByStatus(activeTab);
     console.log("Filtered consignments:", filteredData);
   }, [activeTab]);
-
-  const toggleExpandedRow = (consignmentId) => {
-    setExpandedRows(prev =>
-      prev.includes(consignmentId)
-        ? prev.filter(id => id !== consignmentId)
-        : [...prev, consignmentId]
-    );
-  };
 
   if (loading) return <FishSpinner />;
 
@@ -100,7 +130,7 @@ const AdminConsignment = () => {
           <b>Danh sách ký gửi:</b>
           <div className="col-12 col-sm-4 my-3">
             <input
-              className="form-control"
+              className="form-control search-input"
               placeholder="Tìm kiếm theo mã ký gửi hoặc tên cá..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -110,30 +140,29 @@ const AdminConsignment = () => {
 
         <div className="consignment-tabs">
           <button
-            className={`tab-button ${activeTab === "Pending" ? "active" : ""}`}
+            className={`consignment-tab-button ${activeTab === "Pending" ? "active" : ""}`}
             onClick={() => setActiveTab("Pending")}
           >
             Chờ duyệt
           </button>
           <button
-            className={`tab-button ${activeTab === "Approved" ? "active" : ""}`}
+            className={`consignment-tab-button ${activeTab === "Approved" ? "active" : ""}`}
             onClick={() => setActiveTab("Approved")}
           >
             Đã duyệt
           </button>
           <button
-            className={`tab-button ${activeTab === "Checkedout" ? "active" : ""}`}
-            onClick={() => setActiveTab("Checkedout")}
+            className={`consignment-tab-button ${activeTab === "CheckedOut" ? "active" : ""}`}
+            onClick={() => setActiveTab("CheckedOut")}
           >
             Đã thanh toán
           </button>
         </div>
 
-        <div className="table-responsive">
+        <div className="container-fluid">
           <table className="table table-striped">
             <thead>
               <tr>
-                <th></th>
                 <th>Mã ký gửi</th>
                 <th>Tên cá</th>
                 <th>Người ký gửi</th>
@@ -147,27 +176,23 @@ const AdminConsignment = () => {
                 <React.Fragment key={consignment.consignmentId}>
                   {consignment.items.map((item) => (
                     <tr key={item.itemId}>
-                      <td>
-                        <button
-                          className="btn btn-sm"
-                          onClick={() => toggleExpandedRow(consignment.consignmentId)}
-                        >
-                          <i className="fas fa-info-circle"></i>
-                        </button>
-                      </td>
                       <td>{consignment.consignmentId}</td>
                       <td>{item.name}</td>
-                      <td>{consignment.userId}</td>
-                      <td>{new Date(consignment.createdAt).toLocaleDateString()}</td>
+                      <td>{userNames[consignment.userId] || consignment.userId}</td>
                       <td>
-                        <span className={`status-badge ${item.status.toLowerCase()}`}>
+                        {consignment.createdAt 
+                          ? new Date(consignment.createdAt).toLocaleDateString('vi-VN')
+                          : 'Không có dữ liệu'}
+                      </td>
+                      <td>
+                        <span className={`consignment-badge ${item.status.toLowerCase()}`}>
                           {item.status}
                         </span>
                       </td>
                       {activeTab === "Pending" && (
                         <td>
                           <button
-                            className="btn btn-success btn-sm"
+                            className="btn btn-approve"
                             onClick={() => handleStatusChange(item.itemId, "Approved")}
                           >
                             <i className="fas fa-check"></i> Duyệt
@@ -176,18 +201,20 @@ const AdminConsignment = () => {
                       )}
                     </tr>
                   ))}
-                  {expandedRows.includes(consignment.consignmentId) && (
-                    <tr>
-                      <td colSpan="7">
-                        <div className="expanded-content">
-                          <p><strong>Mô tả:</strong> {consignment.description || 'Không có mô tả'}</p>
-                          <p><strong>Ghi chú:</strong> {consignment.notes || 'Không có ghi chú'}</p>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
                 </React.Fragment>
               ))}
+              {filterConsignmentsByStatus(activeTab).length === 0 && (
+                <>
+                  <tr>
+                    <td colSpan="7">Không tìm thấy ký gửi nào</td>
+                  </tr>
+                  <tr>
+                    <td colSpan="7">
+                      <i className="fa-regular fa-folder-open" style={{ fontSize: "30px", opacity: 0.2 }}></i>
+                    </td>
+                  </tr>
+                </>
+              )}
             </tbody>
           </table>
         </div>

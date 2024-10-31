@@ -38,3 +38,12 @@ tbody {
   padding: 10px;
   background-color: #f8f9fa;
 }
+
+.order-tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  background-color: #f1f3f5;
+  border-radius: 8px;
+  padding: 5px;
+}

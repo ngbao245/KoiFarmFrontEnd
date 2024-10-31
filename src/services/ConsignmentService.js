@@ -19,11 +19,16 @@ const updateConsignmentItemStatus = (id, status) => {
     throw new Error("No token found! Please log in again.");
   }
 
-  return axios.put(`Consignment/update-item-status/${id}`, status, {
-    headers: {
-      Authorization: `${token}`,
-    },
-  });
+  return axios.put(
+    `Consignment/update-item-status/${id}`,
+    { status },
+    {
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
 
 const fetchAllConsignments = () => {
