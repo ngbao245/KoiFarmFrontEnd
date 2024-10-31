@@ -48,6 +48,12 @@
     color: var(--primary-white);
 }
 
+.consignment-badge.cancelled {
+    background-color: var(--primary-black);
+    color: var(--primary-white);
+    pointer-events: none;
+}
+
 .consignment-expanded-content {
     padding: 20px;
     background-color: #f8f9fa;

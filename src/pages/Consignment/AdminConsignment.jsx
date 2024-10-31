@@ -8,6 +8,7 @@ import { getUserById } from "../../services/UserService";
 import { toast } from "react-toastify";
 import FishSpinner from "../../components/FishSpinner";
 import "./AdminConsignment.css";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 const AdminConsignment = () => {
   const [consignments, setConsignments] = useState([]);
@@ -15,6 +16,8 @@ const AdminConsignment = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("Pending");
   const [userNames, setUserNames] = useState({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [itemToCancel, setItemToCancel] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -102,6 +105,9 @@ const AdminConsignment = () => {
             case "CheckedOut":
               statusMatch = item.checkedout === true;
               break;
+            case "Cancelled":
+              statusMatch = item.status === "Cancelled";
+              break;
             default:
               statusMatch = false;
           }
@@ -122,6 +128,37 @@ const AdminConsignment = () => {
     const filteredData = filterConsignmentsByStatus(activeTab);
     console.log("Filtered consignments:", filteredData);
   }, [activeTab]);
+
+  const handleCancelItem = (itemId) => {
+    setItemToCancel(itemId);
+    setIsConfirmModalOpen(true);
+  };
+
+  const confirmCancelItem = async () => {
+    if (!itemToCancel) return;
+
+    try {
+      const response = await updateConsignmentItemStatus(itemToCancel, "Cancelled");
+      
+      if (response.data) {
+        setConsignments((prevConsignments) =>
+          prevConsignments.map((consignment) => ({
+            ...consignment,
+            items: consignment.items.map((item) =>
+              item.itemId === itemToCancel ? { ...item, status: "Cancelled" } : item
+            ),
+          }))
+        );
+        toast.success("Huỷ ký gửi thành công!");
+      }
+    } catch (error) {
+      console.error("Error cancelling consignment:", error);
+      toast.error("Huỷ ký gửi thất bại");
+    } finally {
+      setIsConfirmModalOpen(false);
+      setItemToCancel(null);
+    }
+  };
 
   if (loading) return <FishSpinner />;
 
@@ -165,6 +202,14 @@ const AdminConsignment = () => {
             onClick={() => setActiveTab("CheckedOut")}
           >
             Đã thanh toán
+          </button>
+          <button
+            className={`consignment-tab-button ${
+              activeTab === "Cancelled" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("Cancelled")}
+          >
+            Đã huỷ
           </button>
         </div>
 
@@ -214,6 +259,12 @@ const AdminConsignment = () => {
                           >
                             <i className="fa-solid fa-clipboard-check"></i>
                           </button>
+                          <button
+                            className="btn btn-danger ms-2"
+                            onClick={() => handleCancelItem(item.itemId)}
+                          >
+                            <i className="fa-solid fa-ban"></i>
+                          </button>
                         </td>
                       )}
                     </tr>
@@ -239,6 +290,12 @@ const AdminConsignment = () => {
           </table>
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={confirmCancelItem}
+        message="Bạn có chắc chắn muốn huỷ ký gửi này?"
+      />
     </>
   );
 };
