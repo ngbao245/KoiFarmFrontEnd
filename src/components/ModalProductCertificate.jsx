@@ -15,17 +15,11 @@ const ModalProductCertificate = ({
   certificateData,
   setIsUploading,
 }) => {
-  const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [productId, setProductId] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const [certificateDetails, setCertificateDetails] = useState(null);
-  const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
 
-  // Fetch certificate details khi mở modal
   useEffect(() => {
     if (isOpen && certificateData?.certificateId) {
       fetchCertificateDetails();
@@ -38,8 +32,7 @@ const ModalProductCertificate = ({
       setIsLoadingProducts(true);
       const response = await getCertificateById(certificateData.certificateId);
       if (response?.statusCode === 200 && response?.data) {
-        // Sửa điều kiện kiểm tra
-        setCertificateDetails(response.data); // Lấy trực tiếp từ response.data
+        setCertificateDetails(response.data);
       }
     } catch (error) {
       console.error("Error fetching certificate details:", error);
@@ -49,11 +42,10 @@ const ModalProductCertificate = ({
     }
   };
 
-  // Fetch tất cả sản phẩm không phân trang cho dropdown
   const fetchAllProducts = async () => {
     try {
       setIsLoadingProducts(true);
-      const response = await fetchAllProdItem(1, 1000, ""); // Lấy tối đa 1000 sản phẩm
+      const response = await fetchAllProdItem(1, 1000, "");
       if (response?.data?.entities) {
         setAllProducts(response.data.entities);
       }
@@ -62,17 +54,6 @@ const ModalProductCertificate = ({
       toast.error("Không thể tải danh sách sản phẩm.");
     } finally {
       setIsLoadingProducts(false);
-    }
-  };
-
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-    setPageIndex(1); // Reset về trang 1 khi search
-  };
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setPageIndex(newPage);
     }
   };
 
@@ -94,7 +75,7 @@ const ModalProductCertificate = ({
       if (response?.data) {
         toast.success("Thêm sản phẩm vào chứng chỉ thành công!");
         setProductId("");
-        fetchCertificateDetails(); // Refresh danh sách sản phẩm
+        fetchCertificateDetails();
       }
     } catch (error) {
       console.error("Error adding product:", error);
@@ -107,7 +88,7 @@ const ModalProductCertificate = ({
     }
   };
 
-  const handleRemoveProduct = async (itemId) => {
+  const handleRemoveProduct = async (id) => {
     if (
       !window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi chứng chỉ?")
     ) {
@@ -116,15 +97,27 @@ const ModalProductCertificate = ({
 
     try {
       setIsUploading(true);
-      await deleteProductCertificate(itemId);
+      await deleteProductCertificate(id);
       toast.success("Xóa sản phẩm khỏi chứng chỉ thành công!");
-      fetchCertificateDetails(); // Refresh danh sách sản phẩm
+      fetchCertificateDetails();
     } catch (error) {
       console.error("Error removing product:", error);
       toast.error("Không thể xóa sản phẩm khỏi chứng chỉ.");
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const getAvailableProducts = () => {
+    if (!allProducts || !certificateDetails?.productCertificates) {
+      return [];
+    }
+
+    const addedProductIds = new Set(
+      certificateDetails.productCertificates.map((pc) => pc.productItemId)
+    );
+
+    return allProducts.filter((product) => !addedProductIds.has(product.id));
   };
 
   return (
@@ -143,7 +136,6 @@ const ModalProductCertificate = ({
       <Modal.Body>
         {isLoadingProducts && <FishSpinner />}
 
-        {/* Form thêm sản phẩm */}
         <form onSubmit={handleAddProduct}>
           <div className="mb-3">
             <label className="form-label">Thêm sản phẩm</label>
@@ -153,9 +145,9 @@ const ModalProductCertificate = ({
               onChange={(e) => setProductId(e.target.value)}
             >
               <option value="">Chọn sản phẩm</option>
-              {allProducts.map((product) => (
+              {getAvailableProducts().map((product) => (
                 <option key={product.id} value={product.id}>
-                  {`${product.id} - ${product.name}`}
+                  {product.name}
                 </option>
               ))}
             </select>
@@ -169,7 +161,6 @@ const ModalProductCertificate = ({
           </button>
         </form>
 
-        {/* Danh sách sản phẩm đã thêm */}
         <div className="mt-4">
           <h5>
             Sản phẩm đã thêm (
@@ -188,8 +179,8 @@ const ModalProductCertificate = ({
               <tbody>
                 {certificateDetails?.productCertificates?.length > 0 ? (
                   certificateDetails.productCertificates.map((pc) => (
-                    <tr key={pc.itemId}>
-                      <td>{pc.itemId}</td>
+                    <tr key={pc.id}>
+                      <td>{pc.id}</td>
                       <td>{pc.provider}</td>
                       <td>
                         {new Date(pc.publishDate).toLocaleString("vi-VN", {
@@ -203,7 +194,7 @@ const ModalProductCertificate = ({
                       <td>
                         <button
                           className="btn btn-danger btn-sm"
-                          onClick={() => handleRemoveProduct(pc.itemId)}
+                          onClick={() => handleRemoveProduct(pc.id)}
                           disabled={isLoadingProducts}
                         >
                           <i className="fa-solid fa-trash"></i>
