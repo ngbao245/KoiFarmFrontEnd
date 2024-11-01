@@ -25,7 +25,6 @@ import AdminOrder from "../pages/Order/AdminOrder.jsx";
 import ProductItemSearch from "../pages/ProductItemSearch/ProductItemSearch";
 import NewsDetail from "../pages/News/NewsDetail.jsx";
 import AdminDashboard from "../pages/Admin/AdminDashboard.jsx";
-import ConsignmentForm from "../pages/Consignment/ConsignmentForm.jsx";
 import UserConsignment from "../pages/Consignment/UserConsignment.jsx";
 import Consignment from "../pages/Consignment/Consignment.jsx";
 import AdminCertificate from "../pages/Certificate/AdminCertificate.jsx";

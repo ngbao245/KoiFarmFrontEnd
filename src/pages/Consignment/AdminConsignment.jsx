@@ -236,15 +236,15 @@ const AdminConsignment = () => {
                         {userNames[consignment.userId] || consignment.userId}
                       </td>
                       <td>
-                        {consignment.createdAt
-                          ? new Date(consignment.createdAt).toLocaleDateString(
+                        {item.createDate
+                          ? new Date(item.createDate).toLocaleDateString(
                               "vi-VN"
                             )
                           : "Không có dữ liệu"}
                       </td>
                       <td>
                         <span
-                          className={`consignment-badge ${item.status.toLowerCase()}`}
+                          className={`admin-consignment-status-badge ${item.status.toLowerCase()}`}
                         >
                           {item.status}
                         </span>

@@ -260,7 +260,7 @@ const AdminOrder = () => {
                     <td>{new Date(order.createdTime).toLocaleDateString()}</td>
                     <td>
                       <span
-                        className={`status-badge ${getStatusBadgeClass(
+                        className={`admin-order-status-badge ${getStatusBadgeClass(
                           order.status
                         )}`}
                       >

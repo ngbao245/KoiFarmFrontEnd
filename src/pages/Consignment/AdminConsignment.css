@@ -24,34 +24,40 @@
     border-radius: 4px;
 }
 
-.consignment-badge {
+.admin-consignment-status-badge {
     padding: 5px 10px;
     border-radius: 20px;
     font-weight: bold;
     text-transform: uppercase;
     font-size: 0.8em;
+    width: 120px;
+    display: inline-block;
+    text-align: center;
     pointer-events: none;
+    margin: 0 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.consignment-badge.pending {
+.admin-consignment-status-badge.pending {
     background-color: var(--error-color);
     color: var(--primary-white);
 }
 
-.consignment-badge.approved {
+.admin-consignment-status-badge.approved {
     background-color: var(--success-color);
     color: var(--primary-white);
 }
 
-.consignment-badge.checkedout {
+.admin-consignment-status-badge.checkedout {
     background-color: var(--warning-color);
     color: var(--primary-white);
 }
 
-.consignment-badge.cancelled {
+.admin-consignment-status-badge.cancelled {
     background-color: var(--primary-black);
     color: var(--primary-white);
-    pointer-events: none;
 }
 
 .consignment-expanded-content {

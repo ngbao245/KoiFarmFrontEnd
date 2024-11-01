@@ -121,7 +121,7 @@ const AdminHeader = () => {
                       to="/admin-consignment"
                       disabled={!user || !user.auth}
                     >
-                      Ký Gửi
+                      Đơn Ký Gửi
                     </NavLink>
                     {userDetails && userDetails.roleId === "1" && (
                       <NavLink

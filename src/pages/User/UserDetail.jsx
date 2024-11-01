@@ -322,13 +322,9 @@ const UserDetail = () => {
                     </div>
                     <div className="user-info-item">
                       <strong>Trạng thái:</strong>
-                      <span
-                        className={`auth-status ${
-                          user.auth ? "authenticated" : "not-authenticated"
-                        }`}
-                      >
+                      <div className={`user-auth-badge ${user.auth ? "verified" : "unverified"}`}>
                         {user.auth ? "Đã xác thực" : "Chưa xác thực"}
-                      </span>
+                      </div>
                     </div>
                     <button
                       className="edit-info-btn"
@@ -452,37 +448,12 @@ const UserDetail = () => {
                           )}
                         </td>
                         <td>
-                          {order.status === "Pending" && (
-                            <span
-                              style={{
-                                color: "lightcoral",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              Đang Xử Lý
-                            </span>
-                          )}
-                          {order.status === "Delivering" && (
-                            <span
-                              style={{ color: "orange", fontWeight: "bold" }}
-                            >
-                              Đang Giao Hàng
-                            </span>
-                          )}
-                          {order.status === "Completed" && (
-                            <span
-                              style={{ color: "green", fontWeight: "bold" }}
-                            >
-                              Đã Giao Hàng
-                            </span>
-                          )}
-                          {order.status === "Cancelled" && (
-                            <span
-                              style={{ color: "red", fontWeight: "bold" }}
-                            >
-                              Đã Hủy
-                            </span>
-                          )}
+                          <span className={`user-order-badge ${order.status.toLowerCase()}`}>
+                            {order.status === "Pending" && "Chờ xử lý"}
+                            {order.status === "Delivering" && "Đang giao"}
+                            {order.status === "Completed" && "Hoàn thành"}
+                            {order.status === "Cancelled" && "Đã hủy"}
+                          </span>
                         </td>
                         {activeTab === "Completed" && (
                           <td>

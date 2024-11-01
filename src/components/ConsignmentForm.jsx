@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { createConsignment } from "../../services/ConsignmentService";
+import { createConsignment } from "../services/ConsignmentService";
 import { toast } from "react-toastify";
-import { uploadImageCloudinary } from "../../services/CloudinaryService"; // Import the image upload service
+import { uploadImageCloudinary } from "../services/CloudinaryService"; // Import the image upload service
 import "./ConsignmentForm.css";
-import FishSpinner from "../../components/FishSpinner";
+import FishSpinner from "./FishSpinner";
 
 const folder = import.meta.env.VITE_FOLDER_CONSIGNMENT;
 
@@ -24,8 +24,6 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -82,7 +80,6 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
         const response = await createConsignment(newConsignmentData);
 
         if (response.statusCode === 201) {
-          setSuccess(true);
           setFormData({
             name: "",
             category: "",
@@ -97,12 +94,10 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
           setImagePreview(null);
           setCurrentStep(1);
           toast.success("Successfully created a consignment");
-          setError(null);
         }
       }
     } catch (err) {
       toast.error("Failed to create consignment item. Please try again.");
-      setSuccess(false);
     } finally {
       setIsLoading(false);
     }
@@ -118,9 +113,6 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
   };
 
   const isFormValid = () => {
-    // return Object.values(formData).every(
-    //   (value) => value !== "" && value !== 0
-    // );
     const requiredFieldsFilled =
       formData.name &&
       formData.category &&
