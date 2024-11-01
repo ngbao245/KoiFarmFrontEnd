@@ -1,8 +1,8 @@
 import axios from "./Customize-Axios";
 
 const fetchAllProdItem = (pageIndex, pageSize, searchQuery) => {
-  return axios.get(`ProductItem/get-all-product-items`,{
-    params:{
+  return axios.get(`ProductItem/get-all-product-items`, {
+    params: {
       pageIndex: pageIndex,
       pageSize: pageSize,
       searchQuery: searchQuery
@@ -39,6 +39,12 @@ const deleteProdItem = (id) => {
   return axios.delete(`ProductItem/delete-product-item/${id}`);
 };
 
+const updateProdItemType = (id, data) => {
+  return axios.put(`ProductItem/update-product-item-type/${id}`,
+    { type: data }
+  );
+};
+
 export {
   fetchAllProdItem,
   getAllProdItem,
@@ -48,4 +54,5 @@ export {
   updateProdItem,
   deleteProdItem,
   getNameOfProdItem,
+  updateProdItemType,
 };

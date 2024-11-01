@@ -11,7 +11,7 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
   const [formData, setFormData] = useState({
     name: '', price: 1, category: '', origin: '', sex: '', age: 0,
     size: '', species: '', personality: '', foodAmount: '', waterTemp: '',
-    mineralContent: '', ph: '', imageUrl: '', quantity: 1, type: '', productId: ''
+    mineralContent: '', ph: '', imageUrl: '', quantity: 1, type: 'Pending Approval', productId: ''
   });
 
   const [products, setProducts] = useState([]);
@@ -92,7 +92,7 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
           setFormData({
             name: '', price: 10000, category: '', origin: '', sex: '', age: 0,
             size: '', species: '', personality: '', foodAmount: '', waterTemp: '',
-            mineralContent: '', ph: '', imageUrl: '', quantity: 1, type: '', productId: ''
+            mineralContent: '', ph: '', imageUrl: '', quantity: 1, type: 'Pending Approval', productId: ''
           });
           onSubmit(res.data);
           onClose();
@@ -131,9 +131,6 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
 
                 <label htmlFor="category">Category:</label>
                 <input id="category" name="category" value={formData.category} onChange={handleChange} required />
-
-                <label htmlFor="type">Type:</label>
-                <input id="type" name="type" value={formData.type} onChange={handleChange} required />
 
                 <label htmlFor="quantity">Quantity:</label>
                 <input id="quantity" type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />

@@ -4,7 +4,7 @@ import { CSVLink } from "react-csv";
 import ModalAddProductItem from "../../components/ModalAddProductItem";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
-import { fetchAllProdItem } from "../../services/ProductItemService";
+import { fetchAllProdItem, updateProdItemType } from "../../services/ProductItemService";
 import { getProductById } from "../../services/ProductService";
 import FishSpinner from "../../components/FishSpinner";
 
@@ -20,6 +20,9 @@ const AdminProduct = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   const [isUploading, setIsUploading] = useState(false);
+
+  const [editingTypeId, setEditingTypeId] = useState(null);
+  const [selectedType, setSelectedType] = useState("");
 
   const fetchProductItems = async (searchQuery = "") => {
     try {
@@ -51,12 +54,23 @@ const AdminProduct = () => {
     fetchProductItems(searchTerm);
   }, [fetchAgain, pageIndex, pageSize, searchTerm]);
 
+  const handleTypeChange = async (itemId, newStatus) => {
+    try {
+      await updateProdItemType(itemId, newStatus);
+      setFetchAgain((prev) => !prev);
+      setEditingTypeId(null);
+      setSelectedType("");
+    } catch (error) {
+      toast.error("Failed to update product item status");
+    }
+  };
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
     setPageIndex(1);
   };
 
-  const getProductExport = () => {};
+  const getProductExport = () => { };
 
   const handleImportCSV = (event) => {
     const file = event.target.files[0];
@@ -109,9 +123,22 @@ const AdminProduct = () => {
 
   const filteredProductItems = Array.isArray(listProductItems)
     ? listProductItems.filter((item) =>
-        item.name.toLowerCase().includes(searchTerm)
-      )
+      item.name.toLowerCase().includes(searchTerm)
+    )
     : [];
+
+  const getTypeColor = (type) => {
+    switch (type) {
+      case "Approved":
+        return "green"; // Approved type color
+      case "Rejected":
+        return "red"; // Rejected type color
+      case "Pending Approval":
+        return "orange"; // Pending Approval color
+      default:
+        return "black"; // Default color for other types
+    }
+  };
 
   return (
     <>
@@ -187,7 +214,7 @@ const AdminProduct = () => {
               <th>Khoáng chất</th>
               <th>pH</th>
               <th>Số lượng</th>
-              <th>Giống</th>
+              <th>Tình trạng sản phẩm</th>
               <th>Loại cá</th>
               <th>Ảnh</th>
             </tr>
@@ -210,7 +237,33 @@ const AdminProduct = () => {
                   <td>{item.mineralContent}</td>
                   <td>{item.ph}</td>
                   <td>{item.quantity}</td>
-                  <td>{item.type}</td>
+                  <td style={{ color: getTypeColor(item.type) }}>
+                    {item.type === "Pending Approval" ? (
+                      editingTypeId === item.id ? (
+                        <select
+                          value={selectedType || item.type}
+                          onChange={(e) => setSelectedType(e.target.value)}
+                          onBlur={() => {
+                            handleTypeChange(item.id, selectedType);
+                            setEditingTypeId(null);
+                          }}
+                        >
+                          <option value="">Select type...</option>
+                          <option value="Approved">Approve</option>
+                          <option value="Rejected">Reject</option>
+                        </select>
+                      ) : (
+                        <span onClick={() => {
+                          setSelectedType(item.type);
+                          setEditingTypeId(item.id);
+                        }} style={{ cursor: "pointer" }}>
+                          {item.type}
+                        </span>
+                      )
+                    ) : (
+                      item.type
+                    )}
+                  </td>
                   <td>{item.productName}</td>
                   <td>
                     {item.imageUrl ? (
