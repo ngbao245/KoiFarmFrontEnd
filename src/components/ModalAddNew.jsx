@@ -26,7 +26,6 @@ const ModalAddNew = ({ show, handleClose, handleUpdateTable }) => {
 
     try {
       const res = await postCreateStaff(data);
-      console.log(data);
       if (res && res.data && res.data.id) {
         handleClose();
         setName("");

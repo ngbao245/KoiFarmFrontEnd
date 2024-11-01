@@ -65,7 +65,6 @@ const AdminOrder = () => {
 
   useEffect(() => {
     fetchData();
-    console.log(orders);
   }, []);
 
   const filterOrdersByStatus = (status) => {
@@ -131,8 +130,6 @@ const AdminOrder = () => {
       setOrderToCancel(null);
     }
   };
-
- 
 
   const getStatusBadgeClass = (status) => {
     switch (status.toLowerCase()) {
@@ -260,7 +257,7 @@ const AdminOrder = () => {
                     <td>{new Date(order.createdTime).toLocaleDateString()}</td>
                     <td>
                       <span
-                        className={`status-badge ${getStatusBadgeClass(
+                        className={`admin-order-status-badge ${getStatusBadgeClass(
                           order.status
                         )}`}
                       >
@@ -281,7 +278,7 @@ const AdminOrder = () => {
                       {order.status.toLowerCase() === "pending" && (
                         <button
                           title="Huỷ đơn hàng"
-                          className="btn btn-danger btn-sm"
+                          className="btn btn-danger ms-2"
                           onClick={() => handleCancelOrder(order)}
                         >
                           <i className="fa-solid fa-ban"></i>

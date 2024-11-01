@@ -59,7 +59,6 @@ const StaffOrders = () => {
   const fetchPayments = async () => {
     try {
       const { data: allPayments} = await fetchAllPayment();
-      console.log("Fetched payments:", allPayments);
       setPayments(allPayments);
     } catch (error) {
       console.error("Error fetching payments:", error);
@@ -97,13 +96,11 @@ const StaffOrders = () => {
 
       if (newStatus === "Completed") {
         const orderPayments = payments.filter((p) => p.orderId === orderId);
-        console.log(orderPayments);
         
         if (orderPayments.length === 0) { // Check if no payments exist
           try {
             const response = await createPaymentForCOD({ orderId: orderId });
             if (response && response.data) {
-              console.log("Payment created for orderId:", orderId);
               toast.success("Đã tạo thanh toán mới cho đơn hàng.");
             } else {
               console.warn("Payment creation response is empty or invalid");

@@ -38,12 +38,10 @@ const Contact = () => {
       )
       .then(
         () => {
-          console.log("SUCCESS!");
           toast.success("Message sent successfully!");
           setFormData({ user_name: "", user_email: "", message: "" });
         },
         (error) => {
-          console.log("FAILED...", error.text);
           toast.error("Message failed to send. Please try again.");
         }
       );

@@ -16,7 +16,6 @@ const UserPayment = () => {
     const getPayments = async () => {
       try {
         const response = await fetchUserPayment();
-        console.log("Payments data:", response.data);
         const paymentsData = Array.isArray(response.data)
           ? response.data
           : Array.isArray(response.data?.data)

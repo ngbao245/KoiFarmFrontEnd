@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
-import ConsignmentForm from "./ConsignmentForm";
+import ConsignmentForm from "../../components/ConsignmentForm";
 import "./Consignment.css";
 
 const Consignment = () => {

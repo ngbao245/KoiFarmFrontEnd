@@ -7,6 +7,7 @@ import "./Cart.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import FishSpinner from "../../components/FishSpinner";
 
 const Cart = () => {
   const [cart, setCart] = useState(null);
@@ -31,7 +32,11 @@ const Cart = () => {
       const updatedItems = await Promise.all(
         items.map(async (item) => {
           const productResponse = await getProdItemById(item.productItemId);
-          return { ...item, imageUrl: productResponse.data.imageUrl };
+          return {
+            ...item,
+            imageUrl: productResponse.data.imageUrl,
+            isIndividual: productResponse.data.quantity === 1,
+          };
         })
       );
 
@@ -44,6 +49,10 @@ const Cart = () => {
   };
 
   const handleQuantityChange = async (cartId, item, newQuantity) => {
+    if (item.isIndividual && newQuantity > item.quantity) {
+      return;
+    }
+
     if (newQuantity === 0) {
       setItemToRemove({ cartId, item });
       setIsConfirmModalOpen(true);
@@ -51,20 +60,19 @@ const Cart = () => {
     }
 
     try {
-      const response = await updateCartItem(cartId, item.productItemId, newQuantity);
+      const response = await updateCartItem(
+        cartId,
+        item.productItemId,
+        newQuantity
+      );
       if (response.statusCode == 200) {
-        if (newQuantity === 0) {
-          setCartItems((prevItems) => prevItems.filter((i) => i.productItemId !== item.productItemId));
-          //Linq: Where(item => item.productItemId !== productItemId)
-          toast.success(`Item ${item.productName} removed from cart`);
-        } else {
-          setCartItems((prevItems) =>
-            prevItems.map((i) =>
-              i.productItemId === item.productItemId
-                ? { ...i, quantity: newQuantity } : i
-            )
-          );
-        }
+        setCartItems((prevItems) =>
+          prevItems.map((i) =>
+            i.productItemId === item.productItemId
+              ? { ...i, quantity: newQuantity }
+              : i
+          )
+        );
       } else {
         toast.error(response.data.messageError);
       }
@@ -91,10 +99,20 @@ const Cart = () => {
     if (!itemToRemove) return;
 
     try {
-      const response = await updateCartItem(itemToRemove.cartId, itemToRemove.item.productItemId, 0);
+      const response = await updateCartItem(
+        itemToRemove.cartId,
+        itemToRemove.item.productItemId,
+        0
+      );
       if (response.statusCode == 200) {
-        setCartItems((prevItems) => prevItems.filter((i) => i.productItemId !== itemToRemove.item.productItemId));
-        toast.success(`Item ${itemToRemove.item.productName} removed from cart`);
+        setCartItems((prevItems) =>
+          prevItems.filter(
+            (i) => i.productItemId !== itemToRemove.item.productItemId
+          )
+        );
+        toast.success(
+          `Item ${itemToRemove.item.productName} removed from cart`
+        );
       } else {
         toast.error(response.data.messageError);
       }
@@ -106,27 +124,37 @@ const Cart = () => {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <FishSpinner />;
 
   return (
     <>
       <Header />
       <div className="cart-container">
         <main className="cart-content animated user-select-none">
-          <h1 className="cart-title">Your Shopping Cart</h1>
+          <h1 className="cart-title">Giỏ hàng của bạn</h1>
           <div className="cart-grid">
             {cartItems.length === 0 ? (
-              <p>Your cart is empty.</p>
+              <>
+                <div className="container-fluid text-center empty-cart-container">
+                  <i
+                    className="fa-solid fa-cart-shopping"
+                    style={{ fontSize: "50px", opacity: 0.2, marginBottom: "15px" }}
+                  ></i>
+                  <p className="empty-cart-text">"Hỏng" có gì trong giỏ hết</p>
+                  <p className="empty-cart-text">Lướt KoiShop, lựa cá ngay đi!</p>
+                  <button className="shop-now-btn" onClick={handleContinue}>Mua ngay</button>
+                </div>
+              </>
             ) : (
               <>
                 <table className="cart-table">
                   <thead>
                     <tr>
                       <th></th>
-                      <th>Product Name</th>
-                      <th>Price</th>
-                      <th>Quantity</th>
-                      <th>Total</th>
+                      <th>Sản phẩm</th>
+                      <th>Giá tiền</th>
+                      <th>Số lượng</th>
+                      <th>Tạm tính</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -182,6 +210,7 @@ const Cart = () => {
                                   item.quantity + 1
                                 )
                               }
+                              disabled={item.isIndividual}
                             >
                               +
                             </button>
@@ -196,20 +225,20 @@ const Cart = () => {
                 </table>
 
                 <div className="order-summary">
-                  <h2>Order Summary</h2>
+                  <h2>Tóm tắt đơn hàng</h2>
                   <p>
-                    Shipping: <span>Free</span>
+                    Phí ship: <span>Miễn phí</span>
                   </p>
                   <p>
-                    VAT: <span>Not applicable</span>
+                    VAT: <span>Không áp dụng</span>
                   </p>
-                  <h3>Total: {calculateTotal()} VND</h3>
+                  <h3>Tổng: {calculateTotal()} VND</h3>
                   <div className="order-actions">
-                    <button className="checkout-btn" onClick={handleCheckout}>
-                      Proceed to Checkout
-                    </button>
                     <button className="continue-btn" onClick={handleContinue}>
-                      Continue Shopping
+                      Tiếp tục mua sắm
+                    </button>
+                    <button className="checkout-btn" onClick={handleCheckout}>
+                      Đến trang thanh toán
                     </button>
                   </div>
                 </div>
@@ -222,7 +251,7 @@ const Cart = () => {
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={confirmRemoveItem}
-        message="Are you sure you want to remove this item from the cart?"
+        message="Bạn chắc chắn muốn bỏ sản phẩm này?"
       />
       <Footer />
     </>

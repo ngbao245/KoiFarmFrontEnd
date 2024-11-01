@@ -38,8 +38,6 @@ const updateUserInfo = (data) => {
     throw new Error("Password is required for updating user information.");
   }
 
-  console.log("Data being sent:", data);
-
   return axios.put(`User/update-my-user`, data, {
     headers: {
       Authorization: `${token}`,
@@ -70,7 +68,7 @@ const googleSignin = (data) => {
 };
 
 const requestPasswordReset = (email) => {
-  return axios.post("User/request-password-reset", email,{
+  return axios.post("User/request-password-reset", {email},{
     headers: {
       'Content-Type': 'application/json'
     }

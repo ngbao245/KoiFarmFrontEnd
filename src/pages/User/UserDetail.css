@@ -282,3 +282,103 @@
 .btn-view-payments:hover {
   background-color: var(--primary-blue-hover);
 }
+
+.badge-base {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  width: 120px;
+  display: inline-block;
+  text-align: center;
+  pointer-events: none;
+  margin: 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Specific badges */
+.authentication-badge,
+.user-order-badge,
+.status-badge,
+.consignment-badge {
+  width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0 auto; 
+}
+
+.order-table td {
+  padding: 8px;
+  text-align: center;
+}
+
+.order-table td:has(.user-order-badge) {
+  padding-right: 8px;
+  white-space: nowrap;
+}
+
+.user-order-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  width: 120px;
+  display: inline-block;
+  text-align: center;
+  pointer-events: none;
+  margin: 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-order-badge.pending {
+  background-color: var(--error-color);
+  color: var(--primary-white);
+}
+
+.user-order-badge.delivering {
+  background-color: var(--warning-color);
+  color: var(--primary-white);
+}
+
+.user-order-badge.completed {
+  background-color: var(--success-color);
+  color: var(--primary-white);
+}
+
+.user-order-badge.cancelled {
+  background-color: var(--primary-black);
+  color: var(--primary-white);
+}
+
+.user-auth-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  width: 120px;
+  display: inline-block;
+  text-align: center;
+  pointer-events: none;
+  margin: 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-auth-badge.verified {
+  background-color: var(--success-color);
+  color: var(--primary-white);
+}
+
+.user-auth-badge.unverified {
+  background-color: var(--error-color);
+  color: var(--primary-white);
+}

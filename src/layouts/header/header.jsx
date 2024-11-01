@@ -114,7 +114,6 @@ export const Header = () => {
   const handleProductClick = async (product) => {
     try {
       const response = await getProdItemByProdId(product.id);
-      console.log(response.data);
 
       navigate(`/koi/${product.name.toLowerCase().replace(/\s+/g, "")}`, {
         state: { response: response.data, productName: product.name },

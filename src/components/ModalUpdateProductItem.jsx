@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './ModalAddProductItem.css';
-import { createProdItem } from '../services/ProductItemService'
+import { updateProdItem } from '../services/ProductItemService';
 import { toast } from 'react-toastify';
 import { fetchAllProducts } from "../services/ProductService";
 import { uploadImageCloudinary } from '../services/CloudinaryService';
 
 const folder = import.meta.env.VITE_FOLDER_PRODUCTS;
 
-const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
+const ModalUpdateProductItem = ({ isOpen, onClose, onSubmit, productData, setIsUploading }) => {
   const [formData, setFormData] = useState({
     name: '', price: 1, category: '', origin: '', sex: '', age: 0,
     size: '', species: '', personality: '', foodAmount: '', waterTemp: '',
@@ -15,10 +15,16 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
   });
 
   const [products, setProducts] = useState([]);
-
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (productData) {
+      setFormData(productData);
+      setImagePreview(productData.imageUrl);
+    }
+  }, [productData]);
 
   useEffect(() => {
     if (isOpen) {
@@ -27,8 +33,6 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
           const response = await fetchAllProducts();
           if (response && response.data) {
             setProducts(response.data);
-          } else {
-            toast.error("Failed to fetch products.");
           }
         } catch (error) {
           toast.error("Error fetching products.");
@@ -55,7 +59,10 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
   };
 
   const uploadImage = async () => {
-    if (!imageFile) return null;
+    if (!imageFile) {
+      return null;
+    }
+    
     setIsLoading(true);
     setIsUploading(true);
     try {
@@ -82,26 +89,14 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
 
     try {
       const uploadedImageUrl = await uploadImage();
+      
+      const updatedData = { ...formData };
+      
       if (uploadedImageUrl) {
-        const productData = { ...formData, imageUrl: uploadedImageUrl };
-
-        const res = await createProdItem(productData);
-
-        if (res && res.data && res.data.productId) {
-          toast.success('Product created successfully!');
-          setFormData({
-            name: '', price: 10000, category: '', origin: '', sex: '', age: 0,
-            size: '', species: '', personality: '', foodAmount: '', waterTemp: '',
-            mineralContent: '', ph: '', imageUrl: '', quantity: 1, type: 'Pending Approval', productId: ''
-          });
-          onSubmit(res.data);
-          onClose();
-        } else {
-          toast.error('Error while creating the product.');
-        } 
-      } else {
-        toast.error('Please upload an image.');
+        updatedData.imageUrl = uploadedImageUrl;
       }
+      
+      await onSubmit(updatedData);
     } catch (error) {
       toast.error('An error occurred. Please try again.');
     } finally {
@@ -115,10 +110,11 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
     <div className="modal-overlay">
       <div className={`modal-content ${isLoading ? "blurred" : ""}`}>
         <div className="modal-header">
-          <h2>Add New Product Item</h2>
+          <h2>Update Product Item</h2>
           <button className="modal-close-button" onClick={onClose}>&times;</button>
         </div>
         <form onSubmit={handleSubmit}>
+          {/* Same form layout as ModalAddProductItem */}
           <div className="form-layout">
             <div className="form-column">
               <div className="form-group">
@@ -136,7 +132,6 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
                 <input id="quantity" type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
 
                 <label htmlFor="productId">ProductId:</label>
-                {/* <input id="productId" name="productId" value={formData.productId} onChange={handleChange} required />   */}
                 <select id="productId" name="productId" value={formData.productId} onChange={handleChange} required>
                   <option value="">-- Select Product --</option>
                   {products.map((product) => (
@@ -197,7 +192,6 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
                   type="file"
                   accept="image/png, image/jpg, image/jpeg"
                   onChange={handleImageChange}
-                  required
                   className="text-dark"
                 />
                 {imagePreview && (
@@ -210,13 +204,14 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
           <div className="modal-footer">
             <button type="button" className="cancel-button" onClick={onClose} disabled={isLoading}>Cancel</button>
             <button type="submit" className="submit-button" disabled={isLoading}>
-            {isLoading ? "Adding Product..." : "Add Product"}</button>
+              {isLoading ? "Updating Product..." : "Update Product"}
+            </button>
           </div>
         </form>
         {isLoading && (
           <div className="loading-overlay">
             <div className="loading-spinner"></div>
-            <p>Đang tải ảnh lên và tạo product...</p>
+            <p>Updating product...</p>
           </div>
         )}
       </div>
@@ -224,4 +219,4 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
   );
 };
 
-export default ModalAddProductItem;
+export default ModalUpdateProductItem; 

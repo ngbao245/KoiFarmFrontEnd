@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { createConsignment } from "../../services/ConsignmentService";
+import React, { useEffect, useState } from "react";
+import { createConsignment } from "../services/ConsignmentService";
 import { toast } from "react-toastify";
-import { uploadImageCloudinary } from "../../services/CloudinaryService"; // Import the image upload service
+import { uploadImageCloudinary } from "../services/CloudinaryService"; // Import the image upload service
 import "./ConsignmentForm.css";
-import FishSpinner from "../../components/FishSpinner";
+import FishSpinner from "./FishSpinner";
 
 const folder = import.meta.env.VITE_FOLDER_CONSIGNMENT;
 
@@ -24,8 +24,17 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,6 +71,7 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    onClose();
 
     try {
       const uploadedImageUrl = await uploadImage();
@@ -70,7 +80,6 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
         const response = await createConsignment(newConsignmentData);
 
         if (response.statusCode === 201) {
-          setSuccess(true);
           setFormData({
             name: "",
             category: "",
@@ -85,15 +94,10 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
           setImagePreview(null);
           setCurrentStep(1);
           toast.success("Successfully created a consignment");
-          setError(null);
-          setTimeout(() => {
-            onClose();
-          }, 2000);
         }
       }
     } catch (err) {
       toast.error("Failed to create consignment item. Please try again.");
-      setSuccess(false);
     } finally {
       setIsLoading(false);
     }
@@ -109,9 +113,6 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
   };
 
   const isFormValid = () => {
-    // return Object.values(formData).every(
-    //   (value) => value !== "" && value !== 0
-    // );
     const requiredFieldsFilled =
       formData.name &&
       formData.category &&
@@ -263,11 +264,12 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
   };
 
   const handleClose = () => {
-    setImagePreview(null)
-    setCurrentStep(1);  
-    onClose();  
+    setImagePreview(null);
+    setCurrentStep(1);
+    onClose();
   };
 
+  if (isLoading) return <FishSpinner />;
   if (!isOpen) return null;
 
   return (
@@ -278,57 +280,42 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
         </button>
         <div className="consignment-form-container">
           <h1>Create Consignment Item</h1>
-
-          {isLoading ? (
-            <FishSpinner />
-          ) : (
-            <>
-              <div className="progress-indicator">
-                {[1, 2, 3, 4].map((step) => (
-                  <div
-                    key={step}
-                    className={`step ${currentStep >= step ? "active" : ""}`}
-                  >
-                    {step}
-                  </div>
-                ))}
+          <div className="progress-indicator">
+            {[1, 2, 3, 4].map((step) => (
+              <div
+                key={step}
+                className={`step ${currentStep >= step ? "active" : ""}`}
+              >
+                {step}
               </div>
+            ))}
+          </div>
 
-              <form onSubmit={handleSubmit} className="consignment-form">
-                {renderFormStep()}
+          <form onSubmit={handleSubmit} className="consignment-form">
+            {renderFormStep()}
 
-                <div className="button-group">
-                  {currentStep > 1 && (
-                    <button
-                      type="button"
-                      onClick={prevStep}
-                      className="btn-prev"
-                    >
-                      Previous
-                    </button>
-                  )}
-                  {currentStep < 4 && (
-                    <button
-                      type="button"
-                      onClick={nextStep}
-                      className="btn-next"
-                    >
-                      Next
-                    </button>
-                  )}
-                  {currentStep === 4 && (
-                    <button
-                      type="submit"
-                      className="btn-submit"
-                      disabled={!isFormValid()}
-                    >
-                      Submit
-                    </button>
-                  )}
-                </div>
-              </form>
-            </>
-          )}
+            <div className="button-group">
+              {currentStep > 1 && (
+                <button type="button" onClick={prevStep} className="btn-prev">
+                  Previous
+                </button>
+              )}
+              {currentStep < 4 && (
+                <button type="button" onClick={nextStep} className="btn-next">
+                  Next
+                </button>
+              )}
+              {currentStep === 4 && (
+                <button
+                  type="submit"
+                  className="btn-submit"
+                  disabled={!isFormValid()}
+                >
+                  Submit
+                </button>
+              )}
+            </div>
+          </form>
         </div>
       </div>
     </div>

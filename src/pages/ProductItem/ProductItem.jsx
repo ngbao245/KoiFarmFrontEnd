@@ -9,7 +9,9 @@ const ProductItem = () => {
 
   const navigate = useNavigate();
 
-  if (!productItems || productItems.length === 0) {
+  const approvedItems = productItems?.filter(item => item.type === "Approved") || [];
+
+  if (!approvedItems || approvedItems.length === 0) {
     return <div>No products found</div>;
   }
 
@@ -29,7 +31,7 @@ const ProductItem = () => {
             gap: "20px",
           }}
         >
-          {productItems.map((item) => (
+          {approvedItems.map((item) => (
             <div
               key={item.id}
               style={{
