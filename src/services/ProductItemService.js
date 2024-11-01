@@ -31,8 +31,8 @@ const createProdItem = (data) => {
   return axios.post("ProductItem/create-product-item", data);
 };
 
-const updateProdItem = (id) => {
-  return axios.put(`ProductItem/update-product-item/${id}`);
+const updateProdItem = (id, data) => {
+  return axios.put(`ProductItem/update-product-item/${id}`, data);
 };
 
 const deleteProdItem = (id) => {

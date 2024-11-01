@@ -9,7 +9,7 @@ import NotFoundRoute from "./NotFoundRoute";
 import Info from "../pages/Info/Info";
 import News from "../pages/News/News";
 import Contact from "../pages/Contact/Contact";
-import AdminProduct from "../pages/Product/AdminProduct";
+import AdminProduct from "../pages/ProductItem/AdminProduct";
 import ProductItem from "../pages/ProductItem/ProductItem";
 import ProductItemDetail from "../pages/ProductItem/ProductItemDetail";
 import Cloudinary from "../Cloudinary";

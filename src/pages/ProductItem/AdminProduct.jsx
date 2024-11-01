@@ -4,9 +4,11 @@ import { CSVLink } from "react-csv";
 import ModalAddProductItem from "../../components/ModalAddProductItem";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
-import { fetchAllProdItem, updateProdItemType } from "../../services/ProductItemService";
+import { fetchAllProdItem, updateProdItemType, deleteProdItem, updateProdItem } from "../../services/ProductItemService";
 import { getProductById } from "../../services/ProductService";
 import FishSpinner from "../../components/FishSpinner";
+import ModalUpdateProductItem from "../../components/ModalUpdateProductItem";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 const AdminProduct = () => {
   const [dataExport, setDataExport] = useState([]);
@@ -23,6 +25,14 @@ const AdminProduct = () => {
 
   const [editingTypeId, setEditingTypeId] = useState(null);
   const [selectedType, setSelectedType] = useState("");
+
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
+  const [activeTab, setActiveTab] = useState("Pending Approval");
 
   const fetchProductItems = async (searchQuery = "") => {
     try {
@@ -121,11 +131,14 @@ const AdminProduct = () => {
     setPageIndex(1);
   };
 
-  const filteredProductItems = Array.isArray(listProductItems)
-    ? listProductItems.filter((item) =>
-      item.name.toLowerCase().includes(searchTerm)
-    )
-    : [];
+  const filterProductsByStatus = (status) => {
+    return Array.isArray(listProductItems) 
+      ? listProductItems.filter(item => 
+          item.type === status &&
+          item.name.toLowerCase().includes(searchTerm)
+        )
+      : [];
+  };
 
   const getTypeColor = (type) => {
     switch (type) {
@@ -138,6 +151,150 @@ const AdminProduct = () => {
       default:
         return "black"; // Default color for other types
     }
+  };
+
+  const handleUpdateProduct = async (updatedData) => {
+    try {
+      const response = await updateProdItem(selectedProduct.id, updatedData);
+      if (response && response.statusCode === 200) {
+        setListProductItems(prevItems =>
+          prevItems.map(item =>
+            item.id === selectedProduct.id ? { ...item, ...updatedData } : item
+          )
+        );
+        toast.success("Cập nhật sản phẩm thành công!");
+        setShowUpdateModal(false);
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      console.error("Error updating product:", error);
+      toast.error("Cập nhật sản phẩm thất bại!");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDeleteProduct = async () => {
+    if (!itemToDelete) return;
+    
+    try {
+      const response = await deleteProdItem(itemToDelete.id);
+      if (response.statusCode === 200) {
+        setListProductItems(prevItems => 
+          prevItems.filter(item => item.id !== itemToDelete.id)
+        );
+        toast.success("Xóa sản phẩm thành công!");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Xóa sản phẩm thất bại!");
+    } finally {
+      setIsConfirmModalOpen(false);
+      setItemToDelete(null);
+    }
+  };
+
+  const handleDeleteClick = (item) => {
+    setItemToDelete(item);
+    setIsConfirmModalOpen(true);
+  };
+
+  const renderTableRows = () => {
+    return filteredProductItems.length > 0 ? (
+      filteredProductItems.map((item) => (
+        <tr key={item.id}>
+          <td>{item.name}</td>
+          <td>{item.price}</td>
+          <td>{item.category}</td>
+          <td>{item.origin}</td>
+          <td>{item.sex}</td>
+          <td>{item.age}</td>
+          <td>{item.size}</td>
+          <td>{item.species}</td>
+          <td>{item.personality}</td>
+          <td>{item.foodAmount}</td>
+          <td>{item.waterTemp}</td>
+          <td>{item.mineralContent}</td>
+          <td>{item.ph}</td>
+          <td>{item.quantity}</td>
+          <td style={{ color: getTypeColor(item.type) }}>
+            {item.type === "Pending Approval" ? (
+              editingTypeId === item.id ? (
+                <select
+                  value={selectedType || item.type}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  onBlur={() => {
+                    handleTypeChange(item.id, selectedType);
+                    setEditingTypeId(null);
+                  }}
+                >
+                  <option value="">Select type...</option>
+                  <option value="Approved">Approve</option>
+                  <option value="Rejected">Reject</option>
+                </select>
+              ) : (
+                <span onClick={() => {
+                  setSelectedType(item.type);
+                  setEditingTypeId(item.id);
+                }} style={{ cursor: "pointer" }}>
+                  {item.type}
+                </span>
+              )
+            ) : (
+              item.type
+            )}
+          </td>
+          <td>{item.productName}</td>
+          <td>
+            {item.imageUrl ? (
+              <img
+                src={item.imageUrl}
+                alt={item.name}
+                style={{ width: "50px", height: "50px" }}
+              />
+            ) : (
+              "No Image"
+            )}
+          </td>
+          <td>
+            <button
+              title="Edit product"
+              className="btn btn-warning mx-1"
+              onClick={() => {
+                setSelectedProduct(item);
+                setShowUpdateModal(true);
+              }}
+              disabled={isUploading}
+            >
+              <i className="fa-solid fa-wrench"></i>
+            </button>
+            <button
+              title="Delete product"
+              className="btn btn-danger mx-1"
+              onClick={() => handleDeleteClick(item)}
+              disabled={isUploading}
+            >
+              <i className="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      ))
+    ) : (
+      <>
+        <tr>
+          <td colSpan="16">Không tìm thấy sản phẩm nào</td>
+        </tr>
+        <tr>
+          <td colSpan="16">
+            <i
+              className="fa-regular fa-folder-open"
+              style={{ fontSize: "30px", opacity: 0.2 }}
+            ></i>
+          </td>
+        </tr>
+      </>
+    );
   };
 
   return (
@@ -194,6 +351,27 @@ const AdminProduct = () => {
             onChange={handleSearch}
           />
         </div>
+
+        <div className="order-tabs">
+          <button
+            className={`order-tab-button ${activeTab === "Pending Approval" ? "active" : ""}`}
+            onClick={() => setActiveTab("Pending Approval")}
+          >
+            Chờ duyệt
+          </button>
+          <button
+            className={`order-tab-button ${activeTab === "Approved" ? "active" : ""}`}
+            onClick={() => setActiveTab("Approved")}
+          >
+            Đã duyệt
+          </button>
+          <button
+            className={`order-tab-button ${activeTab === "Rejected" ? "active" : ""}`}
+            onClick={() => setActiveTab("Rejected")}
+          >
+            Đã từ chối
+          </button>
+        </div>
       </div>
 
       <div className="container-fluid">
@@ -217,11 +395,12 @@ const AdminProduct = () => {
               <th>Tình trạng sản phẩm</th>
               <th>Loại cá</th>
               <th>Ảnh</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredProductItems.length > 0 ? (
-              filteredProductItems.map((item) => (
+            {filterProductsByStatus(activeTab).length > 0 ? (
+              filterProductsByStatus(activeTab).map((item) => (
                 <tr key={item.id}>
                   <td>{item.name}</td>
                   <td>{item.price}</td>
@@ -275,6 +454,27 @@ const AdminProduct = () => {
                     ) : (
                       "No Image"
                     )}
+                  </td>
+                  <td>
+                    <button
+                      title="Edit product"
+                      className="btn btn-warning mx-1"
+                      onClick={() => {
+                        setSelectedProduct(item);
+                        setShowUpdateModal(true);
+                      }}
+                      disabled={isUploading}
+                    >
+                      <i className="fa-solid fa-wrench"></i>
+                    </button>
+                    <button
+                      title="Delete product"
+                      className="btn btn-danger mx-1"
+                      onClick={() => handleDeleteClick(item)}
+                      disabled={isUploading}
+                    >
+                      <i className="fa-solid fa-trash"></i>
+                    </button>
                   </td>
                 </tr>
               ))
@@ -333,6 +533,21 @@ const AdminProduct = () => {
         onClose={handleCloseAddNew}
         onSubmit={handleSubmitProduct}
         setIsUploading={setIsUploading}
+      />
+
+      <ModalUpdateProductItem
+        isOpen={showUpdateModal}
+        onClose={() => setShowUpdateModal(false)}
+        onSubmit={handleUpdateProduct}
+        productData={selectedProduct}
+        setIsUploading={setIsUploading}
+      />
+
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleDeleteProduct}
+        message="Bạn có chắc chắn muốn xóa sản phẩm này không?"
       />
     </>
   );
