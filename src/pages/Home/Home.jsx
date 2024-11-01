@@ -85,7 +85,6 @@ export const Home = () => {
 
     try {
       const response = await addToCart(quantity, itemId, token);
-      console.log(response);
       if (response.data && response.data.cartId) {
         toast.success(`Đã thêm ${productItem.name} vào giỏ hàng`);
       } else {

@@ -82,7 +82,6 @@ const AdminDashboard = () => {
 
         // Fetch payment data
         const paymentResponse = await fetchAllPayment();
-        console.log("Full Payment Response:", paymentResponse);
         const processedPaymentData = processPaymentData(paymentResponse.data);
         setPaymentData(processedPaymentData);
 
@@ -417,7 +416,6 @@ const ChartCard = ({ title, children }) => (
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    console.log(payload);
     return (
       <div
         className="custom-tooltip"

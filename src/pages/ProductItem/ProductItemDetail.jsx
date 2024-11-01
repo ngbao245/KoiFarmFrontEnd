@@ -16,14 +16,19 @@ const ProductItemDetail = () => {
     const fetchProductItem = async () => {
       try {
         const response = await getProdItemById(id);
-        setProductItem(response.data);
+        if (response.data.type === "Approved") {
+          setProductItem(response.data);
+        } else {
+          navigate("/*");
+        }
       } catch (error) {
         console.error("Error fetching product:", error);
+        navigate("/");
       }
     };
 
     fetchProductItem();
-  }, [id]);
+  }, [id, navigate]);
 
   if (!productItem) {
     return <div>Loading...</div>;
@@ -39,7 +44,6 @@ const ProductItemDetail = () => {
 
     try {
       const response = await addToCart(quantity, itemId, token);
-      console.log(response);
       if (response.data && response.data.cartId) {
         toast.success(`Đã thêm ${productItem.name} vào giỏ hàng`);
       } else {

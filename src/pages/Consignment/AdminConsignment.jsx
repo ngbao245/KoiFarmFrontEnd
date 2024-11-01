@@ -26,7 +26,6 @@ const AdminConsignment = () => {
   const fetchData = async () => {
     try {
       const response = await fetchAllConsignments();
-      console.log("Fetched consignments:", response);
 
       if (response.data) {
         setConsignments(response.data);
@@ -61,11 +60,7 @@ const AdminConsignment = () => {
 
   const handleStatusChange = async (itemId, newStatus) => {
     try {
-      console.log("Updating status:", itemId, newStatus);
-
       const response = await updateConsignmentItemStatus(itemId, newStatus);
-      console.log("API Response:", response);
-
       if (response.data) {
         setConsignments((prevConsignments) =>
           prevConsignments.map((consignment) => ({
@@ -124,9 +119,7 @@ const AdminConsignment = () => {
   };
 
   useEffect(() => {
-    console.log("Active tab changed to:", activeTab);
     const filteredData = filterConsignmentsByStatus(activeTab);
-    console.log("Filtered consignments:", filteredData);
   }, [activeTab]);
 
   const handleCancelItem = (itemId) => {
@@ -222,7 +215,7 @@ const AdminConsignment = () => {
                 <th>Người ký gửi</th>
                 <th>Ngày ký gửi</th>
                 <th>Trạng thái</th>
-                {activeTab === "Pending" && <th>Xác nhận</th>}
+                {activeTab === "Pending" && <th>Thao tác</th>}
               </tr>
             </thead>
             <tbody>
@@ -252,6 +245,7 @@ const AdminConsignment = () => {
                       {activeTab === "Pending" && (
                         <td>
                           <button
+                            title="Xác nhận ký gửi"
                             className="btn btn-success ms-2"
                             onClick={() =>
                               handleStatusChange(item.itemId, "Approved")
@@ -260,6 +254,7 @@ const AdminConsignment = () => {
                             <i className="fa-solid fa-clipboard-check"></i>
                           </button>
                           <button
+                            title="Huỷ đơn ký gửi"
                             className="btn btn-danger ms-2"
                             onClick={() => handleCancelItem(item.itemId)}
                           >

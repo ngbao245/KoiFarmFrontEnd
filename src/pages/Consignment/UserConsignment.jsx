@@ -58,7 +58,6 @@ const UserConsignment = () => {
     const handlePayment = async (consignment, item) => {
         try {
             setIsProcessing(true);
-            console.log("Processing payment for:", item);
             
             const response = await createPayment({
                 orderDescription: `Thanh toán ký gửi: ${item.name}`,
@@ -68,7 +67,6 @@ const UserConsignment = () => {
             });
 
             if (response.data) {
-                console.log("Payment URL:", response.data);
                 window.location.href = response.data;
             }
         } catch (error) {

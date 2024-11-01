@@ -46,23 +46,12 @@ const Order = () => {
     try {
       const response = await createOrder(cartData.cartId);
 
-      // Log the full response
-      console.log(
-        "Full Order creation response:",
-        JSON.stringify(response, null, 2)
-      );
-
       if (response.data) {
-        console.log("response.data:", JSON.stringify(response.data, null, 2));
-
-        // Extracting data assuming two possible structures
         const orderData = response.data.data || response.data;
 
-        // Check if orderData has orderId
         if (orderData && orderData.orderId) {
           setOrderData(orderData);
 
-          // Handle payment
           if (paymentMethod === "bank") {
             const paymentResponse = await createPayment({
               orderDescription: "Thanh toán đơn hàng",
@@ -77,12 +66,10 @@ const Order = () => {
             navigate("/");
           }
         } else {
-          // If orderId is missing
           console.error("Order ID missing in response:", orderData);
           toast.error("Error creating order: Missing order ID.");
         }
       } else {
-        // If response structure is invalid
         console.error("Invalid response structure:", response);
         toast.error("Error creating order: Invalid response structure.");
       }

@@ -23,7 +23,21 @@ const Product = () => {
     try {
       const response = await fetchAllProducts();
       if (response && response.data) {
-        setListProducts(response.data);
+        //chỉ lấy cá được đã được approve
+        const productsWithApprovedCount = await Promise.all(
+          response.data.map(async (product) => {
+            const itemsResponse = await getProdItemByProdId(product.id);
+            const approvedItems = itemsResponse.data.filter(
+              (item) => item.type === "Approved"
+            );
+            const totalQuantity = approvedItems.reduce((sum, item) => sum + item.quantity, 0);
+            return {
+              ...product,
+              quantity: totalQuantity,
+            };
+          })
+        );
+        setListProducts(productsWithApprovedCount);
       } else {
         toast.error("Unexpected data format received");
       }
@@ -37,9 +51,10 @@ const Product = () => {
   const handleProductClick = async (product) => {
     try {
       const response = await getProdItemByProdId(product.id);
+      const approvedItems = response.data.filter(item => item.type === "Approved");
 
       navigate(`/koi/${product.name.toLowerCase().replace(/\s+/g, "")}`, {
-        state: { response: response.data, productName: product.name },
+        state: { response: approvedItems, productName: product.name },
       });
     } catch (error) {
       console.error("Error fetching product item:", error);
