@@ -7,12 +7,13 @@ import {
   updateIsDelivered,
   cancelOrder,
 } from "../../services/OrderService";
-import { fetchAllPayment } from "../../services/PaymentService";
+import { fetchAllPayment, processRefund } from "../../services/PaymentService";
 import { getNameOfProdItem } from "../../services/ProductItemService";
 import "./UserDetail.css";
 import FishSpinner from "../../components/FishSpinner";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../components/ConfirmationModal";
+
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -175,6 +176,26 @@ const UserDetail = () => {
         setOrders(updatedOrders);
         setError(null);
         toast.success("Bạn đã huỷ đơn hàng thành công, tiền sẽ được chuyển lại vào tài khoản của khách hàng trễ nhất 48 giờ.");
+      
+        const paymentResponse = await fetchAllPayment();
+      if (paymentResponse.statusCode === 200 && paymentResponse.data) {
+        const payments = paymentResponse.data;
+
+        const payment = payments.find((p) => p.orderId === orderIdToCancel);
+        if (payment) {
+          const refundResponse = await processRefund(payment.id);
+          if (refundResponse.statusCode === 200) {
+            toast.success("Refund has been processed successfully.");
+          } else {
+            toast.error("Failed to process refund. Please try again.");
+          }
+        } else {
+          toast.info("No payment found for the canceled order.");
+        }
+      } else {
+        toast.error("Failed to fetch payments for processing the refund.");
+      }
+      
       } else {
         setError("Unexpected response when cancelling order. Please try again.");
       }

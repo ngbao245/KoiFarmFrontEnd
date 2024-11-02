@@ -12,6 +12,7 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 import { toast } from "react-toastify";
 import FishSpinner from "../../components/FishSpinner";
 import "./AdminOrder.css";
+import { fetchAllPayment, processRefund } from "../../services/PaymentService"
 
 const AdminOrder = () => {
   const [orders, setOrders] = useState([]);
@@ -85,12 +86,12 @@ const AdminOrder = () => {
       const updatedOrders = orders.map((order) =>
         order.orderId === orderId
           ? {
-              ...order,
-              staffId,
-              assignedStaffName:
-                staffMembers.find((s) => s.id === staffId)?.name ||
-                "Chưa phân công",
-            }
+            ...order,
+            staffId,
+            assignedStaffName:
+              staffMembers.find((s) => s.id === staffId)?.name ||
+              "Chưa phân công",
+          }
           : order
       );
       setOrders(updatedOrders);
@@ -119,6 +120,25 @@ const AdminOrder = () => {
         toast.success(
           "Đã hủy đơn hàng thành công. Số lượng sản phẩm đã được cập nhật."
         );
+
+        const paymentResponse = await fetchAllPayment();
+        if (paymentResponse.statusCode === 200 && paymentResponse.data) {
+          const payments = paymentResponse.data;
+
+          const payment = payments.find(
+            (p) => p.orderId === orderToCancel.orderId
+          );
+          console.log(payment.id);
+          if (payment) {
+            await processRefund(payment.id);
+            toast.success("Refund has been processed successfully.");
+          } else {
+            toast.info("No payment found for the canceled order.");
+          }
+        } else {
+          toast.error("Failed to fetch payments for processing the refund.");
+        }
+
       } else {
         toast.error("Không thể hủy đơn hàng. Vui lòng thử lại.");
       }
@@ -191,33 +211,29 @@ const AdminOrder = () => {
 
         <div className="order-tabs">
           <button
-            className={`order-tab-button ${
-              activeTab === "Pending" ? "active" : ""
-            }`}
+            className={`order-tab-button ${activeTab === "Pending" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("Pending")}
           >
             Đang xử lý
           </button>
           <button
-            className={`order-tab-button ${
-              activeTab === "Delivering" ? "active" : ""
-            }`}
+            className={`order-tab-button ${activeTab === "Delivering" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("Delivering")}
           >
             Đang giao hàng
           </button>
           <button
-            className={`order-tab-button ${
-              activeTab === "Completed" ? "active" : ""
-            }`}
+            className={`order-tab-button ${activeTab === "Completed" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("Completed")}
           >
             Đã hoàn thành
           </button>
           <button
-            className={`order-tab-button ${
-              activeTab === "Cancelled" ? "active" : ""
-            }`}
+            className={`order-tab-button ${activeTab === "Cancelled" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("Cancelled")}
           >
             Đã hủy

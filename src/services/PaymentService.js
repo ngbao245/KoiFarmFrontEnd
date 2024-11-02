@@ -49,4 +49,18 @@ const createPaymentForCOD = ( { orderId } ) => {
   });
 };
 
-export { fetchAllPayment, callBackPayment, createPayment, fetchUserPayment, createPaymentForCOD };
+const processRefund = ( paymentId ) => {
+  return axios.post("Payment/process-refund",
+    { transactionNo : paymentId, },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
+export { fetchAllPayment, callBackPayment, 
+  createPayment, fetchUserPayment, 
+  createPaymentForCOD,
+  processRefund };
