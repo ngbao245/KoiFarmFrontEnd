@@ -12,6 +12,8 @@ const Order = () => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const navigate = useNavigate();
 
+  const [promotionCode, setPromotionCode] = useState(null);
+
   useEffect(() => {
     const fetchCartData = async () => {
       try {
@@ -44,7 +46,7 @@ const Order = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await createOrder(cartData.cartId);
+      const response = await createOrder(cartData.cartId, promotionCode);
 
       if (response.data) {
         const orderData = response.data.data || response.data;
@@ -200,6 +202,14 @@ const Order = () => {
               Thanh toán bằng ngân hàng (Bank Transfer)
             </label>
           </div>
+
+          <label htmlFor="promotionId">Promotion Code (optional):</label>
+          <input
+            type="text"
+            id="promotionId"
+            value={promotionCode || ""}
+            onChange={(e) => setPromotionCode(e.target.value)}
+          />
 
           <button
             onClick={handleCreateOrder}
