@@ -85,21 +85,32 @@ img {
 
 .back-arrow {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 30px;
+  left: 30px;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-white);
+  border-radius: 50%;
+  box-shadow: var(--box-shadow-default);
+  transition: all 0.3s ease;
   cursor: pointer;
-
-  font-size: 1.5rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
 }
 
 .back-arrow i {
-  font-size: 24px;
-  color: #333 !important;
-  transition: color 0.3s ease;
+  font-size: 20px;
+  color: var(--primary-black) !important;
+  transition: transform 0.3s ease;
 }
 
-.back-arrow i:hover {
-  color: var(--primary-red-hover) !important;
+.back-arrow:hover {
+  background-color: var(--primary-red);
+  transform: translateX(-3px);
+}
+
+.back-arrow:hover i {
+  color: var(--primary-white) !important;
+  transform: scale(1.1);
 }

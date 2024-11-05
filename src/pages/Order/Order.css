@@ -58,7 +58,7 @@
     border-bottom: 2px solid var(--primary-grey);
   }
   
-  .product-image {
+  .order-product-image {
     width: 100px;
     height: auto;
     object-fit: contain;
@@ -66,12 +66,12 @@
     margin-right: 20px;
   }
   
-  .item-details {
+  .order-item-details {
     flex: 1;
     padding: 0 15px;
   }
   
-  .item-details h5 {
+  .order-item-details h5 {
     margin: 0 0 10px 0;
     font-size: 1.1rem;
   }
@@ -123,7 +123,7 @@
     cursor: pointer;
   }
   
-  .payment-content {
+  .order-payment-content {
     display: flex;
     align-items: center;
     padding: 15px;
