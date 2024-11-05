@@ -234,6 +234,15 @@ const Order = () => {
                     </div>
                   </div>
                 </label>
+
+                <label htmlFor="promotionCode">Promotion Code (optional):</label>
+                <input
+                  type="text"
+                  id="promotionCode"
+                  value={promotionCode || ""}
+                  onChange={(e) => setPromotionCode(e.target.value)}
+                />
+
               </div>
 
               <button
