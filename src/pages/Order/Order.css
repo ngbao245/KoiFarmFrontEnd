@@ -1,1 +1,232 @@
- 
+.order-container {
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 10rem;
+  }
+  
+  .order-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--primary-background-light);
+    background-size: cover;
+    filter: blur(5px);
+    z-index: -1;
+    opacity: 0.7;
+  }
+  
+  .order-content {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .order-title {
+    margin: 0 auto;
+    padding: 4rem;
+    font-size: 3.5rem;
+    color: #1a365d;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  .order-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .order-items {
+    background-color: var(--primary-white);
+    padding: 20px;
+    width: 69%;
+    border-radius: 8px;
+  }
+  
+  .order-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    background-color: var(--primary-white);
+    box-shadow: var(--box-shadow-default);
+    border-radius: 8px;
+    padding: 1rem;
+    border-bottom: 2px solid var(--primary-grey);
+  }
+  
+  .product-image {
+    width: 100px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-right: 20px;
+  }
+  
+  .item-details {
+    flex: 1;
+    padding: 0 15px;
+  }
+  
+  .item-details h5 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+  }
+  
+  .item-price {
+    color: var(--primary-red);
+    font-weight: bold;
+    font-size: var(--font-size-p);
+    min-width: 120px;
+    text-align: right;
+  }
+  
+  .payment-section {
+    width: 31%;
+    height: fit-content;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    position: sticky;
+    top: 20px;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .payment-title {
+    margin-bottom: 25px;
+    color: #1a365d;
+    font-size: var(--font-size-section);
+    border-bottom: 2px solid var(--primary-grey);
+    padding-bottom: 10px;
+  }
+  
+  .payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .payment-method {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  
+  .payment-method input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .payment-content {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .payment-method input:checked ~ .payment-content {
+    border-color: var(--primary-red);
+    background-color: #fff5f5;
+  }
+  
+  .payment-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f7fafc;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .payment-icon i {
+    font-size: 1.2rem;
+    color: #4a5568;
+  }
+  
+  .payment-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .payment-name {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 4px;
+  }
+  
+  .payment-description {
+    font-size: 0.9rem;
+    color: #718096;
+  }
+  
+  .order-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #c70025;
+    color: var(--primary-white);
+    border: none;
+    border-radius: var(--radius-default);
+    font-size: var(--font-size-p);
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .order-button:hover {
+    background-color: #a8001e;
+  }
+  
+  .order-button:disabled {
+    background-color: #cbd5e0;
+    cursor: not-allowed;
+  }
+  
+  .order-button i {
+    font-size: 1.2rem;
+  }
+  
+  .order-summary-details {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .order-summary-details p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #4a5568;
+    font-size: 1.1rem;
+  }
+  
+  .order-summary-details h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid var(--primary-grey);
+    color: var(--primary-red);
+    font-size: var(--font-size-default);
+    font-weight: bold;
+  }
+  
+  .order-summary-details .amount {
+    font-weight: 600;
+  }
+  
