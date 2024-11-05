@@ -27,7 +27,14 @@ const AdminConsignment = () => {
     try {
       const response = await fetchAllConsignments();
 
-      if (response.data) {
+      if (response.statusCode === 404 || !response.data) {
+        setConsignments([]);
+        setUserNames({});
+        setLoading(false);
+        return;
+      }
+
+      if (Array.isArray(response.data)) {
         setConsignments(response.data);
 
         // Fetch user names for all unique userIds
@@ -49,10 +56,15 @@ const AdminConsignment = () => {
         }, {});
 
         setUserNames(userNameMap);
+      } else {
+        setConsignments([]);
+        setUserNames({});
       }
     } catch (error) {
       console.error("Error fetching consignments:", error);
       toast.error("Không thể tải danh sách ký gửi");
+      setConsignments([]);
+      setUserNames({});
     } finally {
       setLoading(false);
     }
@@ -80,7 +92,9 @@ const AdminConsignment = () => {
   };
 
   const filterConsignmentsByStatus = (status) => {
-    if (!consignments) return [];
+    if (!Array.isArray(consignments) || consignments.length === 0) {
+      return [];
+    }
 
     return consignments
       .map((consignment) => ({

@@ -69,6 +69,7 @@
   text-align: left;
 }
 
+.register-container input[type="tel"],
 .register-container input[type="text"],
 .register-container input[type="password"] {
   width: 100%;

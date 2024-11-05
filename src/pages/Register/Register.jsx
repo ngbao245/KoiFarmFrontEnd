@@ -32,35 +32,42 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const trimmedFormData = Object.keys(formData).reduce((acc, key) => {
+      acc[key] = ["password", "confirmPassword"].includes(key)
+        ? formData[key]
+        : formData[key].trim();
+      return acc;
+    }, {});
+
     if (
       !(
-        formData.lastName &&
-        formData.firstName &&
-        formData.Email &&
-        formData.address &&
-        formData.password &&
-        formData.confirmPassword
+        trimmedFormData.lastName &&
+        trimmedFormData.firstName &&
+        trimmedFormData.Email &&
+        trimmedFormData.address &&
+        trimmedFormData.password &&
+        trimmedFormData.confirmPassword
       )
     ) {
       toast.error("All fields are required!");
       return;
     }
-    if (formData.password !== formData.confirmPassword) {
+    if (trimmedFormData.password !== trimmedFormData.confirmPassword) {
       toast.error("Password not match!");
       return;
     }
 
     let res = await signup({
-      name: formData.firstName + formData.lastName,
-      password: formData.password,
-      email: formData.Email,
-      phone: "",
-      address: formData.address,
+      name: trimmedFormData.firstName + trimmedFormData.lastName,
+      password: trimmedFormData.password,
+      email: trimmedFormData.Email,
+      phone: trimmedFormData.phone,
+      address: trimmedFormData.address,
     });
     if (res && res.data && res.statusCode === 201) {
-      let res = await signin(formData.Email.trim(), formData.password.trim());
+      let res = await signin(trimmedFormData.Email, trimmedFormData.password);
       if (res && res.data.token) {
-        loginContext(formData.Email, res.data.token);
+        loginContext(trimmedFormData.Email, res.data.token);
         navigate("/");
         toast.success("Signin successful!");
       }
@@ -152,7 +159,11 @@ const Register = () => {
             )}
 
             {step === 2 && (
-              <form onKeyPress={(e) => handleKeyPress(e, ["Email", "address"])}>
+              <form
+                onKeyPress={(e) =>
+                  handleKeyPress(e, ["Email", "phone", "address"])
+                }
+              >
                 <div>
                   <label>Email</label>
                   <input
@@ -161,6 +172,16 @@ const Register = () => {
                     name="Email"
                     placeholder="Vui lòng nhập email"
                     value={formData.Email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label>Số điện thoại</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Vui lòng nhập số điện thoại"
+                    value={formData.phone}
                     onChange={handleChange}
                   />
                 </div>
@@ -186,7 +207,9 @@ const Register = () => {
                     type="button"
                     onClick={handleNext}
                     className="register-button"
-                    disabled={!formData.Email || !formData.address}
+                    disabled={
+                      !formData.Email || !formData.phone || !formData.address
+                    }
                   >
                     Tiếp theo
                   </button>

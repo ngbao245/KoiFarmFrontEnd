@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import FishSpinner from "../../components/FishSpinner";
+import { getUserInfo } from "../../services/UserService";
 
 const Cart = () => {
   const [cart, setCart] = useState(null);
@@ -87,8 +88,22 @@ const Cart = () => {
       .toLocaleString();
   };
 
-  const handleCheckout = () => {
-    navigate("/order");
+  const handleCheckout = async () => {
+    try {
+      const userResponse = await getUserInfo();
+      const userData = userResponse.data;
+
+      if (!userData.address?.trim() || !userData.phone?.trim()) {
+        navigate(`/${userData.id}/detail?fromCart=true`);
+        return;
+      }
+
+      navigate("/order");
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toast.error("Không thể lấy thông tin người dùng. Vui lòng thử lại.");
+      navigate("/login");
+    }
   };
 
   const handleContinue = () => {
@@ -138,11 +153,19 @@ const Cart = () => {
                 <div className="container-fluid text-center empty-cart-container">
                   <i
                     className="fa-solid fa-cart-shopping"
-                    style={{ fontSize: "50px", opacity: 0.2, marginBottom: "15px" }}
+                    style={{
+                      fontSize: "50px",
+                      opacity: 0.2,
+                      marginBottom: "15px",
+                    }}
                   ></i>
                   <p className="empty-cart-text">"Hỏng" có gì trong giỏ hết</p>
-                  <p className="empty-cart-text">Lướt KoiShop, lựa cá ngay đi!</p>
-                  <button className="shop-now-btn" onClick={handleContinue}>Mua ngay</button>
+                  <p className="empty-cart-text">
+                    Lướt KoiShop, lựa cá ngay đi!
+                  </p>
+                  <button className="shop-now-btn" onClick={handleContinue}>
+                    Mua ngay
+                  </button>
                 </div>
               </>
             ) : (

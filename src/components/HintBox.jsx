@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./HintBox.css";
 
-const HintBox = () => {
+const HintBox = ({ message }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   const handleClose = () => {
@@ -12,12 +12,8 @@ const HintBox = () => {
 
   return (
     <div className="alert alert-warning hint-box">
-      <b>
-        Mật khẩu mặc định là 123456. Nhân viên{" "}
-        <span style={{ color: "#c70025" }}>PHẢI</span> đổi mật khẩu
-        ngay sau khi nhận được tài khoản.
-      </b>
-      <button className="close-btn" onClick={handleClose}>
+      <b>{message}</b>
+      <button className="close-box-btn" onClick={handleClose}>
         &times;
       </button>
     </div>

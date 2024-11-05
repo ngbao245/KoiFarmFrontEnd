@@ -1,7 +1,4 @@
 .hint-box {
-  /* background-color: #f8d7da;  
-  color: #721c24;   */
-  /* border: 1px solid #f5c6cb;   */
   padding: 15px;
   border-radius: 5px;
   display: flex;
@@ -10,7 +7,7 @@
   margin: 15px 0;
 }
 
-.close-btn {
+.close-box-btn {
   background: none;
   border: none;
   color: #721c24;
@@ -19,6 +16,7 @@
   margin-left: 15px;
 }
 
-.close-btn:hover {
+.close-box-btn:hover {
   color: #92a71c;
 }
+

@@ -167,11 +167,11 @@ const Admin = () => {
             onChange={handleSearch}
           />
         </div>
+
+        <HintBox message="Mật khẩu mặc định là 123456. Nhân viên PHẢI đổi mật khẩu ngay sau khi nhận được tài khoản." />
       </div>
 
       <div className="container-fluid">
-        <HintBox />
-
         <table className="table table-striped text-center">
           <thead>
             <tr>

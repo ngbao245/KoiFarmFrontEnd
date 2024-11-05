@@ -13,7 +13,7 @@ import "./UserDetail.css";
 import FishSpinner from "../../components/FishSpinner";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../components/ConfirmationModal";
-
+import HintBox from "../../components/HintBox";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -40,6 +40,15 @@ const UserDetail = () => {
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [orderIdToCancel, setOrderIdToCancel] = useState(null);
+
+  const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false);
+
+  const [showCheckoutHint, setShowCheckoutHint] = useState(false);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    setShowCheckoutHint(searchParams.get("fromCart") === "true");
+  }, []);
 
   const filterOrdersByStatus = (status) => {
     return orders.filter((order) => order.status === status);
@@ -122,20 +131,34 @@ const UserDetail = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!updatedUser.password) {
-      setError("Vui lòng nhập mật khẩu để cập nhật thông tin.");
-      return;
-    }
+
+    const trimmedUser = {
+      ...updatedUser,
+      name: updatedUser.name?.trim(),
+      email: updatedUser.email?.trim(),
+      address: updatedUser.address?.trim(),
+      phone: updatedUser.phone?.replace(/\s+/g, ""),
+      password: updatedUser.password,
+    };
+
+    setUpdatedUser(trimmedUser);
+    setIsEditConfirmModalOpen(true);
+  };
+
+  const confirmUpdate = async () => {
     try {
       const response = await updateUserInfo(updatedUser);
       setUpdatedUser((prev) => ({ ...prev, ...response.data, password: "" }));
       setEditMode(false);
       setError(null);
+      toast.success("Cập nhật thông tin thành công!");
     } catch (err) {
       setError(
         err.message || "Không thể cập nhật thông tin. Vui lòng thử lại."
       );
       console.error(err);
+    } finally {
+      setIsEditConfirmModalOpen(false);
     }
   };
 
@@ -168,36 +191,41 @@ const UserDetail = () => {
   const confirmCancelOrder = async () => {
     try {
       const response = await cancelOrder(orderIdToCancel);
-      
+
       if (response.statusCode === 200) {
-        const updatedOrders = orders.map(order => 
-          order.orderId === orderIdToCancel ? { ...order, status: 'Cancelled' } : order
+        const updatedOrders = orders.map((order) =>
+          order.orderId === orderIdToCancel
+            ? { ...order, status: "Cancelled" }
+            : order
         );
         setOrders(updatedOrders);
         setError(null);
-        toast.success("Bạn đã huỷ đơn hàng thành công, tiền sẽ được chuyển lại vào tài khoản của khách hàng trễ nhất 48 giờ.");
-      
-        const paymentResponse = await fetchAllPayment();
-      if (paymentResponse.statusCode === 200 && paymentResponse.data) {
-        const payments = paymentResponse.data;
+        toast.success(
+          "Bạn đã huỷ đơn hàng thành công, tiền sẽ được chuyển lại vào tài khoản của khách hàng trễ nhất 48 giờ."
+        );
 
-        const payment = payments.find((p) => p.orderId === orderIdToCancel);
-        if (payment) {
-          const refundResponse = await processRefund(payment.id);
-          if (refundResponse.statusCode === 200) {
-            toast.success("Refund has been processed successfully.");
+        const paymentResponse = await fetchAllPayment();
+        if (paymentResponse.statusCode === 200 && paymentResponse.data) {
+          const payments = paymentResponse.data;
+
+          const payment = payments.find((p) => p.orderId === orderIdToCancel);
+          if (payment) {
+            const refundResponse = await processRefund(payment.id);
+            if (refundResponse.statusCode === 200) {
+              toast.success("Refund has been processed successfully.");
+            } else {
+              toast.error("Failed to process refund. Please try again.");
+            }
           } else {
-            toast.error("Failed to process refund. Please try again.");
+            toast.info("No payment found for the canceled order.");
           }
         } else {
-          toast.info("No payment found for the canceled order.");
+          toast.error("Failed to fetch payments for processing the refund.");
         }
       } else {
-        toast.error("Failed to fetch payments for processing the refund.");
-      }
-      
-      } else {
-        setError("Unexpected response when cancelling order. Please try again.");
+        setError(
+          "Unexpected response when cancelling order. Please try again."
+        );
       }
     } catch (err) {
       console.error("Error cancelling order:", err);
@@ -255,6 +283,13 @@ const UserDetail = () => {
             )}
           </div>
         </div>
+
+        {showCheckoutHint && (
+          <HintBox
+            message="Vui lòng cập nhật địa chỉ và số điện thoại để tiếp tục thanh toán"
+            type="warning"
+          />
+        )}
 
         {!isPaymentPage && (
           <div className="user-detail-info">
@@ -343,7 +378,11 @@ const UserDetail = () => {
                     </div>
                     <div className="user-info-item">
                       <strong>Trạng thái:</strong>
-                      <div className={`user-auth-badge ${user.auth ? "verified" : "unverified"}`}>
+                      <div
+                        className={`user-auth-badge ${
+                          user.auth ? "verified" : "unverified"
+                        }`}
+                      >
                         {user.auth ? "Đã xác thực" : "Chưa xác thực"}
                       </div>
                     </div>
@@ -430,7 +469,9 @@ const UserDetail = () => {
                     Đã hoàn thành
                   </button>
                   <button
-                    className={`order-tab-button ${activeTab === "Cancelled" ? "active" : ""}`}
+                    className={`order-tab-button ${
+                      activeTab === "Cancelled" ? "active" : ""
+                    }`}
                     onClick={() => setActiveTab("Cancelled")}
                   >
                     Đã hủy
@@ -469,7 +510,9 @@ const UserDetail = () => {
                           )}
                         </td>
                         <td>
-                          <span className={`user-order-badge ${order.status.toLowerCase()}`}>
+                          <span
+                            className={`user-order-badge ${order.status.toLowerCase()}`}
+                          >
                             {order.status === "Pending" && "Chờ xử lý"}
                             {order.status === "Delivering" && "Đang giao"}
                             {order.status === "Completed" && "Hoàn thành"}
@@ -515,6 +558,12 @@ const UserDetail = () => {
           </>
         )}
       </main>
+      <ConfirmationModal
+        isOpen={isEditConfirmModalOpen}
+        onClose={() => setIsEditConfirmModalOpen(false)}
+        onConfirm={confirmUpdate}
+        message="Bạn có chắc chắn muốn cập nhật thông tin?"
+      />
       <ConfirmationModal
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
