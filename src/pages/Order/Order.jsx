@@ -147,13 +147,13 @@ const Order = () => {
                     <img
                       src={item.imageUrl}
                       alt={item.productName}
-                      className="product-image"
+                      className="order-product-image"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = "/default-product-image.png";
                       }}
                     />
-                    <div className="item-details">
+                    <div className="order-item-details">
                       <h5>{item.productName}</h5>
                       <p>Số lượng: {item.quantity}</p>
                     </div>
@@ -176,7 +176,13 @@ const Order = () => {
                 <p>
                   <span>Phí vận chuyển:</span>
                   <span className="amount">
-                    {cartData.shippingFee?.toLocaleString() || "0"} VND
+                    {cartData.shippingFee?.toLocaleString() || "Miễn phí"} VND
+                  </span>
+                </p>
+                <p>
+                  <span>Thuế VAT:</span>
+                  <span className="amount">
+                    {cartData.shippingFee?.toLocaleString() || "Không áp dụng"}
                   </span>
                 </p>
                 <h3>
@@ -197,7 +203,7 @@ const Order = () => {
                     checked={paymentMethod === "cod"}
                     onChange={handlePaymentMethodChange}
                   />
-                  <div className="payment-content">
+                  <div className="order-payment-content">
                     <div className="payment-icon">
                       <i className="fas fa-money-bill"></i>
                     </div>
