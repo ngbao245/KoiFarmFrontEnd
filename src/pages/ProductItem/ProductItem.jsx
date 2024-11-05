@@ -19,6 +19,20 @@ const ProductItem = () => {
     navigate(`/koi/${productName.toLowerCase().replace(/\s+/g, "")}/${productId}`);
   };
 
+  const handleAddToCompare = (product) => {
+    const compareList = JSON.parse(localStorage.getItem('compareList') || '[]');
+    if (compareList.some(item => item.id === product.id)) {
+      alert('Sản phẩm này đã có trong danh sách so sánh!');
+      return;
+    }
+    if (compareList.length >= 5) {
+      alert('Chỉ có thể so sánh tối đa 5 sản phẩm!');
+      return;
+    }
+    localStorage.setItem('compareList', JSON.stringify([...compareList, product]));
+    alert('Đã thêm sản phẩm vào danh sách so sánh!');
+  };
+
   return (
     <>
       <Header />
@@ -51,19 +65,34 @@ const ProductItem = () => {
               <p>Price: {item.price} VND</p>
               <p>Age: {item.age} years</p>
               <p>Size: {item.size}</p>
-              <button
-                onClick={() => handleViewDetails(item.id)}
-                style={{
-                  padding: "10px",
-                  backgroundColor: "#C70025",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                View Details
-              </button>
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                <button
+                  onClick={() => handleViewDetails(item.id)}
+                  style={{
+                    padding: "10px",
+                    backgroundColor: "#C70025",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  View Details
+                </button>
+                <button
+                  onClick={() => handleAddToCompare(item)}
+                  style={{
+                    padding: "10px",
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  So sánh
+                </button>
+              </div>
             </div>
           ))}
         </div>

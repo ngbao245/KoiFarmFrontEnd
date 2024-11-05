@@ -132,7 +132,7 @@
     transition: all 0.3s ease;
   }
   
-  .payment-method input:checked ~ .payment-content {
+  .payment-method input:checked ~ .order-payment-content {
     border-color: var(--primary-red);
     background-color: #fff5f5;
   }

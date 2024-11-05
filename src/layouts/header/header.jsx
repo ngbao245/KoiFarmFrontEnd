@@ -174,6 +174,10 @@ export const Header = () => {
     }
   };
 
+  const handleComparisonClick = () => {
+    navigate("/productItem-comparison");
+  };
+
   return (
     <>
       <div className="nav-container">
@@ -183,6 +187,13 @@ export const Header = () => {
             <img src={logo1} className="logo1-image" alt="#" />
           </div>
           <div className="nav-search-grid">
+            <button
+              className="comparison-btn"
+              onClick={handleComparisonClick}
+              title="So sánh sản phẩm"
+            >
+              <i className="fa-solid fa-balance-scale"></i>
+            </button>
             <form onSubmit={handleSearch} className="nav-search-bar">
               <input
                 type="text"

@@ -228,7 +228,7 @@ const Order = () => {
                     checked={paymentMethod === "bank"}
                     onChange={handlePaymentMethodChange}
                   />
-                  <div className="payment-content">
+                  <div className="order-payment-content">
                     <div className="payment-icon">
                       <i className="fas fa-university"></i>
                     </div>
