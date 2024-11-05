@@ -152,10 +152,17 @@ const UserDetail = () => {
       setEditMode(false);
       setError(null);
       toast.success("Cập nhật thông tin thành công!");
+
+      const searchParams = new URLSearchParams(window.location.search);
+      if (
+        searchParams.get("fromCart") === "true" && 
+        updatedUser.address?.trim() && 
+        updatedUser.phone?.trim()
+      ) {
+        navigate("/cart");
+      }
     } catch (err) {
-      setError(
-        err.message || "Không thể cập nhật thông tin. Vui lòng thử lại."
-      );
+      setError(err.message || "Không thể cập nhật thông tin. Vui lòng thử lại.");
       console.error(err);
     } finally {
       setIsEditConfirmModalOpen(false);
