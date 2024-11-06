@@ -76,6 +76,11 @@ const Reviews = ({ productItemId }) => {
                     return [...(Array.isArray(prevReviews) ? prevReviews : []), newReview];
                 });
 
+                setUserNames((prevUserNames) => ({
+                    ...prevUserNames,
+                    [response.data.userId]: userNames[response.data.userId]
+                }));
+
                 setDescription("");
                 setRating(0);
             } else {
