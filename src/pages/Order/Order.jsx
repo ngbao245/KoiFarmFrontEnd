@@ -5,6 +5,7 @@ import { createOrder } from "../../services/OrderService";
 import { createPayment } from "../../services/PaymentService";
 import { useNavigate } from "react-router-dom";
 import { getProdItemById } from "../../services/ProductItemService";
+import { fetchPromotionByCode } from "../../services/PromotionService"
 import "./Order.css";
 
 const Order = () => {
@@ -16,6 +17,9 @@ const Order = () => {
   const navigate = useNavigate();
 
   const [promotionCode, setPromotionCode] = useState(null);
+  const [promotionMessage, setPromotionMessage] = useState(null);
+  const [messageColor, setMessageColor] = useState("");
+  const [discountAmount, setDiscountAmount] = useState(0);
 
   useEffect(() => {
     const fetchCartData = async () => {
@@ -112,13 +116,46 @@ const Order = () => {
     }
   };
 
-  const calculateTotal = () => {
+  const handlePromotionCheck = async () => {
+    if (!promotionCode.trim()) return;
+
+    try {
+      const response = await fetchPromotionByCode(promotionCode);
+      if (response.statusCode === 200) {
+        setPromotionMessage("Mã giảm giá hợp lệ");
+        setMessageColor("green");
+
+        const promotion = response.data[0];
+
+        const subtotal = calculateSubtotal();
+        if (promotion.type === "Percentage") {
+          setDiscountAmount((subtotal * promotion.amount) / 100);
+        } else if (promotion.type === "Direct") {
+          setDiscountAmount(promotion.amount);
+        }
+
+      } else {
+        setPromotionMessage("Mã giảm giá không hợp lệ");
+        setMessageColor("red");
+        setDiscountAmount(0);
+      }
+    } catch (error) {
+      console.error("Error checking promotion code:", error);
+      setPromotionMessage("Error checking promotion code");
+    }
+  };
+
+  const calculateSubtotal = () => {
     if (!cartData || !cartData.items) return 0;
-    const subtotal = cartData.items.reduce(
+    return cartData.items.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     );
-    return subtotal;
+  };
+
+  const calculateTotal = () => {
+    const subtotal = calculateSubtotal();
+    return subtotal - discountAmount;
   };
 
   if (!cartData) {
@@ -172,7 +209,13 @@ const Order = () => {
                 <p>
                   <span>Tạm tính:</span>
                   <span className="amount">
-                    {calculateTotal().toLocaleString()} VND
+                    {calculateSubtotal().toLocaleString()} VND
+                  </span>
+                </p>
+                <p>
+                  <span>Giảm giá:</span>
+                  <span className="amount">
+                    {discountAmount.toLocaleString()} VND
                   </span>
                 </p>
                 <p>
@@ -241,13 +284,24 @@ const Order = () => {
                   </div>
                 </label>
 
-                <label htmlFor="promotionCode">Promotion Code (optional):</label>
-                <input
-                  type="text"
-                  id="promotionCode"
-                  value={promotionCode || ""}
-                  onChange={(e) => setPromotionCode(e.target.value)}
-                />
+                <div>
+                  <label htmlFor="promotionCode">Mã giảm giá:</label> <br/>
+                  <input
+                    type="text"
+                    id="promotionCode"
+                    value={promotionCode || ""}
+                    onChange={(e) => {
+                      setPromotionCode(e.target.value);
+                      setPromotionMessage(null);
+                    }}
+                  />
+                  <button onClick={handlePromotionCheck}>Áp dụng</button>
+                </div>
+                {promotionMessage && <p
+                  className="promotion-message"
+                  style={{
+                    color: messageColor
+                  }}>{promotionMessage}</p>}
 
               </div>
 
