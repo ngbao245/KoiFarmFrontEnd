@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getConsignmentsForUser, deleteConsignmentItem } from '../../services/ConsignmentService';
-import { createPayment, callBackPayment } from '../../services/PaymentService';
+import { getConsignmentsForUser, deleteConsignmentItem, checkoutConsignment } from '../../services/ConsignmentService';
+import { createPayment, callBackPayment, createPaymentForCOD } from '../../services/PaymentService';
 import { useNavigate, useLocation } from "react-router-dom";
 import FishSpinner from "../../components/FishSpinner";
 import { toast } from "react-toastify";
@@ -11,6 +11,7 @@ const UserConsignment = () => {
     const [activeTab, setActiveTab] = useState('Pending');
     const [loading, setLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('bank');
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -19,7 +20,6 @@ const UserConsignment = () => {
         // Kiểm tra callback từ VNPay
         const urlParams = new URLSearchParams(location.search);
         const vnp_ResponseCode = urlParams.get('vnp_ResponseCode');
-        const vnp_OrderInfo = urlParams.get('vnp_OrderInfo');
         
         if (vnp_ResponseCode === '00') {
             handlePaymentCallback();
@@ -59,19 +59,47 @@ const UserConsignment = () => {
         try {
             setIsProcessing(true);
             
-            const response = await createPayment({
-                orderDescription: `Thanh toán ký gửi: ${item.name}`,
-                orderType: "consignment",
-                name: item.name,
-                orderId: item.itemId
-            });
+            // Bước 1: Checkout consignment
+            const checkoutResponse = await checkoutConsignment(item.itemId);
+            
+            if (!checkoutResponse?.data || checkoutResponse.statusCode !== 201) {
+                throw new Error(checkoutResponse.messageError || "Checkout failed");
+            }
 
-            if (response.data) {
-                window.location.href = response.data;
+            const orderId = checkoutResponse.data.orderId;
+            
+            if (paymentMethod === 'bank') {
+                // Bước 2: Tạo payment với VNPay
+                const paymentData = {
+                    orderDescription: `Thanh toán ký gửi: ${item.name}`,
+                    orderType: "consignment",
+                    name: item.name,
+                    orderId: orderId
+                };
+
+                const paymentResponse = await createPayment(paymentData);
+                
+                if (paymentResponse?.data) {
+                    // Chuyển hướng đến trang thanh toán VNPay
+                    window.location.href = paymentResponse.data;
+                } else {
+                    throw new Error("No payment URL received");
+                }
+            } else {
+                // Thanh toán COD
+                try {
+                    await createPaymentForCOD({ orderId });
+                    toast.success("Đặt hàng thành công! Bạn sẽ thanh toán khi nhận hàng.");
+                    await fetchConsignments(); // Refresh danh sách
+                    navigate('/'); // Chuyển về trang chủ
+                } catch (error) {
+                    console.error("COD payment error:", error);
+                    toast.error("Không thể tạo thanh toán COD. Vui lòng thử lại.");
+                }
             }
         } catch (error) {
             console.error("Payment error:", error);
-            toast.error("Không thể xử lý thanh toán. Vui lòng thử lại sau.");
+            toast.error(error.message || "Không thể xử lý thanh toán. Vui lòng thử lại sau.");
         } finally {
             setIsProcessing(false);
         }
@@ -95,9 +123,29 @@ const UserConsignment = () => {
     };
 
     const filterConsignmentsByStatus = (status) => {
-        return consignments.filter(consignment =>
-            consignment.items.some(item => item.status === status)
-        );
+        if (!Array.isArray(consignments) || consignments.length === 0) {
+            return [];
+        }
+
+        return consignments.map(consignment => ({
+            ...consignment,
+            items: consignment.items.filter(item => {
+                // Debug log
+                console.log("Item:", item);
+                console.log("Status to match:", status);
+                
+                switch(status) {
+                    case 'Pending':
+                        return item.status === 'Pending';
+                    case 'Approved':
+                        return item.status === 'Approved';
+                    case 'Checkedout':
+                        return item.checkedout === true;
+                    default:
+                        return false;
+                }
+            })
+        })).filter(consignment => consignment.items.length > 0);
     };
 
     if (loading) return <FishSpinner />;
@@ -146,7 +194,7 @@ const UserConsignment = () => {
                         Đã thanh toán
                         <span className="uc-count">{
                             consignments.reduce((acc, cons) => 
-                                acc + cons.items.filter(item => item.status === 'Checkedout').length, 0
+                                acc + cons.items.filter(item => item.checkedout === true).length, 0
                             )
                         }</span>
                     </button>
@@ -185,23 +233,48 @@ const UserConsignment = () => {
                                         </td>
                                         <td>
                                             {activeTab === 'Approved' && (
-                                                <button
-                                                    className="uc-btn uc-btn-payment"
-                                                    onClick={() => handlePayment(consignment, item)}
-                                                    disabled={isProcessing}
-                                                >
-                                                    {isProcessing ? (
-                                                        <>
-                                                            <i className="fas fa-spinner fa-spin me-2"></i>
-                                                            Đang xử lý...
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <i className="fas fa-credit-card me-2"></i>
-                                                            Thanh toán
-                                                        </>
-                                                    )}
-                                                </button>
+                                                <div>
+                                                    <div className="payment-methods mb-2">
+                                                        <label className="me-3">
+                                                            <input
+                                                                type="radio"
+                                                                name="paymentMethod"
+                                                                value="bank"
+                                                                checked={paymentMethod === 'bank'}
+                                                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                                            /> Thanh toán qua VNPay
+                                                        </label>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="paymentMethod"
+                                                                value="cod"
+                                                                checked={paymentMethod === 'cod'}
+                                                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                                            /> Thanh toán khi nhận hàng
+                                                        </label>
+                                                    </div>
+                                                    <button
+                                                        className="uc-btn uc-btn-payment"
+                                                        onClick={() => {
+                                                            console.log("Payment button clicked", consignment, item);
+                                                            handlePayment(consignment, item);
+                                                        }}
+                                                        disabled={isProcessing}
+                                                    >
+                                                        {isProcessing ? (
+                                                            <>
+                                                                <i className="fas fa-spinner fa-spin me-2"></i>
+                                                                Đang xử lý...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <i className="fas fa-credit-card me-2"></i>
+                                                                Thanh toán
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                </div>
                                             )}
                                             {activeTab === 'Pending' && (
                                                 <button
@@ -216,7 +289,7 @@ const UserConsignment = () => {
                                     </tr>
                                 ))
                             ))}
-                            {!consignments.some(c => c.items.some(i => i.status === activeTab)) && (
+                            {!filterConsignmentsByStatus(activeTab).length && (
                                 <tr>
                                     <td colSpan="6" className="text-center">
                                         <div className="uc-empty-state">

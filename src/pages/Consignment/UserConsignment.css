@@ -130,12 +130,12 @@
 }
 
 .uc-btn-payment {
-    background-color: var(--primary-color);
+    background-color: var(--primary-red);
     color: white;
 }
 
 .uc-btn-payment:hover:not(:disabled) {
-    background-color: var(--primary-dark);
+    background-color: var(--primary-red-hover);
 }
 
 .uc-btn-delete {
