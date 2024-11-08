@@ -32,6 +32,7 @@ import ForgotPassword from "../pages/ForgotPassword/ForgotPassword.jsx";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword.jsx";
 import ProductComparison from "../pages/ProductItemComparison/ProductComparison.jsx";
 import AdminConsignment from "../pages/Consignment/AdminConsignment.jsx";
+import AdminPromotion from "../pages/Promotion/AdminPromotion.jsx";
 
 const AppRoutes = () => {
   return (
@@ -80,6 +81,9 @@ const AppRoutes = () => {
         <Route path="/reset-password" element={<ResetPassword/>} />
 
         <Route path="/productItem-comparison" element={<ProductComparison/>} />
+
+        <Route path="/admin-promotion" element={<AdminPromotion/>} />
+
 
 
         <Route path="*" element={<NotFoundRoute />} />

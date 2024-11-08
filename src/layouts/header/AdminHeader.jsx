@@ -118,6 +118,13 @@ const AdminHeader = () => {
                     </NavLink>
                     <NavLink
                       className="nav-link"
+                      to="/admin-promotion"
+                      disabled={!user || !user.auth}
+                    >
+                      Mã Khuyến Mãi
+                    </NavLink>
+                    <NavLink
+                      className="nav-link"
                       to="/admin-consignment"
                       disabled={!user || !user.auth}
                     >
