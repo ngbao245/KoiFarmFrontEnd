@@ -206,3 +206,21 @@
   font-size: 1.2rem;
   color: var(--primary-black);
 }
+
+.animate-popup {
+  animation: popUp 0.5s ease-out;
+}
+
+@keyframes popUp {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

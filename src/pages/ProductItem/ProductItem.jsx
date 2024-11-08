@@ -30,7 +30,7 @@ const ProductItem = () => {
       return;
     }
     localStorage.setItem('compareList', JSON.stringify([...compareList, product]));
-    alert('Đã thêm sản phẩm vào danh sách so sánh!');
+    // alert('Đã thêm sản phẩm vào danh sách so sánh!');
   };
 
   return (

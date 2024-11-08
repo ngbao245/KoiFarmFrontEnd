@@ -27,6 +27,7 @@ export const Header = () => {
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [listProducts, setListProducts] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [compareListCount, setCompareListCount] = useState(0);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -70,6 +71,22 @@ export const Header = () => {
       searchInputRef.current.focus();
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    const checkCompareList = () => {
+      const compareList = JSON.parse(localStorage.getItem('compareList') || '[]');
+      setCompareListCount(compareList.length);
+    };
+
+    // Initial check
+    checkCompareList();
+
+    // Set up interval to check periodically
+    const intervalId = setInterval(checkCompareList, 1000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handleChoose = (e) => {
     e.preventDefault();
@@ -187,13 +204,15 @@ export const Header = () => {
             <img src={logo1} className="logo1-image" alt="#" />
           </div>
           <div className="nav-search-grid">
-            <button
-              className="comparison-btn"
-              onClick={handleComparisonClick}
-              title="So sánh sản phẩm"
-            >
-              <i className="fa-solid fa-balance-scale"></i>
-            </button>
+            {compareListCount >= 2 && (
+              <button
+                className="comparison-btn animate-popup"
+                onClick={handleComparisonClick}
+                title="So sánh sản phẩm"
+              >
+                <i className="fa-solid fa-balance-scale"></i>
+              </button>
+            )}
             <form onSubmit={handleSearch} className="nav-search-bar">
               <input
                 type="text"

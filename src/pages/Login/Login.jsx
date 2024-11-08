@@ -83,7 +83,7 @@ const Login = () => {
               <label>Mật khẩu</label>
                 <input
                   type={isShowPassword ? "password" : "text"}
-                  placeholder="Vui lng nhập mật khẩu"
+                  placeholder="Vui lòng nhập mật khẩu"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={handlePressEnter}
