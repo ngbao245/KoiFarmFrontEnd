@@ -5,7 +5,7 @@ import { createOrder } from "../../services/OrderService";
 import { createPayment } from "../../services/PaymentService";
 import { useNavigate } from "react-router-dom";
 import { getProdItemById } from "../../services/ProductItemService";
-import { fetchPromotionByCode } from "../../services/PromotionService"
+import { fetchPromotionByCode } from "../../services/PromotionService";
 import "./Order.css";
 
 const Order = () => {
@@ -132,7 +132,6 @@ const Order = () => {
         } else if (promotion.type === "Direct") {
           setDiscountAmount(promotion.amount);
         }
-
       } else {
         setPromotionMessage("Mã giảm giá không hợp lệ");
         setMessageColor("red");
@@ -261,7 +260,6 @@ const Order = () => {
                     </div>
                   </div>
                 </label>
-
                 <label className="payment-method">
                   <input
                     type="radio"
@@ -283,25 +281,32 @@ const Order = () => {
                   </div>
                 </label>
 
-                <div>
-                  <label htmlFor="promotionCode">Mã giảm giá:</label> <br/>
-                  <input
-                    type="text"
-                    id="promotionCode"
-                    value={promotionCode || ""}
-                    onChange={(e) => {
-                      setPromotionCode(e.target.value);
-                      setPromotionMessage(null);
-                    }}
-                  />
-                  <button onClick={handlePromotionCheck}>Áp dụng</button>
+                <div className="promotion-bar">
+                  <label className="promotionCode" htmlFor="promotionCode">Mã giảm giá:</label>
+                  <div className="promotion-input-group">
+                    <input
+                      className="promotion-input"
+                      type="text"
+                      id="promotionCode"
+                      value={promotionCode || ""}
+                      onChange={(e) => {
+                        setPromotionCode(e.target.value);
+                        setPromotionMessage(null);
+                      }}
+                    />
+                    <button onClick={handlePromotionCheck}>Áp dụng</button>
+                  </div>
                 </div>
-                {promotionMessage && <p
-                  className="promotion-message"
-                  style={{
-                    color: messageColor
-                  }}>{promotionMessage}</p>}
-
+                {promotionMessage && (
+                  <p
+                    className="promotion-message"
+                    style={{
+                      color: messageColor,
+                    }}
+                  >
+                    {promotionMessage}
+                  </p>
+                )}
               </div>
 
               <button
