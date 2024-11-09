@@ -19,7 +19,6 @@ export const Header = () => {
   const location = useLocation();
   const dropdownRef = useRef(null);
   const searchInputRef = useRef(null);
-  const searchButtonRef = useRef(null);
 
   const [choose, setChoose] = useState("home");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -28,6 +27,8 @@ export const Header = () => {
   const [listProducts, setListProducts] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [compareListCount, setCompareListCount] = useState(0);
+  const [showCompareButton, setShowCompareButton] = useState(false);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -75,16 +76,21 @@ export const Header = () => {
   useEffect(() => {
     const checkCompareList = () => {
       const compareList = JSON.parse(localStorage.getItem('compareList') || '[]');
-      setCompareListCount(compareList.length);
+      const newCount = compareList.length;
+      const lastCount = parseInt(localStorage.getItem('lastCompareCount') || '0');
+      
+      if (newCount >= 2 && lastCount < 2) {
+        setShouldAnimate(true);
+        setTimeout(() => setShouldAnimate(false), 300);
+      }
+      
+      localStorage.setItem('lastCompareCount', newCount.toString());
+      setCompareListCount(newCount);
+      setShowCompareButton(newCount >= 2);
     };
 
-    // Initial check
     checkCompareList();
-
-    // Set up interval to check periodically
     const intervalId = setInterval(checkCompareList, 1000);
-
-    // Cleanup interval on unmount
     return () => clearInterval(intervalId);
   }, []);
 
@@ -92,25 +98,7 @@ export const Header = () => {
     e.preventDefault();
     const value = e.target.value;
     setChoose(value);
-
-    if (value === "home") {
-      navigate("/");
-    }
-    if (value === "info") {
-      navigate("/info");
-    }
-    if (value === "news") {
-      navigate("/news");
-    }
-    if (value === "contact") {
-      navigate("/contact");
-    }
-    if (value === "consignment") {
-      navigate("/consignment");
-    }
-    if (value === "product") {
-      navigate("/product");
-    }
+    navigate(value === "home" ? "/" : `/${value}`);
   };
 
   const handleMouseEnter = () => {
@@ -166,6 +154,7 @@ export const Header = () => {
 
   const handleLogout = () => {
     logout();
+    localStorage.removeItem('compareList');
     navigate("/");
     toast.success("Logout Success");
   };
@@ -204,9 +193,9 @@ export const Header = () => {
             <img src={logo1} className="logo1-image" alt="#" />
           </div>
           <div className="nav-search-grid">
-            {compareListCount >= 2 && (
+            {showCompareButton && (
               <button
-                className="comparison-btn animate-popup"
+                className={`comparison-btn ${shouldAnimate ? 'animate-popup' : ''}`}
                 onClick={handleComparisonClick}
                 title="So sánh sản phẩm"
               >
@@ -224,7 +213,6 @@ export const Header = () => {
               <button
                 type="submit"
                 className="nav-search-btn"
-                ref={searchButtonRef}
                 onClick={() => searchInputRef.current.focus()}
               >
                 <img src={search} alt="Search" />

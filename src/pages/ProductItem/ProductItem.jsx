@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
+import { toast } from "react-toastify";
 
 const ProductItem = () => {
   const location = useLocation();
@@ -21,16 +22,24 @@ const ProductItem = () => {
 
   const handleAddToCompare = (product) => {
     const compareList = JSON.parse(localStorage.getItem('compareList') || '[]');
+    
     if (compareList.some(item => item.id === product.id)) {
-      alert('Sản phẩm này đã có trong danh sách so sánh!');
+      toast.warning('Sản phẩm này đã có trong danh sách so sánh!');
       return;
     }
+    
     if (compareList.length >= 5) {
-      alert('Chỉ có thể so sánh tối đa 5 sản phẩm!');
+      toast.warning('Chỉ có thể so sánh tối đa 5 sản phẩm!');
       return;
     }
+
     localStorage.setItem('compareList', JSON.stringify([...compareList, product]));
-    // alert('Đã thêm sản phẩm vào danh sách so sánh!');
+    
+    if (compareList.length === 0) {
+      toast.info('Hãy thêm một sản phẩm nữa để so sánh!');
+    } else {
+      toast.success('Đã thêm sản phẩm vào danh sách so sánh!');
+    }
   };
 
   return (

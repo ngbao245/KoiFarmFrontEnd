@@ -155,14 +155,16 @@ const UserDetail = () => {
 
       const searchParams = new URLSearchParams(window.location.search);
       if (
-        searchParams.get("fromCart") === "true" && 
-        updatedUser.address?.trim() && 
+        searchParams.get("fromCart") === "true" &&
+        updatedUser.address?.trim() &&
         updatedUser.phone?.trim()
       ) {
         navigate("/cart");
       }
     } catch (err) {
-      setError(err.message || "Không thể cập nhật thông tin. Vui lòng thử lại.");
+      setError(
+        err.message || "Không thể cập nhật thông tin. Vui lòng thử lại."
+      );
       console.error(err);
     } finally {
       setIsEditConfirmModalOpen(false);
@@ -223,8 +225,6 @@ const UserDetail = () => {
             } else {
               toast.error("Failed to process refund. Please try again.");
             }
-          } else {
-            toast.info("No payment found for the canceled order.");
           }
         } else {
           toast.error("Failed to fetch payments for processing the refund.");

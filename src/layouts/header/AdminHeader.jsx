@@ -19,6 +19,7 @@ const AdminHeader = () => {
 
   const handleLogout = () => {
     logout();
+    localStorage.removeItem('compareList');
     navigate("/");
     toast.success("Logout Success");
   };

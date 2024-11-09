@@ -9,6 +9,7 @@ import { getProductById } from "../../services/ProductService";
 import FishSpinner from "../../components/FishSpinner";
 import ModalUpdateProductItem from "../../components/ModalUpdateProductItem";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import { getUserInfo } from "../../services/UserService";
 
 const AdminProduct = () => {
   const [dataExport, setDataExport] = useState([]);
@@ -33,6 +34,22 @@ const AdminProduct = () => {
   const [itemToDelete, setItemToDelete] = useState(null);
 
   const [activeTab, setActiveTab] = useState("Pending Approval");
+
+  const [userDetails, setUserDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await getUserInfo();
+        setUserDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+        toast.error("Failed to fetch user details");
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
 
   const fetchProductItems = async (searchQuery = "") => {
     try {
@@ -200,103 +217,6 @@ const AdminProduct = () => {
     setIsConfirmModalOpen(true);
   };
 
-  const renderTableRows = () => {
-    return filteredProductItems.length > 0 ? (
-      filteredProductItems.map((item) => (
-        <tr key={item.id}>
-          <td>{item.name}</td>
-          <td>{item.price}</td>
-          <td>{item.category}</td>
-          <td>{item.origin}</td>
-          <td>{item.sex}</td>
-          <td>{item.age}</td>
-          <td>{item.size}</td>
-          <td>{item.species}</td>
-          <td>{item.personality}</td>
-          <td>{item.foodAmount}</td>
-          <td>{item.waterTemp}</td>
-          <td>{item.mineralContent}</td>
-          <td>{item.ph}</td>
-          <td>{item.quantity}</td>
-          <td style={{ color: getTypeColor(item.type) }}>
-            {item.type === "Pending Approval" ? (
-              editingTypeId === item.id ? (
-                <select
-                  value={selectedType || item.type}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  onBlur={() => {
-                    handleTypeChange(item.id, selectedType);
-                    setEditingTypeId(null);
-                  }}
-                >
-                  <option value="">Select type...</option>
-                  <option value="Approved">Approve</option>
-                  <option value="Rejected">Reject</option>
-                </select>
-              ) : (
-                <span onClick={() => {
-                  setSelectedType(item.type);
-                  setEditingTypeId(item.id);
-                }} style={{ cursor: "pointer" }}>
-                  {item.type}
-                </span>
-              )
-            ) : (
-              item.type
-            )}
-          </td>
-          <td>{item.productName}</td>
-          <td>
-            {item.imageUrl ? (
-              <img
-                src={item.imageUrl}
-                alt={item.name}
-                style={{ width: "50px", height: "50px" }}
-              />
-            ) : (
-              "No Image"
-            )}
-          </td>
-          <td>
-            <button
-              title="Edit product"
-              className="btn btn-warning mx-1"
-              onClick={() => {
-                setSelectedProduct(item);
-                setShowUpdateModal(true);
-              }}
-              disabled={isUploading}
-            >
-              <i className="fa-solid fa-wrench"></i>
-            </button>
-            <button
-              title="Delete product"
-              className="btn btn-danger mx-1"
-              onClick={() => handleDeleteClick(item)}
-              disabled={isUploading}
-            >
-              <i className="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      ))
-    ) : (
-      <>
-        <tr>
-          <td colSpan="16">Không tìm thấy sản phẩm nào</td>
-        </tr>
-        <tr>
-          <td colSpan="16">
-            <i
-              className="fa-regular fa-folder-open"
-              style={{ fontSize: "30px", opacity: 0.2 }}
-            ></i>
-          </td>
-        </tr>
-      </>
-    );
-  };
-
   return (
     <>
       <AdminHeader />
@@ -417,7 +337,7 @@ const AdminProduct = () => {
                   <td>{item.ph}</td>
                   <td>{item.quantity}</td>
                   <td style={{ color: getTypeColor(item.type) }}>
-                    {item.type === "Pending Approval" ? (
+                    {item.type === "Pending Approval" && userDetails?.roleId === "1" ? (
                       editingTypeId === item.id ? (
                         <select
                           value={selectedType || item.type}
@@ -497,36 +417,38 @@ const AdminProduct = () => {
         </table>
       </div>
 
-      <div className="pagination-controls text-center user-select-none">
-        <button
-          className="btn btn-secondary"
-          disabled={pageIndex === 1}
-          onClick={() => handlePageChange(pageIndex - 1)}
-        >
-          Trước
-        </button>
-        <span className="px-3">
-          Trang {pageIndex} / {totalPages}
-        </span>
-        <button
-          className="btn btn-secondary"
-          disabled={pageIndex === totalPages}
-          onClick={() => handlePageChange(pageIndex + 1)}
-        >
-          Sau
-        </button>
+      {activeTab === "Approved" && (
+        <div className="pagination-controls text-center user-select-none">
+          <button
+            className="btn btn-secondary"
+            disabled={pageIndex === 1}
+            onClick={() => handlePageChange(pageIndex - 1)}
+          >
+            Trước
+          </button>
+          <span className="px-3">
+            Trang {pageIndex} / {totalPages}
+          </span>
+          <button
+            className="btn btn-secondary"
+            disabled={pageIndex === totalPages}
+            onClick={() => handlePageChange(pageIndex + 1)}
+          >
+            Sau
+          </button>
 
-        <select
-          value={pageSize}
-          onChange={handlePageSizeChange}
-          className="ml-3"
-        >
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-          <option value={15}>15</option>
-          <option value={20}>20</option>
-        </select>
-      </div>
+          <select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            className="ml-3"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={20}>20</option>
+          </select>
+        </div>
+      )}
 
       <ModalAddProductItem
         isOpen={showModalAddProduct}

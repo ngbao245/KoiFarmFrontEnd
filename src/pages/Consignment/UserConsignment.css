@@ -116,6 +116,11 @@
     color: #004085;
 }
 
+.uc-status.cancelled {
+    background-color: #6c757d;
+    color: white;
+}
+
 .uc-btn {
     padding: 0.5rem 1rem;
     border: none;
@@ -147,6 +152,20 @@
     background-color: #c82333;
 }
 
+.uc-btn-cancel {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.uc-btn-cancel:hover {
+    background-color: #c82333;
+}
+
 .uc-empty-state {
     padding: 3rem;
     text-align: center;
@@ -172,4 +191,9 @@
         width: 100%;
         text-align: left;
     }
+}
+
+.uc-tab-button.cancelled {
+    background-color: #6c757d;
+    color: white;
 }

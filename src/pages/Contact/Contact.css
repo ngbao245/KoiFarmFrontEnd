@@ -109,11 +109,12 @@
   font-size: 1rem;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   margin-top: 0.5rem;
+  box-shadow: 0 0 0 3px rgba(199, 0, 37, 0.25);
+  outline: none;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-  outline: none;
   border-color: var(--primary-grey);
   box-shadow: 0 0 0 3px rgba(199, 0, 37, 0.25);
 }

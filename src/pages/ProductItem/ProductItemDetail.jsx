@@ -54,6 +54,27 @@ const ProductItemDetail = () => {
     }
   };
 
+  const handleQuickBuy = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng của bạn");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await addToCart(1, productItem.id, token);
+      if (response.data && response.data.cartId) {
+        toast.success(`Đã thêm ${productItem.name} vào giỏ hàng`);
+        navigate("/order");
+      } else {
+        toast.error("Sản phẩm đã hết hàng");
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -103,10 +124,7 @@ const ProductItemDetail = () => {
                 borderRadius: "5px",
                 cursor: "pointer",
               }}
-              onClick={() => {
-                handleAddToCart(1, productItem.id);
-                navigate("/order");
-              }}
+              onClick={handleQuickBuy}
             >
               Đặt Mua Nhanh
             </button>

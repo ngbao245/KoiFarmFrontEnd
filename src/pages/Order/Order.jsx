@@ -94,23 +94,22 @@ const Order = () => {
               name: "Your Name",
               orderId: orderData.orderId,
             });
-            toast.success("Order created successfully!");
             window.location.href = paymentResponse.data;
           } else {
-            toast.success("Your order has been placed with Cash on Delivery!");
+            toast.success("Đơn hàng được tạo thành công!");
             navigate("/");
           }
         } else {
           console.error("Order ID missing in response:", orderData);
-          toast.error("Error creating order: Missing order ID.");
+          // toast.error("Error creating order: Missing order ID.");
         }
       } else {
         console.error("Invalid response structure:", response);
-        toast.error("Error creating order: Invalid response structure.");
+        // toast.error("Error creating order: Invalid response structure.");
       }
     } catch (error) {
       console.error("Error creating order:", error);
-      toast.error("Order submission failed.");
+      // toast.error("Order submission failed.");
     } finally {
       setIsSubmitting(false);
     }
@@ -323,21 +322,6 @@ const Order = () => {
                 )}
               </button>
             </div>
-
-            {orderData && (
-              <div
-                style={{
-                  marginTop: "20px",
-                  paddingTop: "20px",
-                  borderTop: "1px solid #ddd",
-                }}
-              >
-                <h2>Chi tiết đơn hàng</h2>
-                <p>Mã đơn hàng: {orderData.orderId}</p>
-                <p>Tổng tiền: {orderData.total.toLocaleString()} VND</p>
-                <p>Trạng thái: {orderData.status}</p>
-              </div>
-            )}
           </div>
         </div>
       </div>

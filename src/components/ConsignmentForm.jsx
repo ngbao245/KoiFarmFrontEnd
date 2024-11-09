@@ -93,11 +93,11 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
           setImageFile(null);
           setImagePreview(null);
           setCurrentStep(1);
-          toast.success("Successfully created a consignment");
+          toast.success("Tạo đơn ký gửi thành công!");
         }
       }
     } catch (err) {
-      toast.error("Failed to create consignment item. Please try again.");
+      toast.error("Tạo đơn ký gửi thành công do thông tin bạn cung cấp có vấn đề!");
     } finally {
       setIsLoading(false);
     }

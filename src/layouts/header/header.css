@@ -208,10 +208,10 @@
 }
 
 .animate-popup {
-  animation: popUp 0.5s ease-out;
+  animation: popIn 0.3s ease-out;
 }
 
-@keyframes popUp {
+@keyframes popIn {
   0% {
     transform: scale(0);
     opacity: 0;
