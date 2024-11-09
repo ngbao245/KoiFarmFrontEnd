@@ -28,20 +28,52 @@ const getProdItemByProdId = (prodId) => {
 };
 
 const createProdItem = (data) => {
-  return axios.post("ProductItem/create-product-item", data);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.post("ProductItem/create-product-item", data,{
+    headers:{
+      Authorization: `${token}`
+    }
+  });
 };
 
 const updateProdItem = (id, data) => {
-  return axios.put(`ProductItem/update-product-item/${id}`, data);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.put(`ProductItem/update-product-item/${id}`, data,{
+    headers:{
+      Authorization: `${token}`
+    }
+  });
 };
 
 const deleteProdItem = (id) => {
-  return axios.delete(`ProductItem/delete-product-item/${id}`);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`ProductItem/delete-product-item/${id}`,{
+    headers:{
+      Authorization: `${token}`
+    }
+  });
 };
 
 const updateProdItemType = (id, data) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
   return axios.put(`ProductItem/update-product-item-type/${id}`,
-    { type: data }
+    { type: data },{
+      headers:{
+        Authorization: `${token}`
+      }
+    }
   );
 };
 

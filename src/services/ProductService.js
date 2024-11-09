@@ -9,15 +9,39 @@ const getProductById = (id) => {
 };
 
 const createProduct = () => {
-  return axios.post("Product/create-product");
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.post("Product/create-product",{
+    headers:{
+      Authorization: `${token}`
+    }
+  });
 };
 
 const updateProduct = (id) => {
-  return axios.put(`Product/update-product/${id}`);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.put(`Product/update-product/${id}`,{
+    headers:{
+      Authorization: `${token}`
+    }
+  });
 };
 
 const deleteProduct = (id) => {
-  return axios.delete(`Product/delete-product/${id}`);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`Product/delete-product/${id}`,{
+    headers:{
+      Authorization: `${token}`
+    }
+  });
 };
 
 export { fetchAllProducts, getProductById, createProduct, updateProduct, deleteProduct };

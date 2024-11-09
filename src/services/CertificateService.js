@@ -9,35 +9,95 @@ const getCertificateById = (id) => {
 };
 
 const createCertificate = (data) => {
-  return axios.post("Certificate/create-certificate", data);
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.post("Certificate/create-certificate", data, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const updateCertificate = (id, data) => {
-  return axios.put(`Certificate/update-certificate/${id}`, data);
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.put(`Certificate/update-certificate/${id}`, data,{
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const updateCertificateImage = (id, data) => {
-  return axios.put(`Certificate/update-certificate-image/${id}`, data);
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.put(`Certificate/update-certificate-image/${id}`, data,{
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const deleteCertificate = (id) => {
-  return axios.delete(`Certificate/delete-certificate/${id}`);
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`Certificate/delete-certificate/${id}`,{
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const addProductCertificate = (data) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
   return axios.post("Certificate/add-product-certificate", data, {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: `${token}`,
     }
   });
 };
 
 const updateProductCertificate = (id, data) => {
-  return axios.put(`Certificate/update-product-certificate/${id}`, data);
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.put(`Certificate/update-product-certificate/${id}`, data,{
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const deleteProductCertificate = (id) => {
-  return axios.delete(`Certificate/remove-product-certificate/${id}`);
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`Certificate/remove-product-certificate/${id}`,{
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 export {

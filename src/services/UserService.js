@@ -9,7 +9,15 @@ const signup = (data) => {
 };
 
 const deleteAccount = (id) => {
-  return axios.delete(`User/delete-user/${id}`);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`User/delete-user/${id}`,{
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const fetchAllStaff = () => {
@@ -17,7 +25,15 @@ const fetchAllStaff = () => {
 };
 
 const postCreateStaff = (data) => {
-  return axios.post("/User/create-user-staff", data);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.post("/User/create-user-staff", data,{
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const deleteStaff = (id) => {
