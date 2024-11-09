@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getConsignmentsForUser, deleteConsignmentItem, checkoutConsignment, updateConsignmentItemStatus } from '../../services/ConsignmentService';
-import { createPayment, callBackPayment, createPaymentForCOD } from '../../services/PaymentService';
+import { createPayment, callBackPayment } from '../../services/PaymentService';
 import { useNavigate, useLocation } from "react-router-dom";
 import FishSpinner from "../../components/FishSpinner";
 import { toast } from "react-toastify";
@@ -55,11 +55,11 @@ const UserConsignment = () => {
                 // Cập nhật trạng thái item thành CheckedOut
                 if (orderId) {
                     await updateConsignmentItemStatus(orderId, "CheckedOut");
+                    // Refresh danh sách sau khi thanh toán và cập nhật trạng thái thành công
+                    await fetchConsignments();
+                    toast.success("Thanh toán thành công!");
+                    navigate('/'); // Redirect về trang chủ sau khi thanh toán thành công
                 }
-                
-                // Refresh danh sách sau khi thanh toán và cập nhật trạng thái thành công
-                await fetchConsignments();
-                toast.success("Thanh toán thành công!");
             }
         } catch (error) {
             console.error("Payment callback error:", error);
@@ -80,36 +80,30 @@ const UserConsignment = () => {
 
             const orderId = checkoutResponse.data.orderId;
             
-            if (paymentMethod === 'bank') {
-                // Bước 2: Tạo payment với VNPay
-                const paymentData = {
-                    orderDescription: `Thanh toán ký gửi: ${item.name}`,
-                    orderType: "consignment",
-                    name: item.name,
-                    orderId: orderId
-                };
+            // Bước 2: Tạo payment request
+            const paymentData = {
+                orderDescription: paymentMethods[item.itemId] === 'bank' 
+                    ? `Thanh toán ký gửi: ${item.name}`
+                    : `Thanh toán ký gửi COD: ${item.name}`,
+                orderType: "consignment",
+                name: item.name,
+                orderId: orderId
+            };
 
-                const paymentResponse = await createPayment(paymentData);
-                
+            const paymentResponse = await createPayment(paymentData);
+            
+            await updateConsignmentItemStatus(item.itemId, "CheckedOut");
+            await fetchConsignments();
+
+            if (paymentMethods[item.itemId] === 'bank') {
                 if (paymentResponse?.data) {
-                    // Chuyển hướng đến trang thanh toán VNPay
                     window.location.href = paymentResponse.data;
                 } else {
                     throw new Error("No payment URL received");
                 }
             } else {
-                // Thanh toán COD
-                try {
-                    await createPaymentForCOD({ orderId });
-                    // Cập nhật trạng thái item thành CheckedOut
-                    await updateConsignmentItemStatus(item.itemId, "CheckedOut");
-                    await fetchConsignments(); // Refresh danh sách
-                    toast.success("Đặt hàng thành công! Bạn sẽ thanh toán khi nhận hàng.");
-                    navigate('/');
-                } catch (error) {
-                    console.error("COD payment error:", error);
-                    toast.error("Không thể tạo thanh toán COD. Vui lòng thử lại.");
-                }
+                toast.success("Đặt hàng thành công! Bạn sẽ thanh toán khi nhận hàng.");
+                navigate('/');
             }
         } catch (error) {
             console.error("Payment error:", error);
@@ -161,9 +155,9 @@ const UserConsignment = () => {
                     case 'Pending':
                         return item.status === 'Pending';
                     case 'Approved':
-                        return item.status === 'Approved';
+                        return item.status === 'Approved' && !item.checkedout;
                     case 'Checkedout':
-                        return item.status === 'CheckedOut';
+                        return item.status === 'CheckedOut' || item.checkedout === true;
                     case 'Cancelled':
                         return item.status === 'Cancelled';
                     default:
@@ -185,9 +179,9 @@ const UserConsignment = () => {
                         case 'Pending':
                             return item.status === 'Pending';
                         case 'Approved':
-                            return item.status === 'Approved';
+                            return item.status === 'Approved' && !item.checkedout;
                         case 'Checkedout':
-                            return item.status === 'CheckedOut';
+                            return item.status === 'CheckedOut' || item.checkedout === true;
                         case 'Cancelled':
                             return item.status === 'Cancelled';
                         default:
