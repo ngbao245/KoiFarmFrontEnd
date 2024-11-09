@@ -1,7 +1,15 @@
 import axios from "./Customize-Axios";
 
 const fetchAllPayment = () => {
-  return axios.get("Payment/get-all-payments");
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.get("Payment/get-all-payments",{
+    headers:{
+      Authorization: `${token}`
+    }
+  });
 };
 
 const fetchUserPayment = () => {
@@ -44,17 +52,30 @@ const createPayment = ({ orderDescription, orderType, name, orderId }) => {
 };
 
 const createPaymentForCOD = ( { orderId } ) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
   return axios.post("Payment/create-payment",{
     orderId,
+  },{
+    headers: {
+      Authorization: `${token}`,
+    },
   });
 };
 
 const processRefund = ( paymentId ) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
   return axios.post("Payment/process-refund",
     { transactionNo : paymentId, },
     {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `${token}`,
       },
     }
   );

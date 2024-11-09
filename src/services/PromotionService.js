@@ -9,41 +9,41 @@ const fetchAllPromotion = () => {
 };
 
 const createPromotion = (promotionData) => {
-  // const token = localStorage.getItem("token");
-  // if (!token) {
-  //   throw new Error("No token found! Please log in again.");
-  // }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
 
   return axios.post("Promotion/create-promotion", promotionData, {
-    // headers: {
-    //   Authorization: `${token}`,
-    // },
+    headers: {
+      Authorization: `${token}`,
+    },
   });
 };
 
 const deletePromotion = (id) => {
-  // const token = localStorage.getItem("token");
-  // if (!token) {
-  //   throw new Error("No token found! Please log in again.");
-  // }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
 
   return axios.delete(`Promotion/delete-promotion/${id}`, {
-    // headers: {
-    //   Authorization: `${token}`,
-    // },
+    headers: {
+      Authorization: `${token}`,
+    },
   });
 };
 
 const updatePromotion = (id, data) => {
-  // const token = localStorage.getItem("token");
-  // if (!token) {
-  //   throw new Error("No token found! Please log in again.");
-  // }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
 
   return axios.put(`Promotion/update-promotion/${id}`, data, {
-    // headers: {
-    //   Authorization: `${token}`,
-    // },
+    headers: {
+      Authorization: `${token}`,
+    },
   });
 };
 
