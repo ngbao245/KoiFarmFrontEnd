@@ -6,6 +6,7 @@ import FishSpinner from "../../components/FishSpinner";
 import { toast } from "react-toastify";
 import "./UserConsignment.css";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import { createPaymentForCOD } from "../../services/PaymentService";
 
 const UserConsignment = () => {
     const [consignments, setConsignments] = useState([]);
@@ -24,7 +25,7 @@ const UserConsignment = () => {
         // Kiểm tra callback từ VNPay
         const urlParams = new URLSearchParams(location.search);
         const vnp_ResponseCode = urlParams.get('vnp_ResponseCode');
-        
+
         if (vnp_ResponseCode === '00') {
             handlePaymentCallback();
         } else if (vnp_ResponseCode) {
@@ -51,7 +52,7 @@ const UserConsignment = () => {
             if (response.data) {
                 // Lấy orderId từ response nếu có
                 const orderId = response.data.orderId;
-                
+
                 // Cập nhật trạng thái item thành CheckedOut
                 if (orderId) {
                     await updateConsignmentItemStatus(orderId, "CheckedOut");
@@ -70,40 +71,58 @@ const UserConsignment = () => {
     const handlePayment = async (consignment, item) => {
         try {
             setIsProcessing(true);
-            
+
             // Bước 1: Checkout consignment
             const checkoutResponse = await checkoutConsignment(item.itemId);
-            
+
             if (!checkoutResponse?.data || checkoutResponse.statusCode !== 201) {
                 throw new Error(checkoutResponse.messageError || "Checkout failed");
             }
 
             const orderId = checkoutResponse.data.orderId;
-            
-            // Bước 2: Tạo payment request
-            const paymentData = {
-                orderDescription: paymentMethods[item.itemId] === 'bank' 
-                    ? `Thanh toán ký gửi: ${item.name}`
-                    : `Thanh toán ký gửi COD: ${item.name}`,
-                orderType: "consignment",
-                name: item.name,
-                orderId: orderId
-            };
 
-            const paymentResponse = await createPayment(paymentData);
-            
-            await updateConsignmentItemStatus(item.itemId, "CheckedOut");
-            await fetchConsignments();
-
-            if (paymentMethods[item.itemId] === 'bank') {
-                if (paymentResponse?.data) {
-                    window.location.href = paymentResponse.data;
-                } else {
-                    throw new Error("No payment URL received");
+            if (paymentMethods[item.itemId] === 'cod') {
+                // COD payment flow
+                try {
+                    const codResponse = await createPaymentForCOD({ orderId });
+                    if (codResponse?.data) {
+                        await updateConsignmentItemStatus(item.itemId, "CheckedOut");
+                        await fetchConsignments();
+                        toast.success("Đặt hàng thành công! Bạn sẽ thanh toán khi nhận hàng.");
+                        navigate('/');
+                    } else {
+                        throw new Error("COD payment creation failed.");
+                    }
+                } catch (error) {
+                    console.error("Error creating COD payment:", error);
+                    toast.error("Không thể tạo thanh toán khi nhận hàng. Vui lòng thử lại sau.");
                 }
             } else {
-                toast.success("Đặt hàng thành công! Bạn sẽ thanh toán khi nhận hàng.");
-                navigate('/');
+                // Bước 2: Tạo payment request
+                const paymentData = {
+                    orderDescription: paymentMethods[item.itemId] === 'bank'
+                        ? `Thanh toán ký gửi: ${item.name}`
+                        : `Thanh toán ký gửi COD: ${item.name}`,
+                    orderType: "consignment",
+                    name: item.name,
+                    orderId: orderId
+                };
+
+                const paymentResponse = await createPayment(paymentData);
+
+                await updateConsignmentItemStatus(item.itemId, "CheckedOut");
+                await fetchConsignments();
+
+                if (paymentMethods[item.itemId] === 'bank') {
+                    if (paymentResponse?.data) {
+                        window.location.href = paymentResponse.data;
+                    } else {
+                        throw new Error("No payment URL received");
+                    }
+                } else {
+                    toast.success("Đặt hàng thành công! Bạn sẽ thanh toán khi nhận hàng.");
+                    navigate('/');
+                }
             }
         } catch (error) {
             console.error("Payment error:", error);
@@ -123,14 +142,14 @@ const UserConsignment = () => {
 
         try {
             const response = await updateConsignmentItemStatus(itemToCancel, "Cancelled");
-            
+
             if (response.data) {
-                setConsignments(prevConsignments => 
+                setConsignments(prevConsignments =>
                     prevConsignments.map(consignment => ({
                         ...consignment,
                         items: consignment.items.map(item =>
-                            item.itemId === itemToCancel 
-                                ? { ...item, status: "Cancelled" } 
+                            item.itemId === itemToCancel
+                                ? { ...item, status: "Cancelled" }
                                 : item
                         )
                     }))
@@ -148,7 +167,7 @@ const UserConsignment = () => {
 
     const getConsignmentCount = (status) => {
         if (!Array.isArray(consignments)) return 0;
-        
+
         return consignments.reduce((count, consignment) => {
             const itemCount = consignment.items.filter(item => {
                 switch (status) {
@@ -170,7 +189,7 @@ const UserConsignment = () => {
 
     const filterConsignmentsByStatus = (status) => {
         if (!Array.isArray(consignments)) return [];
-        
+
         return consignments
             .map(consignment => ({
                 ...consignment,
@@ -257,9 +276,9 @@ const UserConsignment = () => {
                                 consignment.items.map(item => (
                                     <tr key={`${consignment.consignmentId}-${item.itemId}`}>
                                         <td>
-                                            <img 
-                                                src={item.imageUrl} 
-                                                alt={item.name} 
+                                            <img
+                                                src={item.imageUrl}
+                                                alt={item.name}
                                                 className="uc-fish-image"
                                             />
                                         </td>
