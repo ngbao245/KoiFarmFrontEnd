@@ -8,7 +8,7 @@ const ModalPromotionCreate = ({ isOpen, onClose, handleUpdate, setIsUploading })
   const [formData, setFormData] = useState({
     code: "",
     amount: "",
-    type: "",
+    type: "Direct",
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +40,7 @@ const ModalPromotionCreate = ({ isOpen, onClose, handleUpdate, setIsUploading })
 
         handleUpdate(response.data);
       } else {
-        toast.error("Error while creating the blog.");
+        toast.error("Mã đơn hàng đã tồn tại!");
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");
@@ -73,10 +73,11 @@ const ModalPromotionCreate = ({ isOpen, onClose, handleUpdate, setIsUploading })
           </div>
 
           <div className="form-group">
-            <label htmlFor="amount">Amount:</label>
-            <textarea
+            <label htmlFor="amount">Giá Trị:</label>
+            <input
               id="amount"
               name="amount"
+              type="number"
               value={formData.amount}
               onChange={handleChange}
               required
@@ -84,7 +85,7 @@ const ModalPromotionCreate = ({ isOpen, onClose, handleUpdate, setIsUploading })
           </div>
 
           <div className="form-group">
-            <label htmlFor="type">Type:</label>
+            <label htmlFor="type">Loại:</label>
             <select
               id="type"
               name="type"
@@ -93,8 +94,9 @@ const ModalPromotionCreate = ({ isOpen, onClose, handleUpdate, setIsUploading })
               className="text-dark"
               required
             >
-              <option value="Direct">Direct</option>
-              <option value="Percentage">Percentage</option>
+              <option value="">-- Chọn loại --</option>
+              <option value="Direct">Trực Tiếp</option>
+              <option value="Percentage">Phần Trăm</option>
             </select>
           </div>
 
@@ -112,7 +114,7 @@ const ModalPromotionCreate = ({ isOpen, onClose, handleUpdate, setIsUploading })
               className="submit-button"
               disabled={isLoading}
             >
-              {isLoading ? "Adding Promotion..." : "Add Promotion"}
+              {isLoading ? "Đang Thêm..." : "Thêm Khuyến mãi"}
             </button>
           </div>
         </form>

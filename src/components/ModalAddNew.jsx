@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Modal, Button } from "react-bootstrap";
 import { postCreateStaff } from "../services/UserService";
 import { toast } from "react-toastify";
+import "./ModalAddNew.css";
 
 const ModalAddNew = ({ show, handleClose, handleUpdateTable }) => {
   const [name, setName] = useState("");
@@ -11,7 +11,7 @@ const ModalAddNew = ({ show, handleClose, handleUpdateTable }) => {
 
   const handleSaveStaff = async () => {
     if (!name || !email || !address || !phone) {
-      toast.error("All fields are required!");
+      toast.error("Vui lòng điền đầy đủ thông tin!");
       return;
     }
 
@@ -32,82 +32,75 @@ const ModalAddNew = ({ show, handleClose, handleUpdateTable }) => {
         setEmail("");
         setAddress("");
         setPhone("");
-        toast.success("A new staff member has been created successfully!");
+        toast.success("Đã tạo nhân viên mới thành công!");
         handleUpdateTable(res.data);
       } else {
-        toast.error("Error occurred while creating the staff member.");
+        toast.error("Có lỗi xảy ra khi tạo nhân viên.");
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");
     }
   };
 
+  if (!show) return null;
+
   return (
-    <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
-      <Modal.Header closeButton>
-        <Modal.Title>Add new staff</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h2>Thêm Nhân Viên Mới</h2>
+          <button className="modal-close-button" onClick={handleClose}>
+            &times;
+          </button>
+        </div>
         <form>
-          <div className="mb-3">
-            <label htmlFor="inputName" className="form-label">
-              Name
-            </label>
+          <div className="form-group">
+            <label htmlFor="inputName">Tên:</label>
             <input
               type="text"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              className="form-control"
               id="inputName"
             />
           </div>
-          <div className="mb-3">
-            <label htmlFor="inputEmail" className="form-label">
-              Email
-            </label>
+          <div className="form-group">
+            <label htmlFor="inputEmail">Email:</label>
             <input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="form-control"
               id="inputEmail"
             />
           </div>
-          <div className="mb-3">
-            <label htmlFor="inputAddress" className="form-label">
-              Address
-            </label>
+          <div className="form-group">
+            <label htmlFor="inputAddress">Địa chỉ:</label>
             <input
               type="text"
               value={address}
               onChange={(event) => setAddress(event.target.value)}
-              className="form-control"
               id="inputAddress"
             />
           </div>
-          <div className="mb-3">
-            <label htmlFor="inputPhone" className="form-label">
-              Phone
-            </label>
+          <div className="form-group">
+            <label htmlFor="inputPhone">Số điện thoại:</label>
             <input
               type="text"
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
-              className="form-control"
               id="inputPhone"
             />
           </div>
+          <div className="modal-footer">
+            <button type="button" className="cancel-button" onClick={handleClose}>
+              Hủy
+            </button>
+            <button type="button" className="submit-button" onClick={handleSaveStaff}>
+              Thêm Nhân Viên
+            </button>
+          </div>
         </form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleSaveStaff}>
-          Save Changes
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      </div>
+    </div>
   );
 };
 

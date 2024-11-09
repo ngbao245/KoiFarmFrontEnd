@@ -8,7 +8,7 @@ const ModalPromotionUpdate = ({ isOpen, onClose, onSubmit, blogData, setIsUpload
   const [formData, setFormData] = useState({
     code: "",
     amount: "",
-    type: "",
+    type: "Direct",
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +24,6 @@ const ModalPromotionUpdate = ({ isOpen, onClose, onSubmit, blogData, setIsUpload
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
- 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.code || !formData.amount || !formData.type) {
@@ -66,26 +65,29 @@ const ModalPromotionUpdate = ({ isOpen, onClose, onSubmit, blogData, setIsUpload
             />
           </div>
           <div className="form-group">
-            <label htmlFor="amount">Amount:</label>
-            <textarea
+            <label htmlFor="amount">Giá Trị:</label>
+            <input
               id="amount"
               name="amount"
+              type="number"
               value={formData.amount}
               onChange={handleChange}
               required
-            ></textarea>
+            />
           </div>
           <div className="form-group">
-            <label htmlFor="type">Type:</label>
+            <label htmlFor="type">Loại:</label>
             <select
               id="type"
               name="type"
               value={formData.type}
               onChange={handleChange}
               className="text-dark"
+              required
             >
-              <option value="Direct">Direct</option>
-              <option value="Percentage">Percentage</option>
+              <option value="">-- Chọn loại --</option>
+              <option value="Direct">Trực Tiếp</option>
+              <option value="Percentage">Phần Trăm</option>
             </select>
           </div>
           <div className="modal-footer">
@@ -97,7 +99,7 @@ const ModalPromotionUpdate = ({ isOpen, onClose, onSubmit, blogData, setIsUpload
               className="submit-button"
               disabled={isLoading}
             >
-              {isLoading ? "Updating Promotion..." : "Update Promotion"}
+              {isLoading ? "Đang Cập Nhật..." : "Cập Nhật Khuyến Mãi"}
             </button>
           </div>
         </form>

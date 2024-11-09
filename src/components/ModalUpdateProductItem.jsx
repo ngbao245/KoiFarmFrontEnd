@@ -110,7 +110,7 @@ const ModalUpdateProductItem = ({ isOpen, onClose, onSubmit, productData, setIsU
     <div className="modal-overlay">
       <div className={`modal-content ${isLoading ? "blurred" : ""}`}>
         <div className="modal-header">
-          <h2>Update Product Item</h2>
+          <h2>Cập Nhật Sản Phẩm</h2>
           <button className="modal-close-button" onClick={onClose}>&times;</button>
         </div>
         <form onSubmit={handleSubmit}>
@@ -118,20 +118,20 @@ const ModalUpdateProductItem = ({ isOpen, onClose, onSubmit, productData, setIsU
           <div className="form-layout">
             <div className="form-column">
               <div className="form-group">
-                <h3>Basic Information</h3>
-                <label htmlFor="name">Name:</label>
+                <h3>Thông Tin Cơ Bản</h3>
+                <label htmlFor="name">Tên:</label>
                 <input id="name" name="name" value={formData.name} onChange={handleChange} required />
 
-                <label htmlFor="price">Price:</label>
+                <label htmlFor="price">Giá:</label>
                 <input id="price" type="number" name="price" value={formData.price} onChange={handleChange} required />
 
-                <label htmlFor="category">Category:</label>
+                <label htmlFor="category">Danh Mục:</label>
                 <input id="category" name="category" value={formData.category} onChange={handleChange} required />
 
-                <label htmlFor="quantity">Quantity:</label>
+                <label htmlFor="quantity">Số Lượng:</label>
                 <input id="quantity" type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
 
-                <label htmlFor="productId">ProductId:</label>
+                <label htmlFor="productId">Sản Phẩm:</label>
                 <select id="productId" name="productId" value={formData.productId} onChange={handleChange} required>
                   <option value="">-- Select Product --</option>
                   {products.map((product) => (
@@ -143,49 +143,49 @@ const ModalUpdateProductItem = ({ isOpen, onClose, onSubmit, productData, setIsU
               </div>
 
               <div className="form-group">
-                <h3>Animal Details</h3>
-                <label htmlFor="species">Species:</label>
+                <h3>Chi Tiết Động Vật</h3>
+                <label htmlFor="species">Loài:</label>
                 <input id="species" name="species" value={formData.species} onChange={handleChange} required />
 
-                <label htmlFor="origin">Origin:</label>
+                <label htmlFor="origin">Nguồn Gốc:</label>
                 <input id="origin" name="origin" value={formData.origin} onChange={handleChange} required />
 
-                <label htmlFor="sex">Sex:</label>
+                <label htmlFor="sex">Giới Tính:</label>
                 <input id="sex" name="sex" value={formData.sex} onChange={handleChange} required />
 
-                <label htmlFor="age">Age:</label>
+                <label htmlFor="age">Tuổi:</label>
                 <input id="age" type="number" name="age" value={formData.age} onChange={handleChange} required />
 
-                <label htmlFor="size">Size:</label>
+                <label htmlFor="size">Kích Thước:</label>
                 <input id="size" name="size" value={formData.size} onChange={handleChange} required />
               </div>
             </div>
 
             <div className="form-column">
               <div className="form-group">
-                <h3>Care Requirements</h3>
-                <label htmlFor="foodAmount">Food Amount:</label>
+                <h3>Yêu Cầu Chăm Sóc</h3>
+                <label htmlFor="foodAmount">Lượng Thức Ăn:</label>
                 <input id="foodAmount" name="foodAmount" value={formData.foodAmount} onChange={handleChange} required />
 
-                <label htmlFor="waterTemp">Water Temperature:</label>
+                <label htmlFor="waterTemp">Nhiệt Độ Nước:</label>
                 <input id="waterTemp" name="waterTemp" value={formData.waterTemp} onChange={handleChange} required />
 
-                <label htmlFor="mineralContent">Mineral Content:</label>
+                <label htmlFor="mineralContent">Hàm Lượng Khoáng Chất:</label>
                 <input id="mineralContent" name="mineralContent" value={formData.mineralContent} onChange={handleChange} required />
 
-                <label htmlFor="ph">pH:</label>
+                <label htmlFor="ph">Độ pH:</label>
                 <input id="ph" name="ph" value={formData.ph} onChange={handleChange} required />
               </div>
 
               <div className="form-group">
-                <h3>Additional Details</h3>
-                <label htmlFor="personality">Personality:</label>
+                <h3>Chi Tiết Bổ Sung</h3>
+                <label htmlFor="personality">Tính Cách:</label>
                 <input id="personality" name="personality" value={formData.personality} onChange={handleChange} required />
               </div>
 
               <div className="form-group">
-                <h3>Image Upload</h3>
-                <label htmlFor="imageUrl">Choose image:</label>
+                <h3>Tải Ảnh Lên</h3>
+                <label htmlFor="imageUrl">Chọn Ảnh:</label>
                 <input
                   id="imageUrl"
                   name="imageUrl"
@@ -202,9 +202,9 @@ const ModalUpdateProductItem = ({ isOpen, onClose, onSubmit, productData, setIsU
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="cancel-button" onClick={onClose} disabled={isLoading}>Cancel</button>
+            <button type="button" className="cancel-button" onClick={onClose} disabled={isLoading}>Hủy</button>
             <button type="submit" className="submit-button" disabled={isLoading}>
-              {isLoading ? "Updating Product..." : "Update Product"}
+              {isLoading ? "Đang Cập Nhật..." : "Cập Nhật"}
             </button>
           </div>
         </form>

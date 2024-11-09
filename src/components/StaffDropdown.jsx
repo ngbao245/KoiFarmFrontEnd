@@ -39,7 +39,7 @@ const StaffDropdown = ({ staffMembers, onAssign, currentStaffId, disabled }) => 
         disabled={disabled}
       >
         {currentStaff ? `${currentStaff.name}` : ""}
-      </button>
+      </button> 
 
       {isOpen && !disabled && (
         <div className="dropdown-content">

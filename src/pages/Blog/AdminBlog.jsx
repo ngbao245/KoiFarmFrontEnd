@@ -108,7 +108,7 @@ const AdminBlog = () => {
       <div className="container">
         {isUploading && <FishSpinner />}
         <div className="my-3 add-new d-sm-flex">
-          <b>Quản lý Bài viết</b>
+          {/* <b>Quản lý Bài viết</b> */}
           <button
             className="btn btn-primary ms-auto"
             onClick={() => setShowModalCreate(true)}

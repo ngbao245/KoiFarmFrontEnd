@@ -78,14 +78,12 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData, setIsUploading }
     <div className="modal-overlay">
       <div className={`modal-content ${isLoading ? "blurred" : ""}`}>
         <div className="modal-header">
-          <h2>Update Blog</h2>
-          <button className="modal-close-button" onClick={onClose}>
-            &times;
-          </button>
+          <h2>Cập Nhật Bài Viết</h2>
+          <button className="modal-close-button" onClick={onClose}>&times;</button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="title">Title:</label>
+            <label htmlFor="title">Tiêu Đề:</label>
             <input
               id="title"
               name="title"
@@ -94,8 +92,8 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData, setIsUploading }
               required
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="description">Description:</label>
+          <div className="blog-form-group contact-form-group form-group">
+            <label htmlFor="description">Mô Tả:</label>
             <textarea
               id="description"
               name="description"
@@ -105,7 +103,7 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData, setIsUploading }
             ></textarea>
           </div>
           <div className="form-group">
-            <label htmlFor="imageUrl">Choose file:</label>
+            <label htmlFor="imageUrl">Chọn Ảnh:</label>
             <input
               id="imageUrl"
               name="imageUrl"
@@ -119,22 +117,16 @@ const ModalBlogUpdate = ({ isOpen, onClose, onSubmit, blogData, setIsUploading }
             )}
           </div>
           <div className="modal-footer">
-            <button type="button" className="cancel-button" onClick={onClose}>
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={isLoading}
-            >
-              {isLoading ? "Updating Blog..." : "Update Blog"}
+            <button type="button" className="cancel-button" onClick={onClose}>Hủy</button>
+            <button type="submit" className="submit-button" disabled={isLoading}>
+              {isLoading ? "Đang Cập Nhật..." : "Cập Nhật"}
             </button>
           </div>
         </form>
         {isLoading && (
           <div className="loading-overlay">
             <div className="loading-spinner"></div>
-            <p>Updating Blog...</p>
+            <p>Đang cập nhật blog...</p>
           </div>
         )}
       </div>

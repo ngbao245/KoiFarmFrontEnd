@@ -97,7 +97,7 @@ const ConsignmentForm = ({ isOpen, onClose }) => {
         }
       }
     } catch (err) {
-      toast.error("Tạo đơn ký gửi thành công do thông tin bạn cung cấp có vấn đề!");
+      toast.error("Tạo đơn ký gửi không thành công do thông tin bạn cung cấp có vấn đề!");
     } finally {
       setIsLoading(false);
     }

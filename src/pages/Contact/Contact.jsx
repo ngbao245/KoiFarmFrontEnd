@@ -77,7 +77,7 @@ const Contact = () => {
 
             <section className="contact-form">
               <form ref={form} className="contact-form" onSubmit={handleSubmit}>
-                <div className="form-group">
+                <div className="contact-form-group">
                   <label htmlFor="name">Tên</label>
                   <input
                     type="text"
@@ -89,7 +89,7 @@ const Contact = () => {
                     placeholder="Họ và tên"
                   />
                 </div>
-                <div className="form-group">
+                <div className="contact-form-group">
                   <label htmlFor="email">Email</label>
                   <input
                     type="email"
@@ -101,7 +101,7 @@ const Contact = () => {
                     placeholder="Địa chỉ email của bạn"
                   />
                 </div>
-                <div className="form-group">
+                <div className="contact-form-group">
                   <label htmlFor="message">Nhập nội dung</label>
                   <textarea
                     id="message"

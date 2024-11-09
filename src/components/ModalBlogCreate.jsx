@@ -62,7 +62,7 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate, setIsUploading }) => {
         const response = await createBlog(newBlogData);
 
         if (response && response.data && response.data.id) {
-          toast.success("Blog created successfully!");
+          toast.success("Tạo bài viết thành công!");
           setFormData({
             title: "",
             description: "",
@@ -73,11 +73,11 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate, setIsUploading }) => {
           setImagePreview(null);
           handleUpdate(response.data);
         } else {
-          toast.error("Error while creating the blog.");
+          toast.error("Có lỗi xảy ra khi tạo bài viết.");
         }
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);
     }
@@ -89,14 +89,14 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate, setIsUploading }) => {
     <div className="modal-overlay">
       <div className={`modal-content ${isLoading ? "blurred" : ""}`}>
         <div className="modal-header">
-          <h2>Add New Blog</h2>
+          <h2>Thêm Bài Viết Mới</h2>
           <button className="modal-close-button" onClick={onClose}>
             &times;
           </button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="title">Title:</label>
+            <label htmlFor="title">Tiêu đề:</label>
             <input
               id="title"
               name="title"
@@ -106,8 +106,8 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate, setIsUploading }) => {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="description">Description:</label>
+          <div className="contact-form-group form-group">
+            <label htmlFor="description">Nội dung:</label>
             <textarea
               id="description"
               name="description"
@@ -118,7 +118,7 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate, setIsUploading }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="imageUrl">Choose file:</label>
+            <label htmlFor="imageUrl">Chọn ảnh:</label>
             <input
               id="imageUrl"
               name="imageUrl"
@@ -140,14 +140,14 @@ const ModalBlogCreate = ({ isOpen, onClose, handleUpdate, setIsUploading }) => {
               onClick={onClose}
               disabled={isLoading}
             >
-              Cancel
+              Hủy
             </button>
             <button
               type="submit"
               className="submit-button"
               disabled={isLoading}
             >
-              {isLoading ? "Adding Blog..." : "Add Blog"}
+              {isLoading ? "Đang thêm bài viết..." : "Thêm bài viết"}
             </button>
           </div>
         </form>

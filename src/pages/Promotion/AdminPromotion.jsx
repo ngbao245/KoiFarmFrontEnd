@@ -11,6 +11,16 @@ import {
 import FishSpinner from "../../components/FishSpinner";
 // import "./AdminBlog.css";
 
+// Thêm hàm helper để format giá trị
+const formatAmount = (amount, type) => {
+  if (type === "Direct") {
+    return `${amount.toLocaleString('vi-VN')} VNĐ`;
+  } else if (type === "Percentage") {
+    return `${amount}%`;
+  }
+  return amount;
+};
+
 const AdminPromotion = () => {
   const [blogs, setBlogs] = useState([]);
   const [selectedBlog, setSelectedBlog] = useState(null);
@@ -91,7 +101,7 @@ const AdminPromotion = () => {
       <div className="container">
         {isUploading && <FishSpinner />}
         <div className="my-3 add-new d-sm-flex">
-          <b>Quản lý Mã khuyến mãi</b>
+          {/* <b>Quản lý Mã khuyến mãi</b> */}
           <button
             className="btn btn-primary ms-auto"
             onClick={() => setShowModalCreate(true)}
@@ -106,7 +116,6 @@ const AdminPromotion = () => {
         <table className="table table-striped text-center">
           <thead>
             <tr>
-              <th>Id</th>
               <th>Mã khuyến mãi</th>
               <th>Giá trị giảm giá</th>
               <th>Loại mã</th>
@@ -121,10 +130,9 @@ const AdminPromotion = () => {
             ) : blogs.length ? (
               blogs.map((blog) => (
                 <tr key={blog.id}>
-                  <td>{blog.id}</td>
                   <td>{blog.code}</td>
-                  <td>{blog.amount}</td>
-                  <td>{blog.type    }</td>
+                  <td>{formatAmount(blog.amount, blog.type)}</td>
+                  <td>{blog.type === "Direct" ? "Trực Tiếp" : "Phần Trăm"}</td>
                   <td>
                     <button
                       title="Chỉnh sửa bài viết"

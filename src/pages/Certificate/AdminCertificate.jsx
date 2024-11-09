@@ -152,7 +152,7 @@ const AdminCertificate = () => {
         <table className="table table-striped text-center">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Mã chứng chỉ</th>
               <th>Tên chứng chỉ</th>
               <th>Hình ảnh</th>
               <th>Sản phẩm liên quan</th>

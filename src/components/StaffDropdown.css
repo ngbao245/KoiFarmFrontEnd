@@ -50,7 +50,7 @@
 }
 
 .search-input {
-  width: calc(100% - 16px);
+  width: calc(100% - 16px) !important;
   padding: 0.5rem;
   margin: 8px;
   border: solid #f1f1f1 3px;
@@ -60,7 +60,7 @@
 }
 
 .dropdown-content input:focus {
-  border-color: var(--primary-red);
+  border-color: var(--primary-black);
 }
 
 .staff-list {
