@@ -70,7 +70,10 @@ const AdminOrder = () => {
 
   const filterOrdersByStatus = (status) => {
     return orders
-      .filter((order) => order.status.toLowerCase() === status.toLowerCase())
+      .filter((order) => 
+        order.status.toLowerCase() === status.toLowerCase() && 
+        order.consignmentId === null
+      )
       .filter(
         (order) =>
           order.orderId.toString().includes(searchTerm.toLowerCase()) ||

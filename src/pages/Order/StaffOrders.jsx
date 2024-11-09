@@ -125,7 +125,10 @@ const StaffOrders = () => {
 
   const filterOrdersByStatus = (status) => {
     return orders
-      .filter((order) => order.status === status)
+      .filter((order) => 
+        order.status === status && 
+        order.consignmentId === null
+      )
       .filter(
         (order) =>
           order.orderId.toString().includes(searchTerm.toLowerCase()) ||
