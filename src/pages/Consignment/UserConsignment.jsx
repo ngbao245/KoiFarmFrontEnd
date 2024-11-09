@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "./UserConsignment.css";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { createPaymentForCOD } from "../../services/PaymentService";
+import {getOrderByUser} from "../../services/OrderService";
 
 const UserConsignment = () => {
     const [consignments, setConsignments] = useState([]);
@@ -20,8 +21,11 @@ const UserConsignment = () => {
     const [itemToCancel, setItemToCancel] = useState(null);
     const [paymentMethods, setPaymentMethods] = useState({});
 
+    const [completedOrders, setCompletedOrders] = useState([]);
+
     useEffect(() => {
         fetchConsignments();
+        fetchCompletedOrdersWithConsignmentId();
         // Kiểm tra callback từ VNPay
         const urlParams = new URLSearchParams(location.search);
         const vnp_ResponseCode = urlParams.get('vnp_ResponseCode');
@@ -43,6 +47,17 @@ const UserConsignment = () => {
             setConsignments([]);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchCompletedOrdersWithConsignmentId = async () => {
+        try {
+            const response = await getOrderByUser();
+            const ordersWithConsignmentId = response?.data?.filter(order => order.consignmentId);
+            setCompletedOrders(ordersWithConsignmentId || []);
+        } catch (error) {
+            console.error("Error fetching completed orders:", error);
+            toast.error("Không thể tải danh sách đơn hàng đã thanh toán.");
         }
     };
 
@@ -188,6 +203,11 @@ const UserConsignment = () => {
     };
 
     const filterConsignmentsByStatus = (status) => {
+        
+        if (status === 'Paid') {
+            return completedOrders;
+        }
+        
         if (!Array.isArray(consignments)) return [];
 
         return consignments
@@ -246,7 +266,7 @@ const UserConsignment = () => {
                         onClick={() => setActiveTab('Checkedout')}
                     >
                         <i className="fas fa-shopping-cart me-2"></i>
-                        Đã thanh toán
+                        Check out
                         <span className="uc-count">{getConsignmentCount('Checkedout')}</span>
                     </button>
                     <button
@@ -257,6 +277,14 @@ const UserConsignment = () => {
                         Đã hủy
                         <span className="uc-count">{getConsignmentCount('Cancelled')}</span>
                     </button>
+                    <button
+                    className={`uc-tab-button ${activeTab === 'Paid' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('Paid')}
+                >
+                    <i className="fas fa-check-circle me-2"></i>
+                    Đã thanh toán
+                    <span className="uc-count">{getConsignmentCount('Paid')}</span>
+                </button>
                 </div>
 
                 <div className="uc-table-container">
@@ -272,6 +300,7 @@ const UserConsignment = () => {
                             </tr>
                         </thead>
                         <tbody>
+                            
                             {filterConsignmentsByStatus(activeTab).map((consignment) => (
                                 consignment.items.map(item => (
                                     <tr key={`${consignment.consignmentId}-${item.itemId}`}>

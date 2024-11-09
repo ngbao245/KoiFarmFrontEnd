@@ -75,16 +75,16 @@ const UserDetail = () => {
           setPayments(paymentsResponse.data?.data || []);
         } else {
           const ordersResponse = await getOrderByUser();
-          setOrders(
-            Array.isArray(ordersResponse.data) ? ordersResponse.data : []
-          );
+          const allOrders = Array.isArray(ordersResponse.data) ? ordersResponse.data : [];
+          
+          // Filter out orders that contain a consignmentId
+          const nonConsignmentOrders = allOrders.filter(order => !order.consignmentId);
 
-          const fetchedOrders = Array.isArray(ordersResponse.data)
-            ? ordersResponse.data
-            : [];
+          setOrders(nonConsignmentOrders);
+
           const uniqueProductItemIds = [
             ...new Set(
-              fetchedOrders.flatMap((order) =>
+              nonConsignmentOrders.flatMap((order) =>
                 order.items.map((item) => item.productItemId)
               )
             ),
