@@ -6,46 +6,52 @@ import { toast } from "react-toastify";
 
 const ProductItem = () => {
   const location = useLocation();
-  const { response: productItems, productName  } = location.state || {}; //cú pháp đổi tên
+  const { response: productItems, productName } = location.state || {}; //cú pháp đổi tên
 
   const navigate = useNavigate();
 
-  const approvedItems = productItems?.filter(item => item.type === "Approved") || [];
+  const approvedItems =
+    productItems?.filter((item) => item.type === "Approved") || [];
 
   if (!approvedItems || approvedItems.length === 0) {
     return <div>No products found</div>;
   }
 
   const handleViewDetails = (productId) => {
-    navigate(`/koi/${productName.toLowerCase().replace(/\s+/g, "")}/${productId}`);
+    navigate(
+      `/koi/${productName.toLowerCase().replace(/\s+/g, "")}/${productId}`
+    );
   };
 
   const handleAddToCompare = (product) => {
-    const compareList = JSON.parse(localStorage.getItem('compareList') || '[]');
-    
-    if (compareList.some(item => item.id === product.id)) {
-      toast.warning('Sản phẩm này đã có trong danh sách so sánh!');
-      return;
-    }
-    
-    if (compareList.length >= 5) {
-      toast.warning('Chỉ có thể so sánh tối đa 5 sản phẩm!');
+    const compareList = JSON.parse(localStorage.getItem("compareList") || "[]");
+
+    if (compareList.some((item) => item.id === product.id)) {
+      toast.warning("Sản phẩm này đã có trong danh sách so sánh!");
       return;
     }
 
-    localStorage.setItem('compareList', JSON.stringify([...compareList, product]));
-    
+    if (compareList.length >= 5) {
+      toast.warning("Chỉ có thể so sánh tối đa 5 sản phẩm!");
+      return;
+    }
+
+    localStorage.setItem(
+      "compareList",
+      JSON.stringify([...compareList, product])
+    );
+
     if (compareList.length === 0) {
-      toast.info('Hãy thêm một sản phẩm nữa để so sánh!');
+      toast.info("Hãy thêm một sản phẩm nữa để so sánh!");
     } else {
-      toast.success('Đã thêm sản phẩm vào danh sách so sánh!');
+      toast.success("Đã thêm sản phẩm vào danh sách so sánh!");
     }
   };
 
   return (
     <>
       <Header />
-      <div style={{ padding: "20px" }}>
+      <div className="animated" style={{ padding: "20px" }}>
         <h1>Product: {productName}</h1>
         <div
           style={{
@@ -74,7 +80,13 @@ const ProductItem = () => {
               <p>Price: {item.price} VND</p>
               <p>Age: {item.age} years</p>
               <p>Size: {item.size}</p>
-              <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  justifyContent: "center",
+                }}
+              >
                 <button
                   onClick={() => handleViewDetails(item.id)}
                   style={{

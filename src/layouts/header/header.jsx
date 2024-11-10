@@ -186,7 +186,7 @@ export const Header = () => {
 
   return (
     <>
-      <div className="nav-container">
+      <div className="nav-container user-select-none">
         <div className="nav-content">
           <div className="nav-logo" onClick={() => navigate("/")}>
             <img src={logo} className="logo-image" alt="#" />

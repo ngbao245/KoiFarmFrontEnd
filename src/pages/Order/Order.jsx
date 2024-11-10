@@ -162,7 +162,7 @@ const Order = () => {
 
   return (
     <>
-      <div className="order-container">
+      <div className="order-container animated">
         <div className="back-arrow">
           <i
             className="fa-solid fa-arrow-left"

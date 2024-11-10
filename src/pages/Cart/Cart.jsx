@@ -125,9 +125,9 @@ const Cart = () => {
             (i) => i.productItemId !== itemToRemove.item.productItemId
           )
         );
-        toast.success(
-          `Item ${itemToRemove.item.productName} removed from cart`
-        );
+        // toast.success(
+        //   `Item ${itemToRemove.item.productName} removed from cart`
+        // );
       } else {
         toast.error(response.data.messageError);
       }
@@ -150,7 +150,7 @@ const Cart = () => {
           <div className="cart-grid">
             {cartItems.length === 0 ? (
               <>
-                <div className="container-fluid text-center empty-cart-container">
+                <div className="container-fluid text-center empty-cart-container animated">
                   <i
                     className="fa-solid fa-cart-shopping"
                     style={{

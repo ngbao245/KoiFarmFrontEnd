@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import { updateUserInfo, getUserInfo } from "../../services/UserService";
 import {
@@ -18,6 +18,7 @@ import HintBox from "../../components/HintBox";
 const UserDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useContext(UserContext);
   const [orders, setOrders] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -50,6 +51,13 @@ const UserDetail = () => {
     setShowCheckoutHint(searchParams.get("fromCart") === "true");
   }, []);
 
+  useEffect(() => {
+    if (!user.auth) {
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+  }, [user, navigate]);
+
   const filterOrdersByStatus = (status) => {
     return orders.filter((order) => order.status === status);
   };
@@ -75,11 +83,17 @@ const UserDetail = () => {
           setPayments(paymentsResponse.data?.data || []);
         } else {
           const ordersResponse = await getOrderByUser();
-          const allOrders = Array.isArray(ordersResponse.data) ? ordersResponse.data : [];
-          
-          const sortedOrders = allOrders.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+          const allOrders = Array.isArray(ordersResponse.data)
+            ? ordersResponse.data
+            : [];
+
+          const sortedOrders = allOrders.sort(
+            (a, b) => new Date(b.createdTime) - new Date(a.createdTime)
+          );
           // Filter out orders that contain a consignmentId
-          const nonConsignmentOrders = sortedOrders.filter(order => !order.consignmentId);
+          const nonConsignmentOrders = sortedOrders.filter(
+            (order) => !order.consignmentId
+          );
 
           setOrders(nonConsignmentOrders);
 
@@ -148,24 +162,31 @@ const UserDetail = () => {
 
   const confirmUpdate = async () => {
     try {
-      const response = await updateUserInfo(updatedUser);
-      setUpdatedUser((prev) => ({ ...prev, ...response.data, password: "" }));
-      setEditMode(false);
-      setError(null);
-      toast.success("Cập nhật thông tin thành công!");
+      if (String(updatedUser.password) !== "123456") {
+        toast.error("Mật khẩu không chính xác!");
+        return;
+      }
 
-      const searchParams = new URLSearchParams(window.location.search);
-      if (
-        searchParams.get("fromCart") === "true" &&
-        updatedUser.address?.trim() &&
-        updatedUser.phone?.trim()
-      ) {
-        navigate("/cart");
+      const response = await updateUserInfo(updatedUser);
+      if (response.statusCode === 200) {
+        setUpdatedUser((prev) => ({ 
+          ...prev, 
+          ...response.data?.data,
+          password: "" 
+        }));
+        setEditMode(false);
+        toast.success("Cập nhật thông tin thành công!");
+
+        // Redirect to cart if coming from cart page and has address/phone
+        const searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.get("fromCart") === "true" && 
+            updatedUser.address?.trim() && 
+            updatedUser.phone?.trim()) {
+          navigate("/cart");
+        }
       }
     } catch (err) {
-      setError(
-        err.message || "Không thể cập nhật thông tin. Vui lòng thử lại."
-      );
+      toast.error("Không thể cập nhật thông tin. Vui lòng thử lại.");
       console.error(err);
     } finally {
       setIsEditConfirmModalOpen(false);
@@ -325,19 +346,6 @@ const UserDetail = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="password">
-                    Mật khẩu (bắt buộc để cập nhật):
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={updatedUser.password}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div>
                   <label htmlFor="address">Địa chỉ:</label>
                   <input
                     type="text"
@@ -355,6 +363,19 @@ const UserDetail = () => {
                     name="phone"
                     value={updatedUser.phone}
                     onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="password">
+                    Mật khẩu xác thực (Bắt Buộc):
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={updatedUser.password}
+                    onChange={handleInputChange}
+                    required
                   />
                 </div>
                 <button type="submit">Lưu thay đổi</button>
@@ -427,12 +448,13 @@ const UserDetail = () => {
                     <td>{payment.paymentMethod}</td>
                     <td>
                       {new Date(payment.paymentDate).toLocaleDateString(
-                        "vi-VN", {
-                          year: 'numeric',
-                          month: 'numeric',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
+                        "vi-VN",
+                        {
+                          year: "numeric",
+                          month: "numeric",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         }
                       )}
                     </td>
@@ -520,13 +542,14 @@ const UserDetail = () => {
                         <td>{order.total.toLocaleString("vi-VN")} VND</td>
                         <td>
                           {new Date(order.createdTime).toLocaleDateString(
-                            "vi-VN", {
-                              year: 'numeric',
-                              month: 'numeric',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              second: '2-digit'
+                            "vi-VN",
+                            {
+                              year: "numeric",
+                              month: "numeric",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit",
                             }
                           )}
                         </td>

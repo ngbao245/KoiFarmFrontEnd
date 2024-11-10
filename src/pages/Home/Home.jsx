@@ -15,6 +15,7 @@ import { fetchAllBlogs } from "../../services/BlogService";
 import FishSpinner from "../../components/FishSpinner";
 import { addToCart } from "../../services/CartService";
 import { toast } from "react-toastify";
+import { getUserInfo } from "../../services/UserService";
 
 export const Home = () => {
   const [productItems, setProductItems] = useState([]);
@@ -75,7 +76,7 @@ export const Home = () => {
     }
   };
 
-  const handleAddToCart = async (quantity, itemId) => {
+  const handleAddToCart = async (quantity, itemId, quickBuy = false) => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng của bạn");
@@ -86,7 +87,18 @@ export const Home = () => {
     try {
       const response = await addToCart(quantity, itemId, token);
       if (response.data && response.data.cartId) {
-        toast.success(`Đã thêm ${productItem.name} vào giỏ hàng`);
+        const userResponse = await getUserInfo();
+        const userData = userResponse.data;
+        
+        if (quickBuy) {
+          if (!userData.address || !userData.phone) {
+            navigate(`/${userData.id}/detail?fromCart=true`);
+            return;
+          }
+          navigate("/order");
+        } else {
+          toast.success(`Đã thêm ${productItem.name} vào giỏ hàng`);
+        }
       } else {
         toast.error("Sản phẩm đã hết hàng");
       }
@@ -153,11 +165,10 @@ export const Home = () => {
                     <div className="button-container">
                       <button
                         className="buy-button"
-                        onClick={() => {
-                          handleAddToCart(1, item.id);
-                          navigate("/order");
-                        }}
-                      >Mua ngay</button>
+                        onClick={() => handleAddToCart(1, item.id, true)}
+                      >
+                        Mua ngay
+                      </button>
                       <button
                         className="view-more-button"
                         onClick={() => handleProductClick(item)}

@@ -79,6 +79,7 @@ const ProductItemDetail = () => {
     <>
       <Header />
       <div
+        className="animated"
         style={{
           padding: "50px",
           display: "flex",

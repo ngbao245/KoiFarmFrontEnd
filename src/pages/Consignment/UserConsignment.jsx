@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { getConsignmentsForUser, deleteConsignmentItem, checkoutConsignment, updateConsignmentItemStatus } from '../../services/ConsignmentService';
+import React, { useState, useEffect, useContext } from 'react';
+import { getConsignmentsForUser, checkoutConsignment, updateConsignmentItemStatus } from '../../services/ConsignmentService';
 import { createPayment, callBackPayment } from '../../services/PaymentService';
 import { useNavigate, useLocation } from "react-router-dom";
 import FishSpinner from "../../components/FishSpinner";
@@ -8,6 +8,7 @@ import "./UserConsignment.css";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { createPaymentForCOD } from "../../services/PaymentService";
 import { getOrderByUser } from "../../services/OrderService";
+import { UserContext } from "../../contexts/UserContext";
 
 const UserConsignment = () => {
     const [consignments, setConsignments] = useState([]);
@@ -23,7 +24,13 @@ const UserConsignment = () => {
 
     const [completedOrders, setCompletedOrders] = useState([]);
 
+    const { user } = useContext(UserContext);
+
     useEffect(() => {
+        if (!user.auth) {
+            navigate("/login", { state: { from: location.pathname } });
+            return;
+        }
         fetchConsignments();
         fetchCompletedOrdersWithConsignmentId();
         // Kiểm tra callback từ VNPay
@@ -35,7 +42,7 @@ const UserConsignment = () => {
         } else if (vnp_ResponseCode) {
             toast.error("Thanh toán thất bại. Vui lòng thử lại.");
         }
-    }, [location]);
+    }, [location, user, navigate]);
 
     const fetchConsignments = async () => {
         try {

@@ -68,7 +68,7 @@ const navigate = useNavigate();
     <>
       <Header />
       <div className="search-page">
-        <div className="search-container">
+        <div className="search-container animated">
           <h2>Kết quả tìm kiếm cho "{new URLSearchParams(location.search).get('keyword')}"</h2>
           {loading ? (
             <div className="loading">
