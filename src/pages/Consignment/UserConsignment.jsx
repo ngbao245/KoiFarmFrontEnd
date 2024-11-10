@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "./UserConsignment.css";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { createPaymentForCOD } from "../../services/PaymentService";
-import {getOrderByUser} from "../../services/OrderService";
+import { getOrderByUser } from "../../services/OrderService";
 
 const UserConsignment = () => {
     const [consignments, setConsignments] = useState([]);
@@ -57,7 +57,7 @@ const UserConsignment = () => {
             setCompletedOrders(ordersWithConsignmentId || []);
         } catch (error) {
             console.error("Error fetching completed orders:", error);
-            toast.error("Không thể tải danh sách đơn hàng đã thanh toán.");
+            // toast.error("Không thể tải danh sách đơn hàng đã thanh toán.");
         }
     };
 
@@ -203,11 +203,11 @@ const UserConsignment = () => {
     };
 
     const filterConsignmentsByStatus = (status) => {
-        
+
         if (status === 'Paid') {
             return completedOrders;
         }
-        
+
         if (!Array.isArray(consignments)) return [];
 
         return consignments
@@ -278,108 +278,138 @@ const UserConsignment = () => {
                         <span className="uc-count">{getConsignmentCount('Cancelled')}</span>
                     </button>
                     <button
-                    className={`uc-tab-button ${activeTab === 'Paid' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('Paid')}
-                >
-                    <i className="fas fa-check-circle me-2"></i>
-                    Đã thanh toán
-                    <span className="uc-count">{getConsignmentCount('Paid')}</span>
-                </button>
+                        className={`uc-tab-button ${activeTab === 'Paid' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('Paid')}
+                    >
+                        <i className="fas fa-check-circle me-2"></i>
+                        Đã thanh toán
+                        {/* <span className="uc-count">{getConsignmentCount('Paid')}</span> */}
+                    </button>
                 </div>
 
                 <div className="uc-table-container">
                     <table className="uc-table">
                         <thead>
                             <tr>
-                                <th>Hình ảnh</th>
-                                <th>Mã ký gửi</th>
-                                <th>Tên cá</th>
-                                <th>Loại</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
+                                {activeTab === 'Paid' ? (
+                                    <>
+                                        <th>Mã đơn hàng</th>
+                                        <th>Mã ký gửi</th>
+                                        <th>Ngày tạo đơn</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                    </>
+                                ) : (
+                                    <>
+                                        <th>Hình ảnh</th>
+                                        <th>Mã ký gửi</th>
+                                        <th>Tên cá</th>
+                                        <th>Loại</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hành động</th>
+                                    </>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
-                            
-                            {filterConsignmentsByStatus(activeTab).map((consignment) => (
-                                consignment.items.map(item => (
-                                    <tr key={`${consignment.consignmentId}-${item.itemId}`}>
-                                        <td>
-                                            <img
-                                                src={item.imageUrl}
-                                                alt={item.name}
-                                                className="uc-fish-image"
-                                            />
-                                        </td>
-                                        <td>{consignment.consignmentId}</td>
-                                        <td>{item.name}</td>
-                                        <td>{item.category}</td>
-                                        <td>
-                                            <span className={`uc-status ${item.status.toLowerCase()}`}>
-                                                {item.status}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            {activeTab === 'Pending' && (
-                                                <button
-                                                    className="uc-btn uc-btn-cancel"
-                                                    onClick={() => handleCancelItem(item.itemId)}
-                                                >
-                                                    <i className="fas fa-ban me-2"></i>
-                                                    Huỷ
-                                                </button>
-                                            )}
-                                            {activeTab === 'Approved' && (
-                                                <div>
-                                                    <div className="payment-methods mb-2">
-                                                        <label className="me-3">
-                                                            <input
-                                                                type="radio"
-                                                                name={`paymentMethod-${item.itemId}`}
-                                                                value="bank"
-                                                                checked={paymentMethods[item.itemId] === 'bank'}
-                                                                onChange={(e) => setPaymentMethods({
-                                                                    ...paymentMethods,
-                                                                    [item.itemId]: e.target.value
-                                                                })}
-                                                            /> Thanh toán qua VNPay
-                                                        </label>
-                                                        <label>
-                                                            <input
-                                                                type="radio"
-                                                                name={`paymentMethod-${item.itemId}`}
-                                                                value="cod"
-                                                                checked={paymentMethods[item.itemId] === 'cod'}
-                                                                onChange={(e) => setPaymentMethods({
-                                                                    ...paymentMethods,
-                                                                    [item.itemId]: e.target.value
-                                                                })}
-                                                            /> Thanh toán khi nhận hàng
-                                                        </label>
-                                                    </div>
-                                                    <button
-                                                        className="uc-btn uc-btn-payment"
-                                                        onClick={() => handlePayment(consignment, item)}
-                                                        disabled={isProcessing || !paymentMethods[item.itemId]}
-                                                    >
-                                                        {isProcessing ? (
-                                                            <>
-                                                                <i className="fas fa-spinner fa-spin me-2"></i>
-                                                                Đang xử lý...
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <i className="fas fa-credit-card me-2"></i>
-                                                                Thanh toán
-                                                            </>
-                                                        )}
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </td>
-                                    </tr>
+                            {activeTab === 'Paid' ? (
+                                filterConsignmentsByStatus(activeTab).map((consignment) => (
+                                    consignment.items.map((item) => (
+                                        <tr key={`${consignment.consignmentId}-${item.productItemId}`}>
+                                            <td>{consignment.orderId}</td>
+                                            <td>{consignment.consignmentId}</td>
+                                            <td>{new Date(consignment.createdTime).toLocaleDateString("vi-VN")}</td>
+                                            <td>{item.price.toLocaleString("vi-VN")} VND</td>
+                                            <td>
+                                                <span className={`uc-status ${consignment.status.toLowerCase()}`}>
+                                                    {consignment.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
                                 ))
-                            ))}
+                            ) : (
+                                // Existing logic for other tabs
+                                filterConsignmentsByStatus(activeTab).map((consignment) =>
+                                    consignment.items.map(item => (
+                                        <tr key={`${consignment.consignmentId}-${item.itemId}`}>
+                                            <td>
+                                                <img
+                                                    src={item.imageUrl}
+                                                    alt={item.name}
+                                                    className="uc-fish-image"
+                                                />
+                                            </td>
+                                            <td>{consignment.consignmentId}</td>
+                                            <td>{item.name}</td>
+                                            <td>{item.category}</td>
+                                            <td>
+                                                <span className={`uc-status ${item.status.toLowerCase()}`}>
+                                                    {item.status}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {activeTab === 'Pending' && (
+                                                    <button
+                                                        className="uc-btn uc-btn-cancel"
+                                                        onClick={() => handleCancelItem(item.itemId)}
+                                                    >
+                                                        <i className="fas fa-ban me-2"></i>
+                                                        Huỷ
+                                                    </button>
+                                                )}
+                                                {activeTab === 'Approved' && (
+                                                    <div>
+                                                        <div className="payment-methods mb-2">
+                                                            <label className="me-3">
+                                                                <input
+                                                                    type="radio"
+                                                                    name={`paymentMethod-${item.itemId}`}
+                                                                    value="bank"
+                                                                    checked={paymentMethods[item.itemId] === 'bank'}
+                                                                    onChange={(e) => setPaymentMethods({
+                                                                        ...paymentMethods,
+                                                                        [item.itemId]: e.target.value
+                                                                    })}
+                                                                /> Thanh toán qua VNPay
+                                                            </label>
+                                                            <label>
+                                                                <input
+                                                                    type="radio"
+                                                                    name={`paymentMethod-${item.itemId}`}
+                                                                    value="cod"
+                                                                    checked={paymentMethods[item.itemId] === 'cod'}
+                                                                    onChange={(e) => setPaymentMethods({
+                                                                        ...paymentMethods,
+                                                                        [item.itemId]: e.target.value
+                                                                    })}
+                                                                /> Thanh toán khi nhận hàng
+                                                            </label>
+                                                        </div>
+                                                        <button
+                                                            className="uc-btn uc-btn-payment"
+                                                            onClick={() => handlePayment(consignment, item)}
+                                                            disabled={isProcessing || !paymentMethods[item.itemId]}
+                                                        >
+                                                            {isProcessing ? (
+                                                                <>
+                                                                    <i className="fas fa-spinner fa-spin me-2"></i>
+                                                                    Đang xử lý...
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <i className="fas fa-credit-card me-2"></i>
+                                                                    Thanh toán
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )
+                            )}
                             {!filterConsignmentsByStatus(activeTab).length && (
                                 <tr>
                                     <td colSpan="6" className="text-center">
