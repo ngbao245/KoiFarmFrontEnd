@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const ProductItem = () => {
   const location = useLocation();
-  const { response: productItems, productName } = location.state || {}; //cú pháp đổi tên
+  const { response: productItems, productName } = location.state || {};
 
   const navigate = useNavigate();
 
@@ -14,7 +14,29 @@ const ProductItem = () => {
     productItems?.filter((item) => item.type === "Approved") || [];
 
   if (!approvedItems || approvedItems.length === 0) {
-    return <div>No products found</div>;
+    return (
+      <>
+        <Header />
+        <div className="animated" style={{ padding: "20px", textAlign: "center" }}>
+          <h2>Không tìm thấy sản phẩm nào</h2>
+          <button
+            onClick={() => navigate('/')}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#C70025",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              marginTop: "20px"
+            }}
+          >
+            Quay về trang chủ
+          </button>
+        </div>
+        <Footer />
+      </>
+    );
   }
 
   const handleViewDetails = (productId) => {
