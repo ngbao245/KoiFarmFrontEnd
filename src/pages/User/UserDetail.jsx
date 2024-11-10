@@ -77,8 +77,9 @@ const UserDetail = () => {
           const ordersResponse = await getOrderByUser();
           const allOrders = Array.isArray(ordersResponse.data) ? ordersResponse.data : [];
           
+          const sortedOrders = allOrders.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
           // Filter out orders that contain a consignmentId
-          const nonConsignmentOrders = allOrders.filter(order => !order.consignmentId);
+          const nonConsignmentOrders = sortedOrders.filter(order => !order.consignmentId);
 
           setOrders(nonConsignmentOrders);
 
@@ -426,7 +427,13 @@ const UserDetail = () => {
                     <td>{payment.paymentMethod}</td>
                     <td>
                       {new Date(payment.paymentDate).toLocaleDateString(
-                        "vi-VN"
+                        "vi-VN", {
+                          year: 'numeric',
+                          month: 'numeric',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        }
                       )}
                     </td>
                     <td>{payment.status}</td>
@@ -513,7 +520,14 @@ const UserDetail = () => {
                         <td>{order.total.toLocaleString("vi-VN")} VND</td>
                         <td>
                           {new Date(order.createdTime).toLocaleDateString(
-                            "vi-VN"
+                            "vi-VN", {
+                              year: 'numeric',
+                              month: 'numeric',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit'
+                            }
                           )}
                         </td>
                         <td>

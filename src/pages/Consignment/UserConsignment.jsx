@@ -54,6 +54,9 @@ const UserConsignment = () => {
         try {
             const response = await getOrderByUser();
             const ordersWithConsignmentId = response?.data?.filter(order => order.consignmentId);
+
+            ordersWithConsignmentId.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+
             setCompletedOrders(ordersWithConsignmentId || []);
         } catch (error) {
             console.error("Error fetching completed orders:", error);
@@ -318,7 +321,14 @@ const UserConsignment = () => {
                                         <tr key={`${consignment.consignmentId}-${item.productItemId}`}>
                                             <td>{consignment.orderId}</td>
                                             <td>{consignment.consignmentId}</td>
-                                            <td>{new Date(consignment.createdTime).toLocaleDateString("vi-VN")}</td>
+                                            <td>{new Date(consignment.createdTime).toLocaleDateString("vi-VN", {
+                                                year: 'numeric',
+                                                month: 'numeric',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                second: '2-digit'
+                                            })}</td>
                                             <td>{item.price.toLocaleString("vi-VN")} VND</td>
                                             <td>
                                                 <span className={`uc-status ${consignment.status.toLowerCase()}`}>

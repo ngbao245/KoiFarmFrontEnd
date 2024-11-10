@@ -57,7 +57,11 @@ const AdminOrder = () => {
         })
       );
 
-      setOrders(detailedOrders);
+      const sortedOrders = detailedOrders.sort((a, b) => 
+        new Date(b.createdTime) - new Date(a.createdTime)
+      );
+
+      setOrders(sortedOrders);
       setStaffMembers(staffData);
     } finally {
       setLoading(false);
@@ -273,7 +277,16 @@ const AdminOrder = () => {
                     </td>
                     <td>{order.orderId}</td>
                     <td>{order.userName}</td>
-                    <td>{new Date(order.createdTime).toLocaleDateString()}</td>
+                    <td>{new Date(order.createdTime).toLocaleDateString(
+                      "vi-VN", {
+                              year: 'numeric',
+                              month: 'numeric',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit'
+                            }
+                    )}</td>
                     <td>
                       <span
                         className={`admin-order-status-badge ${getStatusBadgeClass(

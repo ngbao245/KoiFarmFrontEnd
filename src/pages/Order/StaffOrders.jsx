@@ -48,7 +48,11 @@ const StaffOrders = () => {
         })
       );
 
-      setOrders(ordersWithUserNames);
+      const sortedOrders = ordersWithUserNames.sort(
+        (a, b) => new Date(b.createdTime) - new Date(a.createdTime)
+      );
+
+      setOrders(sortedOrders);
     } catch (err) {
       setError("Không có đơn hàng nào được chỉ định.");
     } finally {
@@ -279,7 +283,14 @@ const StaffOrders = () => {
                       <td>{order.userName}</td>
                       <td>
                         {new Date(order.createdTime).toLocaleDateString(
-                          "vi-VN"
+                          "vi-VN", {
+                              year: 'numeric',
+                              month: 'numeric',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit'
+                            }
                         )}
                       </td>
                       <td>

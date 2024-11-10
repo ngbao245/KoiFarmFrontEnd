@@ -35,7 +35,14 @@ const AdminConsignment = () => {
       }
 
       if (Array.isArray(response.data)) {
-        setConsignments(response.data);
+
+        const sortedConsignments = response.data.sort((a, b) => {
+          const timeA = new Date(a.createdTime).getTime();
+          const timeB = new Date(b.createdTime).getTime();
+          return timeB - timeA;  // Descending order
+        });
+
+        setConsignments(sortedConsignments);
 
         // Fetch user names for all unique userIds
         const uniqueUserIds = [...new Set(response.data.map((c) => c.userId))];
@@ -245,7 +252,14 @@ const AdminConsignment = () => {
                       <td>
                         {item.createDate
                           ? new Date(item.createDate).toLocaleDateString(
-                              "vi-VN"
+                              "vi-VN", {
+                                year: 'numeric',
+                                month: 'numeric',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                              }
                             )
                           : "Không có dữ liệu"}
                       </td>

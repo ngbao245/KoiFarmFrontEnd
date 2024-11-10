@@ -19,8 +19,10 @@ const UserPayment = () => {
         const paymentsData = Array.isArray(response.data)
           ? response.data
           : Array.isArray(response.data?.data)
-          ? response.data.data
-          : [];
+            ? response.data.data
+            : [];
+
+        paymentsData.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
         setPayments(paymentsData);
         setLoading(false);
       } catch (err) {
@@ -82,7 +84,14 @@ const UserPayment = () => {
                     <td>{payment.method}</td>
                     <td>
                       {new Date(payment.createdTime).toLocaleDateString(
-                        "vi-VN"
+                        "vi-VN", {
+                        year: 'numeric',
+                        month: 'numeric',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                      }
                       )}
                     </td>
                     <td>{payment.orderId}</td>
