@@ -315,7 +315,7 @@ const UserDetail = () => {
 
         {showCheckoutHint && (
           <HintBox
-            message="Vui lòng cập nhật địa chỉ và số điện thoại để tiếp tục thanh toán"
+            message="Vui lòng cập nhật địa chỉ và số điện thoại để tiếp tục thanh toán (Đối với đăng nhập bằng email, mật khẩu mặc định là 123456)"
             type="warning"
           />
         )}
