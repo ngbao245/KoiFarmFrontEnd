@@ -62,11 +62,12 @@ const StaffOrders = () => {
 
   const fetchPayments = async () => {
     try {
-      const { data: allPayments} = await fetchAllPayment();
-      setPayments(allPayments);
+      const { data: allPayments } = await fetchAllPayment();
+      setPayments(Array.isArray(allPayments) ? allPayments : []);
     } catch (error) {
       console.error("Error fetching payments:", error);
       toast.error("Không thể tải danh sách thanh toán.");
+      setPayments([]);
     }
   };
 
@@ -99,13 +100,16 @@ const StaffOrders = () => {
       );
 
       if (newStatus === "Completed") {
-        const orderPayments = payments.filter((p) => p.orderId === orderId);
+        const orderPayments = Array.isArray(payments) 
+          ? payments.filter((p) => p.orderId === orderId)
+          : [];
         
-        if (orderPayments.length === 0) { // Check if no payments exist
+        if (orderPayments.length === 0) {
           try {
             const response = await createPaymentForCOD({ orderId: orderId });
             if (response && response.data) {
-              toast.success("Đã tạo thanh toán mới cho đơn hàng.");
+              toast.success("Đã hoàn thành đơn hàng và tạo thanh toán!");
+              return;
             } else {
               console.warn("Payment creation response is empty or invalid");
               toast.warn("Không thể xác nhận thanh toán. Vui lòng kiểm tra lại.");
