@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getReviewsByItem, createReview } from "../services/ReviewService";
+import { getReviewsByItem, createReview, deleteReview, updateReview } from "../services/ReviewService";
 import { getUserById } from "../services/UserService";
 import { toast } from "react-toastify";
 import StarRatings from "react-star-ratings";
@@ -11,6 +11,9 @@ const Reviews = ({ productItemId }) => {
     const [rating, setRating] = useState(0);
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(true);
+
+    const [isEditing, setIsEditing] = useState(false);
+    const [editReviewId, setEditReviewId] = useState(null);
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -54,46 +57,108 @@ const Reviews = ({ productItemId }) => {
             return;
         }
 
+        const reviewData = {
+            rating,
+            description,
+            productItemId,
+        };
+
         try {
-            const reviewData = {
-                rating,
-                description,
-                productItemId,
-            };
-            const response = await createReview(reviewData);
+            if (isEditing) {
+                // Update review if editing
+                const response = await updateReview(editReviewId, reviewData);
+                if (response.status === 403) {
+                    toast.error("Bạn không phải là người viết review này!");
+                } else {
+                    toast.success("Review updated!");
 
-            if (response.statusCode === 200 || response.statusCode === 201) {
-                toast.success("Review submitted!");
-
-                const newReview = {
-                    id: response.data.id,
-                    rating,
-                    description,
-                    userId: response.data.userId,
-                };
-
-                setReviews((prevReviews = []) => {
-                    return [...(Array.isArray(prevReviews) ? prevReviews : []), newReview];
-                });
-
-                setUserNames((prevUserNames) => ({
-                    ...prevUserNames,
-                    [response.data.userId]: userNames[response.data.userId]
-                }));
-
-                setDescription("");
-                setRating(0);
+                    setReviews((prevReviews) =>
+                        prevReviews.map((review) =>
+                            review.id === editReviewId ? { ...review, rating, description } : review
+                        )
+                    );
+                }
+                setIsEditing(false);
+                setEditReviewId(null);
             } else {
-                // throw new Error(`Error: ${response.statusText}`);
-                toast.error("You need to log in to submit a review.");
+                // Create new review if not editing
+                const response = await createReview(reviewData);
+
+                if (response.statusCode === 200 || response.statusCode === 201) {
+                    toast.success("Review submitted!");
+                    const newReview = {
+                        id: response.data.id,
+                        rating,
+                        description,
+                        userId: response.data.userId,
+                    };
+                    setReviews((prevReviews = []) => {
+                        return [...(Array.isArray(prevReviews) ? prevReviews : []), newReview];
+                    });
+
+                    if (!userNames[newReview.userId]) {
+                    try {
+                        const userResponse = await getUserById(newReview.userId);
+                        setUserNames((prevUserNames) => ({
+                            ...prevUserNames,
+                            [newReview.userId]: userResponse.data.name || "Anonymous"
+                        }));
+                    } catch {
+                        setUserNames((prevUserNames) => ({
+                            ...prevUserNames,
+                            [newReview.userId]: "Anonymous"
+                        }));
+                    }
+                }
+                } else {
+                    // throw new Error(`Error: ${response.statusText}`);
+                    toast.error("You need to log in to submit a review.");
+                }
             }
+
+            setRating(0);
+            setDescription("");
         } catch (error) {
             if (error.response && error.response.statusCode === 401) {
                 toast.error("You need to log in to submit a review.");
             } else {
-                toast.error("Error submitting review.");
-                console.error("Error submitting review.");
+                toast.error(isEditing ? "Error updating review." : "Error submitting review.");
+                console.error(isEditing ? "Error updating review." : "Error submitting review.");
             }
+        }
+    };
+
+    const handleEditReview = (review) => {
+        if (isEditing == false){
+            setRating(review.rating);
+            setDescription(review.description);
+            setEditReviewId(review.id);
+            setIsEditing(true);
+        } else if (isEditing == true) {
+            setRating(0);
+            setDescription("");
+            setEditReviewId("");
+            setIsEditing(false);
+        }
+        
+    };
+
+    const handleDeleteReview = async (reviewId) => {
+        const confirmed = window.confirm("Bạn có muốn xóa đánh giá này không?");
+        if (!confirmed) return;
+
+        try {
+            const response = await deleteReview(reviewId);
+            if (response.status === 403) {
+                toast.error("Bạn không phải là người viết bài đánh giá này!");
+            } else {
+                setReviews(reviews.filter((review) => review.id !== reviewId));
+                toast.success("Review deleted successfully!");
+            }
+
+        } catch (error) {
+            toast.error("Error deleting review. Please try again.");
+            console.error("Error deleting review:", error);
         }
     };
 
@@ -124,6 +189,30 @@ const Reviews = ({ productItemId }) => {
                                     name="rating"
                                 />
                             </div>
+                            <div>
+                                <button
+                                    className="edit-button"
+                                    onClick={() => handleEditReview(review)}
+                                    title="Edit Review"
+                                    style={{ 
+                                        marginRight: "10px",
+                                        borderRadius: 50
+                                    }}
+                                >
+                                    <i className="fas fa-pencil-alt"></i>
+                                </button>
+                                <button
+                                    className="delete-button"
+                                    onClick={() => handleDeleteReview(review.id)}
+                                    title="Delete Review"
+                                    style={{
+                                        borderRadius: 50
+                                    }}
+                                >
+                                    <i className="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+
                         </div>
                         <p>Bình luận: {review.description}</p>
                     </div>
