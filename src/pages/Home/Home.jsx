@@ -117,7 +117,7 @@ export const Home = () => {
       <div className="homepage">
         <main className="user-select-none animated-fadeIn">
           <div className="homepage-banner">
-            <img src="./public/assets/final.png" alt="Banner" />
+            <img src="/assets/final.png" alt="Banner" />
           </div>
           <h2 className="homepage-intro-title">
             Tin tức cá koi - Tin tức Koi Shop
