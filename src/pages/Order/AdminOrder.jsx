@@ -140,7 +140,7 @@ const AdminOrder = () => {
             toast.success("Refund has been processed successfully.");
           }
         } else {
-          toast.error("Failed to fetch payments for processing the refund.");
+          // toast.error("Failed to fetch payments for processing the refund.");
         }
       } else {
         toast.error("Không thể hủy đơn hàng. Vui lòng thử lại.");

@@ -249,7 +249,7 @@ const UserDetail = () => {
             }
           }
         } else {
-          toast.error("Failed to fetch payments for processing the refund.");
+          // toast.error("Failed to fetch payments for processing the refund.");
         }
       } else {
         setError(

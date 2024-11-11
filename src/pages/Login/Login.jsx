@@ -108,7 +108,12 @@ const Login = () => {
                     </a>
                   </p>
                   <p>
-                    <a href="/forgot-password">Quên mật khẩu</a>
+                    <a
+                      className="cursor-pointer"
+                      onClick={() => navigate("/forgot-password")}
+                    >
+                      Quên mật khẩu
+                    </a>
                   </p>
                 </div>
                 <button

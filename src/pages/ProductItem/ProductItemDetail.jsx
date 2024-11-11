@@ -6,6 +6,7 @@ import { getProdItemById } from "../../services/ProductItemService";
 import { addToCart } from "../../services/CartService";
 import { toast } from "react-toastify";
 import Reviews from "../../components/ReviewSection";
+import { getUserInfo } from "../../services/UserService";
 
 const ProductItemDetail = () => {
   const { id } = useParams();
@@ -65,7 +66,13 @@ const ProductItemDetail = () => {
     try {
       const response = await addToCart(1, productItem.id, token);
       if (response.data && response.data.cartId) {
-        toast.success(`Đã thêm ${productItem.name} vào giỏ hàng`);
+        const userResponse = await getUserInfo();
+        const userData = userResponse.data;
+        
+        if (!userData.address || !userData.phone) {
+          navigate(`/${userData.id}/detail?fromCart=true`);
+          return;
+        }
         navigate("/order");
       } else {
         toast.error("Sản phẩm đã hết hàng");
