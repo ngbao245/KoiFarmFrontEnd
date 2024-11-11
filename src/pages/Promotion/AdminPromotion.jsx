@@ -159,7 +159,7 @@ const AdminPromotion = () => {
             ) : (
               <>
                 <tr>
-                  <td colSpan={"5"}>Không tìm thấy bài viết nào</td>
+                  <td colSpan={"5"}>Không tìm thấy khuyến mãi nào</td>
                 </tr>
                 <tr>
                   <td colSpan="5">
