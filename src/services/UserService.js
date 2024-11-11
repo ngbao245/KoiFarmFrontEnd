@@ -37,7 +37,15 @@ const postCreateStaff = (data) => {
 };
 
 const deleteStaff = (id) => {
-  return axios.delete(`/User/delete-user/${id}`);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`/User/delete-user/${id}`,{
+    headers: {
+      Authorization: `${token}`
+    },
+  });
 };
 
 const getUserById = (userId) => {
