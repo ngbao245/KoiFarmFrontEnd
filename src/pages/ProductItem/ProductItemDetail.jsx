@@ -7,6 +7,7 @@ import { addToCart } from "../../services/CartService";
 import { toast } from "react-toastify";
 import Reviews from "../../components/ReviewSection";
 import { getUserInfo } from "../../services/UserService";
+import FishSpinner from "../../components/FishSpinner";
 
 const ProductItemDetail = () => {
   const { id } = useParams();
@@ -32,7 +33,7 @@ const ProductItemDetail = () => {
   }, [id, navigate]);
 
   if (!productItem) {
-    return <div>Loading...</div>;
+    return <FishSpinner />;
   }
 
   const handleAddToCart = async (quantity, itemId) => {
@@ -68,7 +69,7 @@ const ProductItemDetail = () => {
       if (response.data && response.data.cartId) {
         const userResponse = await getUserInfo();
         const userData = userResponse.data;
-        
+
         if (!userData.address || !userData.phone) {
           navigate(`/${userData.id}/detail?fromCart=true`);
           return;

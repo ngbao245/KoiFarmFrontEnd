@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
 import { toast } from "react-toastify";
+import './ProductItem.css';
 
 const ProductItem = () => {
   const location = useLocation();
@@ -12,32 +13,6 @@ const ProductItem = () => {
 
   const approvedItems =
     productItems?.filter((item) => item.type === "Approved") || [];
-
-  if (!approvedItems || approvedItems.length === 0) {
-    return (
-      <>
-        <Header />
-        <div className="animated" style={{ padding: "20px", textAlign: "center" }}>
-          <h2>Không tìm thấy sản phẩm nào</h2>
-          <button
-            onClick={() => navigate('/')}
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#C70025",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              marginTop: "20px"
-            }}
-          >
-            Quay về trang chủ
-          </button>
-        </div>
-        <Footer />
-      </>
-    );
-  }
 
   const handleViewDetails = (productId) => {
     navigate(
@@ -73,71 +48,59 @@ const ProductItem = () => {
   return (
     <>
       <Header />
-      <div className="animated" style={{ padding: "20px" }}>
-        <h1>Product: {productName}</h1>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: "20px",
-          }}
-        >
-          {approvedItems.map((item) => (
-            <div
-              key={item.id}
-              style={{
-                border: "1px solid #ddd",
-                borderRadius: "8px",
-                padding: "15px",
-                textAlign: "center",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <img
-                src={item.imageUrl}
-                alt={item.name}
-                style={{ width: "100%", height: "150px", objectFit: "cover" }}
-              />
-              <h3>{item.name}</h3>
-              <p>Price: {item.price} VND</p>
-              <p>Age: {item.age} years</p>
-              <p>Size: {item.size}</p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  justifyContent: "center",
-                }}
+      <div className="koi-product-page">
+        <div className="koi-product-container animated">
+          <h1 className="koi-product-heading">Danh sách {productName}</h1>
+          
+          {(!approvedItems || approvedItems.length === 0) ? (
+            <div className="koi-empty-state">
+              <h2>Không tìm thấy sản phẩm nào</h2>
+              <button 
+                onClick={() => navigate('/')}
+                className="koi-back-home-btn"
               >
-                <button
-                  onClick={() => handleViewDetails(item.id)}
-                  style={{
-                    padding: "10px",
-                    backgroundColor: "#C70025",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  View Details
-                </button>
-                <button
-                  onClick={() => handleAddToCompare(item)}
-                  style={{
-                    padding: "10px",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  So sánh
-                </button>
-              </div>
+                Quay về trang chủ
+              </button>
             </div>
-          ))}
+          ) : (
+            <div className="koi-items-grid">
+              {approvedItems.map((item) => (
+                <div key={item.id} className="koi-item-card">
+                  <div className="koi-item-image-wrapper">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="koi-item-image"
+                    />
+                  </div>
+                  <div className="koi-item-content">
+                    <h3 className="koi-item-name">{item.name}</h3>
+                    <p className="koi-item-price">
+                      {item.price.toLocaleString('vi-VN')} VND
+                    </p>
+                    <div className="koi-item-specs">
+                      <p>Tuổi: {item.age} tuổi</p>
+                      <p>Kích thước: {item.size}</p>
+                    </div>
+                    <div className="koi-item-actions">
+                      <button
+                        onClick={() => handleViewDetails(item.id)}
+                        className="koi-view-btn"
+                      >
+                        Xem chi tiết
+                      </button>
+                      <button
+                        onClick={() => handleAddToCompare(item)}
+                        className="koi-compare-btn"
+                      >
+                        So sánh
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <Footer />

@@ -26,7 +26,7 @@ const Consignment = () => {
     <>
       <Header />
       <div className="consignment-page-container">
-      <h1 className="consign-title">Ký Gửi Cá Koi</h1>
+        <h1 className="consign-title">Ký Gửi Cá Koi</h1>
         <div className="consignment-content animated user-select-none">
           <div className="consignment-rules">
             <h2>Quy định gửi hàng</h2>
@@ -50,6 +50,9 @@ const Consignment = () => {
               <li>
                 Hàng hóa bị phát hiện vi phạm quy định sẽ bị từ chối tiếp nhận
                 hoặc bị xử lý theo quy định pháp luật.
+              </li>
+              <li>
+                Phí dịch vụ ký gửi được áp dụng ở mức 25.000 VNĐ mỗi ngày.
               </li>
             </ol>
           </div>
