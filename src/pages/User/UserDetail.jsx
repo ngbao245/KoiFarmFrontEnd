@@ -14,6 +14,8 @@ import FishSpinner from "../../components/FishSpinner";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import HintBox from "../../components/HintBox";
+import { createPayment } from "../../services/PaymentService";
+
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -82,6 +84,8 @@ const UserDetail = () => {
           const paymentsResponse = await fetchAllPayment();
           setPayments(paymentsResponse.data?.data || []);
         } else {
+          const paymentsResponse = await fetchAllPayment();
+          setPayments(paymentsResponse.data || []);
           const ordersResponse = await getOrderByUser();
           const allOrders = Array.isArray(ordersResponse.data)
             ? ordersResponse.data
@@ -169,19 +173,19 @@ const UserDetail = () => {
 
       const response = await updateUserInfo(updatedUser);
       if (response.statusCode === 200) {
-        setUpdatedUser((prev) => ({ 
-          ...prev, 
+        setUpdatedUser((prev) => ({
+          ...prev,
           ...response.data?.data,
-          password: "" 
+          password: ""
         }));
         setEditMode(false);
         toast.success("Cập nhật thông tin thành công!");
 
         // Redirect to cart if coming from cart page and has address/phone
         const searchParams = new URLSearchParams(window.location.search);
-        if (searchParams.get("fromCart") === "true" && 
-            updatedUser.address?.trim() && 
-            updatedUser.phone?.trim()) {
+        if (searchParams.get("fromCart") === "true" &&
+          updatedUser.address?.trim() &&
+          updatedUser.phone?.trim()) {
           navigate("/cart");
         }
       }
@@ -262,6 +266,28 @@ const UserDetail = () => {
     } finally {
       setIsConfirmModalOpen(false);
       setOrderIdToCancel(null);
+    }
+  };
+
+  const handleBuyAgain = async (orderId) => {
+    try {
+      // Create the payment URL using the failed order's ID
+      const paymentResponse = await createPayment({
+        orderDescription: "Thanh toán lại đơn hàng thất bại",
+        orderType: "billpayment",
+        name: "Your Name", // Optionally customize with user name
+        orderId: orderId,  // Use the existing failed order's ID
+      });
+  
+      // Redirect to the generated payment URL
+      if (paymentResponse && paymentResponse.data) {
+        window.location.href = paymentResponse.data;
+      } else {
+        toast.error("Không thể tạo URL thanh toán.");
+      }
+    } catch (error) {
+      console.error("Error creating payment URL:", error);
+      toast.error("Lỗi tạo URL thanh toán.");
     }
   };
 
@@ -408,9 +434,8 @@ const UserDetail = () => {
                     <div className="user-info-item">
                       <strong>Trạng thái:</strong>
                       <div
-                        className={`user-auth-badge ${
-                          user.auth ? "verified" : "unverified"
-                        }`}
+                        className={`user-auth-badge ${user.auth ? "verified" : "unverified"
+                          }`}
                       >
                         {user.auth ? "Đã xác thực" : "Chưa xác thực"}
                       </div>
@@ -481,36 +506,39 @@ const UserDetail = () => {
               <>
                 <div className="order-tabs">
                   <button
-                    className={`order-tab-button ${
-                      activeTab === "Pending" ? "active" : ""
-                    }`}
+                    className={`order-tab-button ${activeTab === "Pending" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("Pending")}
                   >
                     Đang xử lý
                   </button>
                   <button
-                    className={`order-tab-button ${
-                      activeTab === "Delivering" ? "active" : ""
-                    }`}
+                    className={`order-tab-button ${activeTab === "Delivering" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("Delivering")}
                   >
                     Đang giao hàng
                   </button>
                   <button
-                    className={`order-tab-button ${
-                      activeTab === "Completed" ? "active" : ""
-                    }`}
+                    className={`order-tab-button ${activeTab === "Completed" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("Completed")}
                   >
                     Đã hoàn thành
                   </button>
                   <button
-                    className={`order-tab-button ${
-                      activeTab === "Cancelled" ? "active" : ""
-                    }`}
+                    className={`order-tab-button ${activeTab === "Cancelled" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("Cancelled")}
                   >
                     Đã hủy
+                  </button>
+                  <button
+                    className={`order-tab-button ${activeTab === "Failed" ? "active" : ""
+                      }`}
+                    onClick={() => setActiveTab("Failed")}
+                  >
+                    Thất bại
                   </button>
                 </div>
 
@@ -521,9 +549,13 @@ const UserDetail = () => {
                       <th>Sản Phẩm</th>
                       <th>Tổng Tiền</th>
                       <th>Ngày Mua</th>
+                      {["Pending", "Delivering"].includes(activeTab) && <th>Hình thức</th>}
                       <th>Trạng Thái</th>
+                      <th>Tình trạng thanh toán</th>
                       {activeTab === "Completed" && <th>Xác Nhận Hàng</th>}
-                      {activeTab === "Pending" && <th>Hủy Đơn Hàng</th>}
+                      {(activeTab === "Pending" || activeTab === "Failed") && <th>Hủy Đơn Hàng</th>}
+                      {activeTab === "Failed" && <th>Mua lại</th>}
+
                     </tr>
                   </thead>
                   <tbody>
@@ -553,6 +585,11 @@ const UserDetail = () => {
                             }
                           )}
                         </td>
+                        {["Pending", "Delivering"].includes(activeTab) && (
+                          <td>
+                            {payments.some((payment) => payment.orderId === order.orderId) ? "VNPAY" : "COD"}
+                          </td>
+                        )}
                         <td>
                           <span
                             className={`user-order-badge ${order.status.toLowerCase()}`}
@@ -561,7 +598,15 @@ const UserDetail = () => {
                             {order.status === "Delivering" && "Đang giao"}
                             {order.status === "Completed" && "Hoàn thành"}
                             {order.status === "Cancelled" && "Đã hủy"}
+                            {order.status === "Failed" && "Thất bại"}
                           </span>
+                        </td>
+                        <td>
+                          {payments.some((payment) => payment.orderId === order.orderId) ? (
+                            <span style={{ color: "green" }}>✓</span>
+                          ) : (
+                            <span style={{ color: "red" }}>✕</span>
+                          )}
                         </td>
                         {activeTab === "Completed" && (
                           <td>
@@ -583,13 +628,23 @@ const UserDetail = () => {
                             )}
                           </td>
                         )}
-                        {activeTab === "Pending" && (
+                        {(activeTab === "Pending" || activeTab === "Failed") && (
                           <td>
                             <button
                               className="btn btn-danger"
                               onClick={() => handleCancelOrder(order.orderId)}
                             >
                               Hủy đơn hàng
+                            </button>
+                          </td>
+                        )}
+                        {activeTab === "Failed" && (
+                          <td>
+                            <button
+                              className="btn btn-success"
+                              onClick={() => handleBuyAgain(order.orderId)}
+                            >
+                              Mua lại
                             </button>
                           </td>
                         )}
