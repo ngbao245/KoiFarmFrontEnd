@@ -25,7 +25,7 @@ const addItemToBatch = (id, data) => {
 };
 
 const removeItemFromBatch = (batchId, productItemId) => {
-  return axios.delete(`Batch/delete-batch/${batchId}/${productItemId}`);
+  return axios.delete(`Batch/remove-item-from-batch/${batchId}/${productItemId}`);
 };
 
 export {
