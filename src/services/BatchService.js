@@ -9,23 +9,63 @@ const fetchBatchById = (id) => {
 };
 
 const createBatch = (data) => {
-  return axios.post("Batch/create-batch", data);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.post("Batch/create-batch", data, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const updateBatch = (id, data) => {
-  return axios.put(`Batch/update-batch/${id}`, data);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.put(`Batch/update-batch/${id}`, data, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const deleteBatch = (id) => {
-  return axios.delete(`Batch/delete-batch/${id}`);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`Batch/delete-batch/${id}`, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const addItemToBatch = (id, data) => {
-  return axios.post(`Batch/add-item-to-batch/${id}`, data);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.post(`Batch/add-item-to-batch/${id}`, data, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 const removeItemFromBatch = (batchId, productItemId) => {
-  return axios.delete(`Batch/remove-item-from-batch/${batchId}/${productItemId}`);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`Batch/remove-item-from-batch/${batchId}/${productItemId}`, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 };
 
 export {
