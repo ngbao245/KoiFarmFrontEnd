@@ -10,6 +10,20 @@ const addToCart = (quantity, productItemId, token) => {
   );
 };
 
+const addBatchToCart = (batchId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.post(
+    "Cart/add-batch-to-cart",
+    { batchId },
+    {
+      headers: { Authorization: token },
+    }
+  );
+};
+
 const getCart = () => {
   const token = localStorage.getItem("token");
 
@@ -43,7 +57,31 @@ const updateCartItem = (cartId, prodItemId, quantity) => {
 };
 
 const removeFromCart = (cartId) => {
-  return axios.delete(`Cart/remove-from-cart/${cartId}`);
+  const token = localStorage.getItem("token");
+  
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`Cart/remove-from-cart/${cartId}`,{
+    headers: {
+      Authorization: `${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 };
 
-export { addToCart, updateCartItem, removeFromCart, getCart };
+const removeBatchFromCart = (batchId) => {
+  const token = localStorage.getItem("token");
+  
+  if (!token) {
+    throw new Error("No token found! Please log in again.");
+  }
+  return axios.delete(`Cart/remove-batch-from-cart/${batchId}`,{
+    headers: {
+      Authorization: `${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export { addToCart, updateCartItem, removeFromCart, getCart, addBatchToCart, removeBatchFromCart };

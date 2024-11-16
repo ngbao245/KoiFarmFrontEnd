@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getCart, updateCartItem } from "../../services/CartService";
+import { getCart, updateCartItem, removeBatchFromCart } from "../../services/CartService";
 import { getProdItemById } from "../../services/ProductItemService";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
@@ -49,7 +49,7 @@ const Cart = () => {
             const batchResponse = await fetchBatchById(group[0].batchId);
             return {
               batchId: group[0].batchId,
-              batchImage : batchResponse.data.imageUrl,
+              batchImage: batchResponse.data.imageUrl,
               batchName: batchResponse.data.name,
               batchPrice: batchResponse.data.price,
               batchDescription: batchResponse.data.description,
@@ -69,7 +69,8 @@ const Cart = () => {
 
       setCartItems(updatedItems);
     } catch (error) {
-      toast.error(error.message);
+      // toast.error(error.message);
+      console.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -144,26 +145,47 @@ const Cart = () => {
     navigate("/product");
   };
 
+  const removeBatch = async (batchId) => {
+    try {
+      const response = await removeBatchFromCart(batchId); // Use your service function
+      if (response.statusCode === 200) {
+        setCartItems((prevItems) =>
+          prevItems.filter((item) => item.batchId !== batchId)
+        );
+        toast.success("Batch removed from the cart!");
+      } else {
+        toast.error(response.data.messageError || "Error removing batch.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to remove batch from the cart.");
+    }
+  };
+
   const confirmRemoveItem = async () => {
     if (!itemToRemove) return;
 
     try {
-      const response = await updateCartItem(
-        itemToRemove.cartId,
-        itemToRemove.item.productItemId,
-        0
-      );
-      if (response.statusCode == 200) {
-        setCartItems((prevItems) =>
-          prevItems.filter(
-            (i) => i.productItemId !== itemToRemove.item.productItemId
-          )
+      if (itemToRemove.batchId) {
+        await removeBatch(itemToRemove.batchId);
+      } else if (itemToRemove.item) {
+        const response = await updateCartItem(
+          itemToRemove.cartId,
+          itemToRemove.item.productItemId,
+          0
         );
-        // toast.success(
-        //   `Item ${itemToRemove.item.productName} removed from cart`
-        // );
-      } else {
-        toast.error(response.data.messageError);
+        if (response.statusCode == 200) {
+          setCartItems((prevItems) =>
+            prevItems.filter(
+              (i) => i.productItemId !== itemToRemove.item.productItemId
+            )
+          );
+          // toast.success(
+          //   `Item ${itemToRemove.item.productName} removed from cart`
+          // );
+        } else {
+          toast.error(response.data.messageError);
+        }
       }
     } catch (error) {
       toast.error(error);
@@ -212,6 +234,7 @@ const Cart = () => {
                       <th>Giá tiền</th>
                       <th>Số lượng</th>
                       <th>Tạm tính</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -233,6 +256,17 @@ const Cart = () => {
                             <td className="price">{item.batchPrice.toLocaleString()} VND</td>
                             <td>{item.batchItems.reduce((sum, i) => sum + i.quantity, 0)} sản phẩm</td>
                             <td className="price">{item.batchPrice.toLocaleString()} VND</td>
+                            <td>
+                              <button
+                                className="remove-batch-btn"
+                                onClick={() => {
+                                  setItemToRemove({ batchId: item.batchId, name: item.batchName });
+                                  setIsConfirmModalOpen(true);
+                                }}
+                              >
+                                <i className="fa-solid fa-trash"></i>
+                              </button>
+                            </td>
                           </tr>
                         );
                       } else {

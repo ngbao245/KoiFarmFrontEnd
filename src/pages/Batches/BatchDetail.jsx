@@ -5,6 +5,9 @@ import { Footer } from "../../layouts/footer/footer";
 import { fetchBatchById } from "../../services/BatchService";
 import { getProdItemByBatch } from "../../services/ProductItemService";
 import FishSpinner from "../../components/FishSpinner";
+import { addBatchToCart } from "../../services/CartService";
+import { toast } from "react-toastify";
+import { getUserInfo } from "../../services/UserService";
 import "./BatchDetail.css";
 
 const BatchDetail = () => {
@@ -23,7 +26,7 @@ const BatchDetail = () => {
         const batchResponse = await fetchBatchById(id);
         if (batchResponse.data) {
           setBatch(batchResponse.data);
-          
+
           // Fetch fish in batch
           const fishResponse = await getProdItemByBatch(id);
           if (fishResponse.data) {
@@ -46,6 +49,41 @@ const BatchDetail = () => {
 
     fetchData();
   }, [id, navigate]);
+
+  const handleAddToCart = async () => {
+    try {
+      await addBatchToCart(batch.id);
+      toast.success(`Đã thêm ${batch.name} vào giỏ hàng`);
+    } catch (error) {
+      if (error.message.includes("No token")) {
+        toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng của bạn");
+        navigate("/login");
+      } else {
+        toast.error(error.message || "Có lỗi xảy ra");
+      }
+    }
+  };
+
+  const handleQuickBuy = async () => {
+    try {
+      await addBatchToCart(batch.id);
+      const userResponse = await getUserInfo();
+      const userData = userResponse.data;
+
+      if (!userData.address || !userData.phone) {
+        navigate(`/${userData.id}/detail?fromCart=true`);
+        return;
+      }
+      navigate("/order");
+    } catch (error) {
+      if (error.message.includes("No token")) {
+        toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng của bạn");
+        navigate("/login");
+      } else {
+        toast.error(error.message || "Có lỗi xảy ra");
+      }
+    }
+  };
 
   if (loading || !batch) {
     return <FishSpinner />;
@@ -83,12 +121,38 @@ const BatchDetail = () => {
                 <h2>Thông tin lô</h2>
                 <ul>
                   <li>Số lượng cá: {fishList.length}</li>
-                  <li>
-                    Ngày nhập: {new Date(batch.importDate).toLocaleDateString("vi-VN")}
-                  </li>
-                  <li>Nguồn gốc: {batch.origin || "Chưa cập nhật"}</li>
                   <li>Mô tả: {batch.description || "Không có mô tả"}</li>
                 </ul>
+                <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                  <button
+                    style={{
+                      marginTop : "50px",
+                      padding: "10px",
+                      backgroundColor: "#C70025",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                    onClick={handleQuickBuy}
+                  >
+                    Đặt Mua Nhanh
+                  </button>
+                  <button
+                    style={{
+                      marginTop : "50px",
+                      padding: "10px",
+                      backgroundColor: "#0056b3",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                    onClick={handleAddToCart}
+                  >
+                    Thêm vào Giỏ
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -99,9 +163,8 @@ const BatchDetail = () => {
                   fishList.map((fish) => (
                     <div
                       key={fish.id}
-                      className={`fish-card ${
-                        selectedFish?.id === fish.id ? "selected" : ""
-                      }`}
+                      className={`fish-card ${selectedFish?.id === fish.id ? "selected" : ""
+                        }`}
                       onClick={() => handleFishSelect(fish)}
                     >
                       <img src={fish.imageUrl} alt={fish.name} />

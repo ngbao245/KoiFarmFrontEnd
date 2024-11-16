@@ -69,7 +69,6 @@ const Batches = () => {
                     </p>
                     <div className="batch-item-specs">
                       <p>Số lượng cá: {batch.quantity || 0}</p>
-                      <p>Ngày nhập: {new Date(batch.importDate).toLocaleDateString('vi-VN')}</p>
                     </div>
                     <div className="batch-item-actions">
                       <button
