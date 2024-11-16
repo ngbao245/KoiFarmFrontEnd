@@ -142,4 +142,99 @@
   .koi-items-grid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
+}
+
+.koi-empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.koi-empty-state-icon {
+  font-size: 80px;
+  color: #C70025;
+  margin-bottom: 24px;
+  animation: koi-bounce 2s infinite;
+}
+
+.koi-empty-state-heading {
+  font-size: 28px;
+  color: #281713;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.koi-empty-state-message {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 32px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.koi-empty-state-button {
+  background-color: #C70025;
+  color: white;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.koi-empty-state-button:hover {
+  background-color: #a30020;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(199, 0, 37, 0.2);
+}
+
+.koi-empty-state-button:active {
+  transform: translateY(0);
+}
+
+@keyframes koi-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .koi-empty-state-container {
+    margin: 10px;
+    padding: 30px 15px;
+  }
+
+  .koi-empty-state-icon {
+    font-size: 60px;
+  }
+
+  .koi-empty-state-heading {
+    font-size: 24px;
+  }
+
+  .koi-empty-state-message {
+    font-size: 14px;
+  }
+
+  .koi-empty-state-button {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
 } 
