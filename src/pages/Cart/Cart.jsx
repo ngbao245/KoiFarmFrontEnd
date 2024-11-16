@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getCart, updateCartItem, removeBatchFromCart } from "../../services/CartService";
-import { getProdItemById } from "../../services/ProductItemService";
+import { getProdItemById, getProdItemByBatch } from "../../services/ProductItemService";
 import { Header } from "../../layouts/header/header";
 import { Footer } from "../../layouts/footer/footer";
 import "./Cart.css";
@@ -17,6 +17,7 @@ const Cart = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
+  const [expandedBatches, setExpandedBatches] = useState([]);
 
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ const Cart = () => {
           if (!acc[item.batchId]) acc[item.batchId] = [];
           acc[item.batchId].push(item);
         } else {
-          acc[item.productItemId] = [item]; // Treat items without batchId as unique
+          acc[item.productItemId] = [item];
         }
         return acc;
       }, {});
@@ -45,23 +46,38 @@ const Cart = () => {
       const updatedItems = await Promise.all(
         Object.entries(groupedItems).map(async ([key, group]) => {
           if (group[0].batchId) {
-            // If the group is a batch
+            // Nếu là batch
             const batchResponse = await fetchBatchById(group[0].batchId);
+            const batchItemsResponse = await getProdItemByBatch(group[0].batchId);
+            
+            // Lấy thông tin chi tiết cho từng product item trong batch
+            const batchItemsWithDetails = batchItemsResponse.data.map(item => ({
+              productItemId: item.id,
+              name: item.name,
+              imageUrl: item.imageUrl,
+              sex: item.sex,
+              age: item.age,
+              size: item.size,
+              quantity: 1
+            }));
+
             return {
               batchId: group[0].batchId,
               batchImage: batchResponse.data.imageUrl,
               batchName: batchResponse.data.name,
               batchPrice: batchResponse.data.price,
               batchDescription: batchResponse.data.description,
-              batchItems: group,
+              batchItems: batchItemsWithDetails,
             };
           } else {
-            // If the group is an individual item
+            // Nếu là sản phẩm đơn lẻ
             const productResponse = await getProdItemById(group[0].productItemId);
             return {
               ...group[0],
+              productName: productResponse.data.name,
               imageUrl: productResponse.data.imageUrl,
-              isIndividual: productResponse.data.quantity === 1,
+              price: productResponse.data.price,
+              isIndividual: true,
             };
           }
         })
@@ -69,8 +85,8 @@ const Cart = () => {
 
       setCartItems(updatedItems);
     } catch (error) {
-      // toast.error(error.message);
-      console.error(error.message);
+      console.error('Error fetching cart items:', error);
+      toast.error("Có lỗi xảy ra khi tải giỏ hàng");
     } finally {
       setIsLoading(false);
     }
@@ -195,6 +211,14 @@ const Cart = () => {
     }
   };
 
+  const toggleBatchExpand = (batchId) => {
+    setExpandedBatches(prev => 
+      prev.includes(batchId) 
+        ? prev.filter(id => id !== batchId)
+        : [...prev, batchId]
+    );
+  };
+
   if (isLoading) return <FishSpinner />;
 
   return (
@@ -230,6 +254,7 @@ const Cart = () => {
                   <thead>
                     <tr>
                       <th></th>
+                      <th></th>
                       <th>Sản phẩm</th>
                       <th>Giá tiền</th>
                       <th>Số lượng</th>
@@ -240,39 +265,75 @@ const Cart = () => {
                   <tbody>
                     {cartItems.map((item) => {
                       if (item.batchId) {
-                        // Render batch entry
                         return (
-                          <tr key={item.batchId}>
-                            <td>
-                              <img
-                                src={item.batchImage}
-                                alt={item.name}
-                                className="product-image"
-                              />
-                            </td>
-                            <td style={{ fontWeight: "bold" }}>
-                              {item.batchName}
-                            </td>
-                            <td className="price">{item.batchPrice.toLocaleString()} VND</td>
-                            <td>{item.batchItems.reduce((sum, i) => sum + i.quantity, 0)} sản phẩm</td>
-                            <td className="price">{item.batchPrice.toLocaleString()} VND</td>
-                            <td>
-                              <button
-                                className="remove-batch-btn"
-                                onClick={() => {
-                                  setItemToRemove({ batchId: item.batchId, name: item.batchName });
-                                  setIsConfirmModalOpen(true);
-                                }}
-                              >
-                                <i className="fa-solid fa-trash"></i>
-                              </button>
-                            </td>
-                          </tr>
+                          <React.Fragment key={item.batchId}>
+                            <tr 
+                              className="batch-row"
+                              onClick={() => toggleBatchExpand(item.batchId)}
+                            >
+                              <td></td>
+                              <td>
+                                <img
+                                  src={item.batchImage}
+                                  alt={item.name}
+                                  className="product-image"
+                                />
+                              </td>
+                              <td style={{ fontWeight: "bold" }}>
+                                {item.batchName}
+                              </td>
+                              <td className="price">{item.batchPrice.toLocaleString()} VND</td>
+                              <td>{item.batchItems.reduce((sum, i) => sum + i.quantity, 0)} sản phẩm</td>
+                              <td className="price">{item.batchPrice.toLocaleString()} VND</td>
+                              <td>
+                                <button
+                                  className="remove-batch-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // Ngăn sự kiện click lan ra tr cha
+                                    setItemToRemove({ batchId: item.batchId, name: item.batchName });
+                                    setIsConfirmModalOpen(true);
+                                  }}
+                                >
+                                  <i className="fa-solid fa-trash"></i>
+                                </button>
+                              </td>
+                            </tr>
+                            {expandedBatches.includes(item.batchId) && (
+                              <tr>
+                                <td colSpan="7">
+                                  <div className="batch-items">
+                                    {item.batchItems.map((batchItem, idx) => (
+                                      <div key={`${item.batchId}-${idx}`} className="batch-subitem">
+                                        <div className=""></div>
+                                        <img 
+                                          src={batchItem.imageUrl || '/default-product.png'} 
+                                          alt={batchItem.name}
+                                          className="product-image"
+                                          onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = "/default-product-image.png";
+                                          }}
+                                        />
+                                        <div className="batch-item-details">
+                                          <div className="batch-item-name">{batchItem.name}</div>
+                                          <div className="batch-item-specs">
+                                            <span>Giới tính: {batchItem.sex}</span>
+                                            <span>Tuổi: {batchItem.age}</span>
+                                            <span>Size: {batchItem.size}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
                         );
                       } else {
-                        // Render individual item
                         return (
                           <tr key={item.productItemId}>
+                            <td></td>
                             <td>
                               <img
                                 src={item.imageUrl}
@@ -283,42 +344,23 @@ const Cart = () => {
                             <td style={{ fontWeight: "bold" }}>{item.productName}</td>
                             <td className="price">{item.price.toLocaleString()} VND</td>
                             <td>
-                              <div className="quantity-control">
-                                <button
-                                  className="quantity-btn"
-                                  onClick={() =>
-                                    handleQuantityChange(cart.cartId, item, item.quantity - 1)
-                                  }
-                                >
-                                  -
-                                </button>
-                                <input
-                                  type="number"
-                                  min="1"
-                                  value={item.quantity}
-                                  onChange={(e) =>
-                                    handleQuantityChange(
-                                      cart.cartId,
-                                      item,
-                                      parseInt(e.target.value)
-                                    )
-                                  }
-                                  className="quantity-input"
-                                  readOnly
-                                />
-                                <button
-                                  className="quantity-btn"
-                                  onClick={() =>
-                                    handleQuantityChange(cart.cartId, item, item.quantity + 1)
-                                  }
-                                  disabled={item.isIndividual}
-                                >
-                                  +
-                                </button>
+                              <div className="quantity-display">
+                                1 sản phẩm
                               </div>
                             </td>
                             <td className="price">
-                              {(item.price * item.quantity).toLocaleString()} VND
+                              {item.price.toLocaleString()} VND
+                            </td>
+                            <td>
+                              <button
+                                className="remove-batch-btn"
+                                onClick={() => {
+                                  setItemToRemove({ cartId: cart.cartId, item });
+                                  setIsConfirmModalOpen(true);
+                                }}
+                              >
+                                <i className="fa-solid fa-trash"></i>
+                              </button>
                             </td>
                           </tr>
                         );
