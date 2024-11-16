@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import FishSpinner from "../../components/FishSpinner";
 import { getUserInfo } from "../../services/UserService";
+import { fetchBatchById } from "../../services/BatchService";
 
 const Cart = () => {
   const [cart, setCart] = useState(null);
@@ -30,20 +31,45 @@ const Cart = () => {
       const { items } = response.data;
       setCart(response.data);
 
+      // Group items by batchId
+      const groupedItems = items.reduce((acc, item) => {
+        if (item.batchId) {
+          if (!acc[item.batchId]) acc[item.batchId] = [];
+          acc[item.batchId].push(item);
+        } else {
+          acc[item.productItemId] = [item]; // Treat items without batchId as unique
+        }
+        return acc;
+      }, {});
+
       const updatedItems = await Promise.all(
-        items.map(async (item) => {
-          const productResponse = await getProdItemById(item.productItemId);
-          return {
-            ...item,
-            imageUrl: productResponse.data.imageUrl,
-            isIndividual: productResponse.data.quantity === 1,
-          };
+        Object.entries(groupedItems).map(async ([key, group]) => {
+          if (group[0].batchId) {
+            // If the group is a batch
+            const batchResponse = await fetchBatchById(group[0].batchId);
+            return {
+              batchId: group[0].batchId,
+              batchImage : batchResponse.data.imageUrl,
+              batchName: batchResponse.data.name,
+              batchPrice: batchResponse.data.price,
+              batchDescription: batchResponse.data.description,
+              batchItems: group,
+            };
+          } else {
+            // If the group is an individual item
+            const productResponse = await getProdItemById(group[0].productItemId);
+            return {
+              ...group[0],
+              imageUrl: productResponse.data.imageUrl,
+              isIndividual: productResponse.data.quantity === 1,
+            };
+          }
         })
       );
 
       setCartItems(updatedItems);
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +110,15 @@ const Cart = () => {
 
   const calculateTotal = () => {
     return cartItems
-      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .reduce((total, item) => {
+        if (item.batchId) {
+          // Use the batch price for items in a batch
+          return total + item.batchPrice;
+        } else {
+          // Use individual item price for standalone items
+          return total + item.price * item.quantity;
+        }
+      }, 0)
       .toLocaleString();
   };
 
@@ -181,69 +215,81 @@ const Cart = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {cartItems.map((item) => (
-                      <tr key={item.productItemId}>
-                        <td>
-                          <img
-                            src={item.imageUrl}
-                            alt={item.productName}
-                            className="product-image"
-                          />
-                        </td>
-                        <td style={{ fontWeight: "bold" }}>
-                          {item.productName}
-                        </td>
-                        <td className="price">
-                          {item.price.toLocaleString()} VND
-                        </td>
-                        <td>
-                          <div className="quantity-control">
-                            <button
-                              className="quantity-btn"
-                              onClick={() =>
-                                handleQuantityChange(
-                                  cart.cartId,
-                                  item,
-                                  item.quantity - 1
-                                )
-                              }
-                            >
-                              -
-                            </button>
-                            <input
-                              type="number"
-                              min="1"
-                              value={item.quantity}
-                              onChange={(e) =>
-                                handleQuantityChange(
-                                  cart.cartId,
-                                  item,
-                                  parseInt(e.target.value)
-                                )
-                              }
-                              className="quantity-input"
-                              readOnly
-                            />
-                            <button
-                              className="quantity-btn"
-                              onClick={() =>
-                                handleQuantityChange(
-                                  cart.cartId,
-                                  item,
-                                  item.quantity + 1
-                                )
-                              }
-                              disabled={item.isIndividual}
-                            >
-                              +
-                            </button>
-                          </div>
-                        </td>
-                        <td className="price">
-                          {(item.price * item.quantity).toLocaleString()} VND
-                        </td>
-                      </tr>
-                    ))}
+                    {cartItems.map((item) => {
+                      if (item.batchId) {
+                        // Render batch entry
+                        return (
+                          <tr key={item.batchId}>
+                            <td>
+                              <img
+                                src={item.batchImage}
+                                alt={item.name}
+                                className="product-image"
+                              />
+                            </td>
+                            <td style={{ fontWeight: "bold" }}>
+                              {item.batchName}
+                            </td>
+                            <td className="price">{item.batchPrice.toLocaleString()} VND</td>
+                            <td>{item.batchItems.reduce((sum, i) => sum + i.quantity, 0)} sản phẩm</td>
+                            <td className="price">{item.batchPrice.toLocaleString()} VND</td>
+                          </tr>
+                        );
+                      } else {
+                        // Render individual item
+                        return (
+                          <tr key={item.productItemId}>
+                            <td>
+                              <img
+                                src={item.imageUrl}
+                                alt={item.productName}
+                                className="product-image"
+                              />
+                            </td>
+                            <td style={{ fontWeight: "bold" }}>{item.productName}</td>
+                            <td className="price">{item.price.toLocaleString()} VND</td>
+                            <td>
+                              <div className="quantity-control">
+                                <button
+                                  className="quantity-btn"
+                                  onClick={() =>
+                                    handleQuantityChange(cart.cartId, item, item.quantity - 1)
+                                  }
+                                >
+                                  -
+                                </button>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  value={item.quantity}
+                                  onChange={(e) =>
+                                    handleQuantityChange(
+                                      cart.cartId,
+                                      item,
+                                      parseInt(e.target.value)
+                                    )
+                                  }
+                                  className="quantity-input"
+                                  readOnly
+                                />
+                                <button
+                                  className="quantity-btn"
+                                  onClick={() =>
+                                    handleQuantityChange(cart.cartId, item, item.quantity + 1)
+                                  }
+                                  disabled={item.isIndividual}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </td>
+                            <td className="price">
+                              {(item.price * item.quantity).toLocaleString()} VND
+                            </td>
+                          </tr>
+                        );
+                      }
+                    })}
                   </tbody>
                 </table>
 
