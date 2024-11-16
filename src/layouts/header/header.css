@@ -224,3 +224,28 @@
     opacity: 1;
   }
 }
+
+.dropdown-item.special-item {
+  background-color: #C70025 !important;
+  color: white !important;
+  font-weight: bold !important;
+  padding: 15px !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dropdown-item.special-item::after {
+  content: "★";
+  margin-left: 5px;
+  font-size: 14px;
+}
+
+.dropdown-item.special-item:hover {
+  background-color: #a30020 !important;
+  color: #ffffff !important;
+  padding-left: 30px !important;
+  font-weight: bold !important;
+}

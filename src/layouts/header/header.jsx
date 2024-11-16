@@ -302,6 +302,15 @@ export const Header = () => {
             <div className="dropdown-menu">
               {showDropdown && (
                 <div className="row dropdown-row row-cols-4">
+                  <div className="dropdown-grid">
+                    <li
+                      className="dropdown-item special-item"
+                      onClick={() => navigate('/batches')}
+                    >
+                      Lô Cá 
+                    </li>
+                  </div>
+
                   {listProducts.map((product) => (
                     <div className="dropdown-grid" key={product.id}>
                       <li
