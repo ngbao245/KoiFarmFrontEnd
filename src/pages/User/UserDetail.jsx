@@ -87,7 +87,7 @@ const UserDetail = () => {
           setPayments(paymentsResponse.data?.data || []);
         } else {
           const paymentsResponse = await fetchAllPayment();
-          setPayments(paymentsResponse.data || []);
+          setPayments(paymentsResponse?.data?.data || paymentsResponse?.data || []);
           const ordersResponse = await getOrderByUser();
           const allOrders = Array.isArray(ordersResponse.data)
             ? ordersResponse.data
@@ -317,6 +317,10 @@ const UserDetail = () => {
       console.error("Error creating payment URL:", error);
       toast.error("Lỗi tạo URL thanh toán.");
     }
+  };
+
+  const isOrderPaid = (orderId) => {
+    return Array.isArray(payments) && payments.some(payment => payment?.orderId === orderId);
   };
 
   if (!user.auth) {
@@ -648,7 +652,7 @@ const UserDetail = () => {
                         </td>
                         {["Pending", "Delivering"].includes(activeTab) && (
                           <td>
-                            {payments.some((payment) => payment.orderId === order.orderId) ? "VNPAY" : "COD"}
+                            {isOrderPaid(order.orderId) ? "VNPAY" : "COD"}
                           </td>
                         )}
                         <td>
@@ -663,7 +667,7 @@ const UserDetail = () => {
                           </span>
                         </td>
                         <td>
-                          {payments.some((payment) => payment.orderId === order.orderId) ? (
+                          {isOrderPaid(order.orderId) ? (
                             <span style={{ color: "green" }}>✓</span>
                           ) : (
                             <span style={{ color: "red" }}>✕</span>
