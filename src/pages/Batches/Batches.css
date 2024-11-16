@@ -40,14 +40,14 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.batch-item-image-wrapper {
+.batches-item-image-wrapper {
   position: relative;
   padding-top: 75%;
   width: 100%;
   overflow: hidden;
 }
 
-.batch-item-image {
+.batches-item-image {
   position: absolute;
   top: 0;
   left: 0;
@@ -58,7 +58,7 @@
   transition: transform 0.3s ease;
 }
 
-.batch-item-card:hover .batch-item-image {
+.batch-item-card:hover .batches-item-image {
   transform: scale(1.05);
 }
 

@@ -55,11 +55,11 @@ const Batches = () => {
             <div className="batch-items-grid">
               {batches.map((batch) => (
                 <div key={batch.id} className="batch-item-card">
-                  <div className="batch-item-image-wrapper">
+                  <div className="batches-item-image-wrapper">
                     <img
                       src={batch.imageUrl || "default-batch-image.jpg"}
                       alt={batch.name}
-                      className="batch-item-image"
+                      className="batches-item-image"
                     />
                   </div>
                   <div className="batch-item-content">
