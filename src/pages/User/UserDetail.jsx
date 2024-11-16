@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import HintBox from "../../components/HintBox";
 import { createPayment } from "../../services/PaymentService";
-
+import { fetchBatchById } from "../../services/BatchService";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -47,6 +47,8 @@ const UserDetail = () => {
   const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false);
 
   const [showCheckoutHint, setShowCheckoutHint] = useState(false);
+
+  const [batchDetails, setBatchDetails] = useState({});
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -94,7 +96,7 @@ const UserDetail = () => {
           const sortedOrders = allOrders.sort(
             (a, b) => new Date(b.createdTime) - new Date(a.createdTime)
           );
-          // Filter out orders that contain a consignmentId
+
           const nonConsignmentOrders = sortedOrders.filter(
             (order) => !order.consignmentId
           );
@@ -119,7 +121,32 @@ const UserDetail = () => {
               names[response.id] = response.name || "Unknown Product";
             }
           });
+
+          // Fetch batch details for items with batchId
+          const uniqueBatchIds = [
+            ...new Set(
+              nonConsignmentOrders.flatMap((order) =>
+                order.items
+                  .filter((item) => item.batchId)
+                  .map((item) => item.batchId)
+              )
+            ),
+          ];
+
+          const batchDetailPromises = uniqueBatchIds.map((id) =>
+            fetchBatchById(id)
+          );
+          const batchDetailsResponses = await Promise.all(batchDetailPromises);
+
+          const batchDetails = {};
+          batchDetailsResponses.forEach((response) => {
+            if (response?.data?.id) {
+              batchDetails[response.data.id] = response.data;
+            }
+          });
+
           setProductNames(names);
+          setBatchDetails(batchDetails);
         }
 
         setLoading(false);
@@ -134,6 +161,7 @@ const UserDetail = () => {
       fetchData();
     }
   }, [user, isPaymentPage]);
+
 
   const handleNavigateToPayments = () => {
     navigate(`/${id}/payments`);
@@ -278,7 +306,7 @@ const UserDetail = () => {
         name: "Your Name", // Optionally customize with user name
         orderId: orderId,  // Use the existing failed order's ID
       });
-  
+
       // Redirect to the generated payment URL
       if (paymentResponse && paymentResponse.data) {
         window.location.href = paymentResponse.data;
@@ -562,15 +590,48 @@ const UserDetail = () => {
                     {filterOrdersByStatus(activeTab).map((order) => (
                       <tr key={order.orderId}>
                         <td>{order.orderId}</td>
+                        
                         <td>
-                          {order.items.map((item, index) => (
-                            <div key={`${item.productItemId}-${index}`}>
-                              {productNames[item.productItemId] ||
-                                `Product ${item.productItemId}`}{" "}
-                              x {item.quantity}
-                            </div>
-                          ))}
+                          {(() => {
+                            // Group items by batchId
+                            const groupedItems = order.items.reduce((acc, item) => {
+                              if (item.batchId) {
+                                if (!acc[item.batchId]) {
+                                  acc[item.batchId] = { batchId: item.batchId, items: [] };
+                                }
+                                acc[item.batchId].items.push(item);
+                              } else {
+                                acc[item.productItemId] = { ...item, isIndividual: true };
+                              }
+                              return acc;
+                            }, {});
+
+                            return Object.values(groupedItems).map((group, index) =>
+                              group.isIndividual ? (
+                                // Individual item
+                                <div key={`${group.productItemId}-${index}`}>
+                                  {productNames[group.productItemId] || `Product ${group.productItemId}`}{" "}
+                                  x {group.quantity}
+                                </div>
+                              ) : (
+                                // Batch group
+                                <div key={`batch-${group.batchId}-${index}`}>
+                                  <strong>
+                                    {batchDetails[group.batchId]?.name || `Batch ${group.batchId}`}
+                                  </strong>
+                                  <ul>
+                                    {batchDetails[group.batchId]?.items.map((batchItem, idx) => (
+                                      <li key={`${batchItem.batchItemId}-${idx}`}>
+                                        {batchItem.name}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )
+                            );
+                          })()}
                         </td>
+
                         <td>{order.total.toLocaleString("vi-VN")} VND</td>
                         <td>
                           {new Date(order.createdTime).toLocaleDateString(
