@@ -6,7 +6,7 @@ import {
   deleteProductCertificate,
   getCertificateById,
 } from "../services/CertificateService";
-import { fetchAllProdItem } from "../services/ProductItemService";
+import { fetchAllProdItem, getNameOfProdItem } from "../services/ProductItemService";
 import FishSpinner from "./FishSpinner";
 
 const ModalProductCertificate = ({
@@ -32,7 +32,19 @@ const ModalProductCertificate = ({
       setIsLoadingProducts(true);
       const response = await getCertificateById(certificateData.certificateId);
       if (response?.statusCode === 200 && response?.data) {
-        setCertificateDetails(response.data);
+        const productCertificates = await Promise.all(
+          response.data.productCertificates.map(async (pc) => {
+            const productName = await getNameOfProdItem(pc.productItemId);
+            return {
+              ...pc,
+              productName: productName?.name,
+            };
+          })
+        );
+        setCertificateDetails({
+          ...response.data,
+          productCertificates,
+        });
       }
     } catch (error) {
       console.error("Error fetching certificate details:", error);
@@ -171,6 +183,7 @@ const ModalProductCertificate = ({
               <thead>
                 <tr>
                   <th>ID</th>
+                  <th>Tên sản phẩm</th>
                   <th>Nhà cung cấp</th>
                   <th>Ngày phát hành</th>
                   <th>Thao tác</th>
@@ -181,6 +194,7 @@ const ModalProductCertificate = ({
                   certificateDetails.productCertificates.map((pc) => (
                     <tr key={pc.id}>
                       <td>{pc.id}</td>
+                      <td>{pc.productName || "N/A"}</td>
                       <td>{pc.provider}</td>
                       <td>
                         {new Date(pc.publishDate).toLocaleString("vi-VN", {

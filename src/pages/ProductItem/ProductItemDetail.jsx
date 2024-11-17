@@ -8,11 +8,30 @@ import { toast } from "react-toastify";
 import Reviews from "../../components/ReviewSection";
 import { getUserInfo } from "../../services/UserService";
 import FishSpinner from "../../components/FishSpinner";
+import { getCertificateByProductItem } from "../../services/CertificateService";
 
 const ProductItemDetail = () => {
   const { id } = useParams();
   const [productItem, setProductItem] = useState(null);
   const navigate = useNavigate();
+  const [certificates, setCertificates] = useState([]);
+  const [isLoadingCertificates, setIsLoadingCertificates] = useState(false);
+
+
+  const fetchCertificates = async (productItemId) => {
+    try {
+      setIsLoadingCertificates(true);
+      const response = await getCertificateByProductItem(productItemId);
+      if (response.data) {
+        setCertificates(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching certificates:", error);
+      toast.error("Không thể tải danh sách chứng chỉ.");
+    } finally {
+      setIsLoadingCertificates(false);
+    }
+  };
 
   useEffect(() => {
     const fetchProductItem = async () => {
@@ -20,6 +39,7 @@ const ProductItemDetail = () => {
         const response = await getProdItemById(id);
         if (response.data.type === "Approved") {
           setProductItem(response.data);
+          fetchCertificates(id);
         } else {
           navigate("/*");
         }
@@ -35,6 +55,8 @@ const ProductItemDetail = () => {
   if (!productItem) {
     return <FishSpinner />;
   }
+
+
 
   const handleAddToCart = async (quantity, itemId) => {
     const token = localStorage.getItem("token");
@@ -154,6 +176,34 @@ const ProductItemDetail = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      <div style={{ margin: "50px" }}>
+        <h2>Chứng chỉ liên quan</h2>
+        {isLoadingCertificates ? (
+          <FishSpinner />
+        ) : certificates.length > 0 ? (
+          <ul>
+            {certificates.map((cert) => (
+              <li key={cert.certificateId} style={{ marginBottom: "20px" }}>
+                <strong>Tên chứng chỉ:</strong> {cert.certificateName} <br />
+                <strong>Nhà cung cấp:</strong> {cert.provider} <br />
+                <strong>Ngày phát hành:</strong>{" "}
+                {new Date(cert.createdTime).toLocaleDateString("vi-VN")} <br />
+                <strong>Hình ảnh:</strong>
+                <div>
+                  <img
+                    src={cert.imageUrl}
+                    alt={cert.certificateName}
+                    style={{ width: "200px", borderRadius: "8px", marginTop: "10px" }}
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Không có chứng chỉ nào được liên kết với sản phẩm này.</p>
+        )}
       </div>
 
       <Reviews productItemId={id} />
