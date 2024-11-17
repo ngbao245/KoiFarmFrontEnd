@@ -132,8 +132,8 @@ const ModalAddProductItem = ({ isOpen, onClose, onSubmit, setIsUploading }) => {
                 <label htmlFor="category">Danh Mục:</label>
                 <input id="category" name="category" value={formData.category} onChange={handleChange} required />
 
-                <label htmlFor="quantity">Số Lượng:</label>
-                <input id="quantity" type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
+                {/* <label htmlFor="quantity">Số Lượng:</label>
+                <input id="quantity" type="number" name="quantity" value={formData.quantity} onChange={handleChange} required /> */}
 
                 <label htmlFor="productId">Sản Phẩm:</label>
                 <select id="productId" name="productId" value={formData.productId} onChange={handleChange} required>
