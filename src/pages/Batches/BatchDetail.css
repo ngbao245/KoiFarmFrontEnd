@@ -49,7 +49,7 @@
 
 .batch-main-image {
   width: 100%;
-  height: 500px;
+  height: 400px;
   overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -58,27 +58,51 @@
 .batch-main-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background-color: #f8f9fa;
 }
 
 .batch-info {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.batch-info-content {
+  flex-grow: 1;
 }
 
 .batch-info h2 {
   color: #281713;
   margin-bottom: 20px;
+  font-size: 24px;
 }
 
-.batch-info ul {
+.batch-info-list {
   list-style: none;
   padding: 0;
+  margin-bottom: 20px;
 }
 
-.batch-info ul li {
+.batch-info-item {
   margin-bottom: 15px;
   font-size: 16px;
   color: #666;
+  display: flex;
+  align-items: flex-start;
+}
+
+.batch-info-label {
+  font-weight: 600;
+  min-width: 120px;
+  color: #281713;
+}
+
+.batch-info-value {
+  flex: 1;
+  line-height: 1.5;
 }
 
 .batch-fish-section {
@@ -543,4 +567,43 @@
 
 .body-no-scroll {
   overflow: hidden;
+}
+
+/* Style cho buttons container */
+.batch-action-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.quick-buy-btn, .add-cart-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.quick-buy-btn {
+  background-color: #C70025;
+  color: white;
+}
+
+.quick-buy-btn:hover {
+  background-color: #a30018;
+  transform: translateY(-2px);
+}
+
+.add-cart-btn {
+  background-color: #0056b3;
+  color: white;
+}
+
+.add-cart-btn:hover {
+  background-color: #004494;
+  transform: translateY(-2px);
 } 

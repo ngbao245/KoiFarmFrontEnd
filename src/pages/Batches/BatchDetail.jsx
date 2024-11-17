@@ -253,36 +253,31 @@ const BatchDetail = () => {
                 />
               </div>
               <div className="batch-info">
-                <h2>Thông tin lô</h2>
-                <ul>
-                  <li>Số lượng cá: {fishList.length}</li>
-                  <li>Mô tả: {batch.description || "Không có mô tả"}</li>
-                </ul>
-                <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                <div className="batch-info-content">
+                  <h2>Thông tin lô</h2>
+                  <ul className="batch-info-list">
+                    <li className="batch-info-item">
+                      <span className="batch-info-label">Số lượng cá:</span>
+                      <span className="batch-info-value">{fishList.length}</span>
+                    </li>
+                    <li className="batch-info-item">
+                      <span className="batch-info-label">Mô tả:</span>
+                      <span className="batch-info-value">
+                        {batch.description || "Không có mô tả"}
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="batch-action-buttons">
                   <button
-                    style={{
-                      marginTop: "50px",
-                      padding: "10px",
-                      backgroundColor: "#C70025",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                    }}
+                    className="quick-buy-btn"
                     onClick={handleQuickBuy}
                   >
                     Đặt Mua Nhanh
                   </button>
                   <button
-                    style={{
-                      marginTop: "50px",
-                      padding: "10px",
-                      backgroundColor: "#0056b3",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                    }}
+                    className="add-cart-btn"
                     onClick={handleAddToCart}
                   >
                     Thêm vào Giỏ
