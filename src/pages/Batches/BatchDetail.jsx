@@ -22,15 +22,23 @@ const BatchDetail = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch batch details
         const batchResponse = await fetchBatchById(id);
         if (batchResponse.data) {
+          const allItemsSoldOut = batchResponse.data.items.every(item => item.quantity === 0);
+          
+          if (allItemsSoldOut) {
+            toast.error("Lô hàng này đã hết hàng");
+            navigate(-1); 
+            return;
+          }
+
           setBatch(batchResponse.data);
 
-          // Fetch fish in batch
           const fishResponse = await getProdItemByBatch(id);
           if (fishResponse.data) {
-            const approvedFish = fishResponse.data.filter(fish => fish.type === "Approved");
+            const approvedFish = fishResponse.data.filter(fish => 
+              fish.type === "Approved" && fish.quantity > 0
+            );
             setFishList(approvedFish);
             if (approvedFish.length > 0) {
               setSelectedFish(approvedFish[0]);

@@ -73,8 +73,14 @@ const ProductItem = () => {
           ) : (
             <div className="koi-items-grid">
               {approvedItems.map((item) => (
-                <div key={item.id} className="koi-item-card">
+                <div 
+                  key={item.id} 
+                  className={`koi-item-card ${item.quantity === 0 ? 'sold-out' : ''}`}
+                >
                   <div className="koi-item-image-wrapper">
+                    {item.quantity === 0 && (
+                      <span className="koi-sold-out-label">Hết hàng</span>
+                    )}
                     <img
                       src={item.imageUrl}
                       alt={item.name}

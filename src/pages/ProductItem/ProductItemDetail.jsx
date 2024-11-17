@@ -37,11 +37,12 @@ const ProductItemDetail = () => {
     const fetchProductItem = async () => {
       try {
         const response = await getProdItemById(id);
-        if (response.data.type === "Approved") {
+        if (response.data.type === "Approved" && response.data.quantity > 0) {
           setProductItem(response.data);
           fetchCertificates(id);
         } else {
-          navigate("/*");
+          toast.error("Sản phẩm này đã hết hàng");
+          navigate(-1);
         }
       } catch (error) {
         console.error("Error fetching product:", error);
