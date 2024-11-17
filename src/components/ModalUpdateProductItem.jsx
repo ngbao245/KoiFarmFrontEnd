@@ -129,7 +129,7 @@ const ModalUpdateProductItem = ({ isOpen, onClose, onSubmit, productData, setIsU
                 <input id="category" name="category" value={formData.category} onChange={handleChange} required />
 
                 <label htmlFor="quantity">Số Lượng:</label>
-                <input id="quantity" type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
+                <input id="quantity" type="number" name="quantity" value={formData.quantity} readOnly />
 
                 <label htmlFor="productId">Sản Phẩm:</label>
                 <select id="productId" name="productId" value={formData.productId} onChange={handleChange} required>

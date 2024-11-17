@@ -19,7 +19,7 @@ const AdminProduct = () => {
   const [fetchAgain, setFetchAgain] = useState(false);
 
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
 
   const [isUploading, setIsUploading] = useState(false);
