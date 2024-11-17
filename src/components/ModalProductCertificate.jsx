@@ -20,6 +20,8 @@ const ModalProductCertificate = ({
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const [certificateDetails, setCertificateDetails] = useState(null);
 
+  const [provider, setProvider] = useState("");
+
   useEffect(() => {
     if (isOpen && certificateData?.certificateId) {
       fetchCertificateDetails();
@@ -81,12 +83,14 @@ const ModalProductCertificate = ({
       const data = {
         certificateId: certificateData.certificateId,
         productItemId: productId.toString(),
+        provider: provider.trim() || "N/A",
       };
 
       const response = await addProductCertificate(data);
       if (response?.data) {
         toast.success("Thêm sản phẩm vào chứng chỉ thành công!");
         setProductId("");
+        setProvider("");
         fetchCertificateDetails();
       }
     } catch (error) {
@@ -164,6 +168,18 @@ const ModalProductCertificate = ({
               ))}
             </select>
           </div>
+
+          <div className="mb-3">
+            <label className="form-label">Nhập nhà cung cấp</label>
+            <input
+              type="text"
+              className="form-control"
+              value={provider}
+              onChange={(e) => setProvider(e.target.value)}
+              placeholder="Nhập nhà cung cấp"
+            />
+          </div>
+
           <button
             type="submit"
             className="btn btn-primary"
