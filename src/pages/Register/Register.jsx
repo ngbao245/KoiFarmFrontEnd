@@ -32,6 +32,21 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.Email)) {
+      toast.error("Email không hợp lệ!");
+      return;
+    }
+
+    // Phone validation: Must start with 0 and have 10 or 11 digits
+    const phoneRegex = /^0\d{9,10}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("Số điện thoại không hợp lệ! Số điện thoại phải bắt đầu bằng 0 và có 10 hoặc 11 chữ số.");
+      return;
+    }
+
     const trimmedFormData = Object.keys(formData).reduce((acc, key) => {
       acc[key] = ["password", "confirmPassword"].includes(key)
         ? formData[key]
@@ -78,10 +93,23 @@ const Register = () => {
     if (e.key === "Enter") {
       e.preventDefault();
 
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^0\d{9,10}$/;
+
       const emptyField = currentInputs.find((field) => !formData[field].trim());
 
       if (emptyField) {
         document.querySelector(`input[name="${emptyField}"]`).focus();
+        return;
+      }
+
+      if (currentInputs.includes("Email") && !emailRegex.test(formData.Email)) {
+        toast.error("Email không hợp lệ!");
+        return;
+      }
+  
+      if (currentInputs.includes("phone") && !phoneRegex.test(formData.phone)) {
+        toast.error("Số điện thoại không hợp lệ! Số điện thoại phải bắt đầu bằng 0 và có 10 hoặc 11 chữ số.");
         return;
       }
 
