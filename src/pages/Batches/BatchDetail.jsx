@@ -8,6 +8,7 @@ import FishSpinner from "../../components/FishSpinner";
 import { addBatchToCart } from "../../services/CartService";
 import { toast } from "react-toastify";
 import { getUserInfo } from "../../services/UserService";
+import { getCertificateByProductItem } from "../../services/CertificateService";
 import "./BatchDetail.css";
 
 const BatchDetail = () => {
@@ -17,6 +18,9 @@ const BatchDetail = () => {
   const [selectedFish, setSelectedFish] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [showFishModal, setShowFishModal] = useState(false);
+  const [selectedFishCertificates, setSelectedFishCertificates] = useState([]);
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,17 +105,132 @@ const BatchDetail = () => {
     }
   };
 
+  const fetchFishCertificates = async (fishId) => {
+    try {
+      const response = await getCertificateByProductItem(fishId);
+      if (response.data) {
+        setSelectedFishCertificates(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching certificates:", error);
+      toast.error("Không thể tải danh sách chứng chỉ.");
+    }
+  };
+
+  const handleFishSelect = async (fish) => {
+    setSelectedFish(fish);
+    await fetchFishCertificates(fish.id);
+  };
+
+  const handleViewFishDetail = () => {
+    setShowFishModal(true);
+  };
+
+  const CertificateModal = ({ certificates, onClose }) => {
+    useEffect(() => {
+      document.body.classList.add('body-no-scroll');
+      return () => {
+        document.body.classList.remove('body-no-scroll');
+      };
+    }, []);
+
+    return (
+      <div className="certificate-modal" onClick={onClose}>
+        <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2>Chứng chỉ sản phẩm</h2>
+            <button className="close-button" onClick={onClose}>&times;</button>
+          </div>
+          {certificates.length > 0 ? (
+            <ul className="certificates-list">
+              {certificates.map((cert) => (
+                <li key={cert.certificateId} className="certificate-item">
+                  <strong>Tên chứng chỉ:</strong> {cert.certificateName} <br />
+                  <strong>Nhà cung cấp:</strong> {cert.provider} <br />
+                  <strong>Ngày phát hành:</strong>{" "}
+                  {new Date(cert.createdTime).toLocaleDateString("vi-VN")} <br />
+                  <div>
+                    <img
+                      src={cert.imageUrl}
+                      alt={cert.certificateName}
+                      className="certificate-image"
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Không có chứng chỉ nào được liên kết với sản phẩm này.</p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const FishDetailModal = ({ fish, onClose }) => {
+    useEffect(() => {
+      document.body.classList.add('body-no-scroll');
+      return () => {
+        document.body.classList.remove('body-no-scroll');
+      };
+    }, []);
+
+    return (
+      <div className="fish-detail-modal" onClick={onClose}>
+        <div className="fish-modal-content" onClick={e => e.stopPropagation()}>
+          <div className="fish-modal-header">
+            <h2>{fish.name}</h2>
+            <button className="fish-close-button" onClick={onClose}>&times;</button>
+          </div>
+          <div className="fish-modal-body">
+            <div className="fish-modal-image">
+              <img src={fish.imageUrl} alt={fish.name} />
+            </div>
+            <div className="fish-modal-info">
+              <p className="fish-modal-price">
+                Giá: {fish.price?.toLocaleString("vi-VN")} VND
+              </p>
+              <ul>
+                <li>Giới tính: {fish.sex}</li>
+                <li>Tuổi: {fish.age} tuổi</li>
+                <li>Kích thước: {fish.size}</li>
+                <li>Giống: {fish.species}</li>
+                <li>Tính cách: {fish.personality}</li>
+                <li>Lượng thức ăn: {fish.foodAmount}</li>
+                <li>Nhiệt độ nước: {fish.waterTemp}</li>
+                <li>Độ cứng nước: {fish.mineralContent}</li>
+                <li>Độ pH: {fish.ph}</li>
+                <li>
+                  {selectedFishCertificates.length > 0 ? (
+                    <>
+                      Chứng chỉ:{" "}
+                      <button 
+                        className="view-certificate-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowCertificateModal(true);
+                        }}
+                      >
+                        Xem chi tiết {selectedFishCertificates.length > 0 ? `(${selectedFishCertificates.length})` : ''}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      Chứng chỉ: <span className="no-certificate">Không có chứng chỉ nào được liên kết với sản phẩm này</span>
+                    </>
+                  )}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (loading || !batch) {
     return <FishSpinner />;
   }
-
-  const handleFishSelect = (fish) => {
-    setSelectedFish(fish);
-  };
-
-  const handleViewFishDetail = (fishId) => {
-    navigate(`/koi/${batch.name.toLowerCase().replace(/\s+/g, "")}/${fishId}`);
-  };
 
   return (
     <>
@@ -226,6 +345,20 @@ const BatchDetail = () => {
         </div>
       </div>
       <Footer />
+      
+      {showFishModal && (
+        <FishDetailModal 
+          fish={selectedFish} 
+          onClose={() => setShowFishModal(false)} 
+        />
+      )}
+
+      {showCertificateModal && (
+        <CertificateModal 
+          certificates={selectedFishCertificates} 
+          onClose={() => setShowCertificateModal(false)} 
+        />
+      )}
     </>
   );
 };
