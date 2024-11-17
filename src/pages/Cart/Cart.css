@@ -59,7 +59,7 @@
   border-bottom: 2px solid #ddd;
 }
 
-.cart-table .product-image {
+.cart-table .cart-product-image {
   width: 100px;
   height: auto;
   border-radius: 6px;
@@ -249,7 +249,7 @@
   text-align: center;
 }
 
-.product-image {
+.cart-product-image {
   width: 80px;
   height: 80px;
   object-fit: cover;

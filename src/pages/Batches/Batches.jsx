@@ -53,34 +53,44 @@ const Batches = () => {
             </div>
           ) : (
             <div className="batch-items-grid">
-              {batches.map((batch) => (
-                <div key={batch.id} className="batch-item-card">
-                  <div className="batches-item-image-wrapper">
-                    <img
-                      src={batch.imageUrl || "default-batch-image.jpg"}
-                      alt={batch.name}
-                      className="batches-item-image"
-                    />
-                  </div>
-                  <div className="batch-item-content">
-                    <h3 className="batch-item-name">{batch.name}</h3>
-                    <p className="batch-item-price">
-                      {batch.price?.toLocaleString('vi-VN')} VND
-                    </p>
-                    <div className="batch-item-specs">
-                      <p>Số lượng cá: {batch.quantity || 0}</p>
+              {batches.map((batch) => {
+                const isSoldOut = batch.items.every(item => item.quantity === 0);
+                
+                return (
+                  <div 
+                    key={batch.id} 
+                    className={`batch-item-card ${isSoldOut ? 'sold-out' : ''}`}
+                  >
+                    <div className="batches-item-image-wrapper">
+                      {isSoldOut && (
+                        <span className="batch-sold-out-label">Hết hàng</span>
+                      )}
+                      <img
+                        src={batch.imageUrl}
+                        alt={batch.name}
+                        className="batches-item-image"
+                      />
                     </div>
-                    <div className="batch-item-actions">
-                      <button
-                        onClick={() => handleViewBatchDetails(batch.id)}
-                        className="batch-view-btn"
-                      >
-                        Xem chi tiết lô
-                      </button>
+                    <div className="batch-item-content">
+                      <h3 className="batch-item-name">{batch.name}</h3>
+                      <p className="batch-item-price">
+                        {batch.price?.toLocaleString('vi-VN')} VND
+                      </p>
+                      <div className="batch-item-specs">
+                        <p>Số lượng cá: {batch.quantity || 0}</p>
+                      </div>
+                      <div className="batch-item-actions">
+                        <button
+                          onClick={() => handleViewBatchDetails(batch.id)}
+                          className="batch-view-btn"
+                        >
+                          Xem chi tiết lô
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

@@ -276,7 +276,7 @@ const Cart = () => {
                                 <img
                                   src={item.batchImage}
                                   alt={item.name}
-                                  className="product-image"
+                                  className="cart-product-image"
                                 />
                               </td>
                               <td style={{ fontWeight: "bold" }}>
@@ -308,7 +308,7 @@ const Cart = () => {
                                         <img 
                                           src={batchItem.imageUrl || '/default-product.png'} 
                                           alt={batchItem.name}
-                                          className="product-image"
+                                          className="cart-product-image"
                                           onError={(e) => {
                                             e.target.onerror = null;
                                             e.target.src = "/default-product-image.png";
@@ -338,7 +338,7 @@ const Cart = () => {
                               <img
                                 src={item.imageUrl}
                                 alt={item.productName}
-                                className="product-image"
+                                className="cart-product-image"
                               />
                             </td>
                             <td style={{ fontWeight: "bold" }}>{item.productName}</td>
