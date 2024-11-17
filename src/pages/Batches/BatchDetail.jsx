@@ -52,8 +52,12 @@ const BatchDetail = () => {
 
   const handleAddToCart = async () => {
     try {
-      await addBatchToCart(batch.id);
-      toast.success(`Đã thêm ${batch.name} vào giỏ hàng`);
+      const response = await addBatchToCart(batch.id);
+      if (response.data && response.data.cartId) {
+        toast.success(`Đã thêm ${batch.name} vào giỏ hàng`);
+      } else {
+        toast.error("Sản phẩm đã hết hàng");
+      }
     } catch (error) {
       if (error.message.includes("No token")) {
         toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng của bạn");
@@ -66,15 +70,19 @@ const BatchDetail = () => {
 
   const handleQuickBuy = async () => {
     try {
-      await addBatchToCart(batch.id);
-      const userResponse = await getUserInfo();
-      const userData = userResponse.data;
+      const response = await addBatchToCart(batch.id);
+      if (response.data && response.data.cartId) {
+        const userResponse = await getUserInfo();
+        const userData = userResponse.data;
 
-      if (!userData.address || !userData.phone) {
-        navigate(`/${userData.id}/detail?fromCart=true`);
-        return;
+        if (!userData.address || !userData.phone) {
+          navigate(`/${userData.id}/detail?fromCart=true`);
+          return;
+        }
+        navigate("/order");
+      } else {
+        toast.error("Sản phẩm đã hết hàng");
       }
-      navigate("/order");
     } catch (error) {
       if (error.message.includes("No token")) {
         toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng của bạn");
@@ -126,7 +134,7 @@ const BatchDetail = () => {
                 <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
                   <button
                     style={{
-                      marginTop : "50px",
+                      marginTop: "50px",
                       padding: "10px",
                       backgroundColor: "#C70025",
                       color: "white",
@@ -140,7 +148,7 @@ const BatchDetail = () => {
                   </button>
                   <button
                     style={{
-                      marginTop : "50px",
+                      marginTop: "50px",
                       padding: "10px",
                       backgroundColor: "#0056b3",
                       color: "white",
