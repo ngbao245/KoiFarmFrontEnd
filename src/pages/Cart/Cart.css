@@ -59,7 +59,7 @@
   border-bottom: 2px solid #ddd;
 }
 
-.cart-table .product-image {
+.cart-table .cart-product-image {
   width: 100px;
   height: auto;
   border-radius: 6px;
@@ -67,47 +67,6 @@
 
 .price {
   color: #c70025;
-}
-
-.quantity-control {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.quantity-btn,
-.quantity-input {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  text-align: center;
-  width: 50px;
-  outline: none;
-}
-
-.quantity-btn {
-  font-size: larger;
-  background-color: var(--primary-red);
-}
-
-.quantity-btn:hover {
-  background-color: var(--primary-red-hover);
-}
-
-.quantity-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.quantity-input {
-  border: 0;
-  background-color: var(--primary-grey);
-}
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
 }
 
 .order-summary {
@@ -208,4 +167,92 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .shop-now-btn:hover {
   background-color: var(--primary-red-hover);
+}
+
+.quantity-display {
+  padding: 10px;
+  background-color: #f1f1f166;
+  border-radius: 4px;
+  text-align: center;
+  color: #666;
+}
+
+.batch-items {
+  overflow: hidden;
+  animation: slideDown 0.3s ease-out;
+}
+
+.batch-subitem {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f9fa;
+  gap: 20px;
+}
+
+.batch-subitem:last-child {
+  border-bottom: none;
+}
+
+.expand-button {
+  display: none;
+}
+
+.cart-table tr.batch-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cart-table tr.batch-row:hover {
+  background-color: #f8f9fa;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.batch-item-details {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 30px;
+}
+
+.batch-item-name {
+  font-weight: 500;
+  color: #333;
+  width: 200px;
+}
+
+.batch-item-specs {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.batch-item-specs span {
+  background-color: #f0f0f0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #666;
+  min-width: 120px;
+  text-align: center;
+}
+
+.cart-product-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

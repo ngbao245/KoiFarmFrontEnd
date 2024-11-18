@@ -8,20 +8,42 @@ import { toast } from "react-toastify";
 import Reviews from "../../components/ReviewSection";
 import { getUserInfo } from "../../services/UserService";
 import FishSpinner from "../../components/FishSpinner";
+import { getCertificateByProductItem } from "../../services/CertificateService";
+import './ProductItemDetail.css';
 
 const ProductItemDetail = () => {
   const { id } = useParams();
   const [productItem, setProductItem] = useState(null);
   const navigate = useNavigate();
+  const [certificates, setCertificates] = useState([]);
+  const [isLoadingCertificates, setIsLoadingCertificates] = useState(false);
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+
+  const fetchCertificates = async (productItemId) => {
+    try {
+      setIsLoadingCertificates(true);
+      const response = await getCertificateByProductItem(productItemId);
+      if (response.data) {
+        setCertificates(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching certificates:", error);
+      toast.error("Không thể tải danh sách chứng chỉ.");
+    } finally {
+      setIsLoadingCertificates(false);
+    }
+  };
 
   useEffect(() => {
     const fetchProductItem = async () => {
       try {
         const response = await getProdItemById(id);
-        if (response.data.type === "Approved") {
+        if (response.data.type === "Approved" && response.data.quantity > 0) {
           setProductItem(response.data);
+          fetchCertificates(id);
         } else {
-          navigate("/*");
+          toast.error("Sản phẩm này đã hết hàng");
+          navigate(-1);
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -83,6 +105,40 @@ const ProductItemDetail = () => {
     }
   };
 
+  const CertificateModal = ({ certificates, onClose }) => {
+    return (
+      <div className="certificate-modal" onClick={onClose}>
+        <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2>Chứng chỉ sản phẩm</h2>
+            <button className="close-button" onClick={onClose}>&times;</button>
+          </div>
+          {certificates.length > 0 ? (
+            <ul className="certificates-list">
+              {certificates.map((cert) => (
+                <li key={cert.certificateId} className="certificate-item">
+                  <strong>Tên chứng chỉ:</strong> {cert.certificateName} <br />
+                  <strong>Nhà cung cấp:</strong> {cert.provider} <br />
+                  <strong>Ngày phát hành:</strong>{" "}
+                  {new Date(cert.createdTime).toLocaleDateString("vi-VN")} <br />
+                  <div>
+                    <img
+                      src={cert.imageUrl}
+                      alt={cert.certificateName}
+                      className="certificate-image"
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Không có chứng chỉ nào được liên kết với sản phẩm này.</p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <Header />
@@ -122,6 +178,23 @@ const ProductItemDetail = () => {
             <li>Nhiệt độ nước: {productItem.waterTemp}</li>
             <li>Độ cứng nước: {productItem.mineralContent}</li>
             <li>Độ pH: {productItem.ph}</li>
+            <li>
+              {certificates.length > 0 ? (
+                <>
+                  Chứng chỉ:{" "}
+                  <button 
+                    className="view-certificate-btn"
+                    onClick={() => setShowCertificateModal(true)}
+                  >
+                    Xem chi tiết {certificates.length > 0 ? `(${certificates.length})` : ''}
+                  </button>
+                </>
+              ) : (
+                <>
+                  Chứng chỉ: <span className="no-certificate">Không có chứng chỉ nào được liên kết với sản phẩm này</span>
+                </>
+              )}
+            </li>
           </ul>
           <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
             <button
@@ -159,6 +232,13 @@ const ProductItemDetail = () => {
       <Reviews productItemId={id} />
 
       <Footer />
+
+      {showCertificateModal && (
+        <CertificateModal 
+          certificates={certificates} 
+          onClose={() => setShowCertificateModal(false)} 
+        />
+      )}
     </>
   );
 };

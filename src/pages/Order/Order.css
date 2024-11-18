@@ -56,6 +56,12 @@
   border-radius: 8px;
   padding: 1rem;
   border-bottom: 2px solid var(--primary-grey);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.order-item:hover {
+  background-color: #f8f9fa;
 }
 
 .order-product-image {
@@ -296,4 +302,57 @@
     min-width: unset;
     padding: 10px;
   }
+}
+
+/* Thêm styles mới cho batch details */
+.order-batch-items {
+  overflow: hidden;
+  animation: orderSlideDown 0.3s ease-out;
+}
+
+.order-batch-subitem {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f9fa;
+  gap: 20px;
+}
+
+.order-batch-subitem:last-child {
+  border-bottom: none;
+}
+
+.order-expand-button {
+  display: none;
+}
+
+.order-batch-item-details {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 30px;
+}
+
+.order-batch-item-name {
+  font-weight: 500;
+  color: #333;
+  width: 200px;
+}
+
+.order-batch-item-specs {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.order-batch-item-specs span {
+  background-color: #f0f0f0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #666;
+  min-width: 120px;
+  text-align: center;
 }

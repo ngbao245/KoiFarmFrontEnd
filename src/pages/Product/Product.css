@@ -135,6 +135,7 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.24s ease;
+  min-height: 200px;
 }
 
 .product-card:hover .product-image {
@@ -165,4 +166,14 @@
 
 .product-button:hover {
   background-color: #600;
+}
+
+.out-of-stock {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.out-of-stock .product-button {
+  background-color: #999;
+  cursor: not-allowed;
 }

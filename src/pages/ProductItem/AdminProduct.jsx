@@ -149,6 +149,7 @@ const AdminProduct = () => {
   };
 
   const filterProductsByStatus = (status) => {
+    console.log(listProductItems);
     return Array.isArray(listProductItems) 
       ? listProductItems.filter(item => 
           item.type === status &&
@@ -417,7 +418,7 @@ const AdminProduct = () => {
         </table>
       </div>
 
-      {activeTab === "Approved" && (
+      {/* {activeTab === "Approved" && ( */}
         <div className="pagination-controls text-center user-select-none">
           <button
             className="btn btn-secondary"
@@ -446,9 +447,13 @@ const AdminProduct = () => {
             <option value={10}>10</option>
             <option value={15}>15</option>
             <option value={20}>20</option>
+            <option value={25}>25</option>
+            <option value={30}>30</option>
+            <option value={50}>50</option>
+
           </select>
         </div>
-      )}
+      {/* )} */}
 
       <ModalAddProductItem
         isOpen={showModalAddProduct}

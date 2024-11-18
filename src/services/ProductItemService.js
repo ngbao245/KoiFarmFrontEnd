@@ -5,8 +5,8 @@ const fetchAllProdItem = (pageIndex, pageSize, searchQuery) => {
     params: {
       pageIndex: pageIndex,
       pageSize: pageSize,
-      searchQuery: searchQuery
-    }
+      searchQuery: searchQuery,
+    },
   });
 };
 
@@ -32,10 +32,10 @@ const createProdItem = (data) => {
   if (!token) {
     throw new Error("No token found! Please log in again.");
   }
-  return axios.post("ProductItem/create-product-item", data,{
-    headers:{
-      Authorization: `${token}`
-    }
+  return axios.post("ProductItem/create-product-item", data, {
+    headers: {
+      Authorization: `${token}`,
+    },
   });
 };
 
@@ -44,10 +44,10 @@ const updateProdItem = (id, data) => {
   if (!token) {
     throw new Error("No token found! Please log in again.");
   }
-  return axios.put(`ProductItem/update-product-item/${id}`, data,{
-    headers:{
-      Authorization: `${token}`
-    }
+  return axios.put(`ProductItem/update-product-item/${id}`, data, {
+    headers: {
+      Authorization: `${token}`,
+    },
   });
 };
 
@@ -56,10 +56,10 @@ const deleteProdItem = (id) => {
   if (!token) {
     throw new Error("No token found! Please log in again.");
   }
-  return axios.delete(`ProductItem/delete-product-item/${id}`,{
-    headers:{
-      Authorization: `${token}`
-    }
+  return axios.delete(`ProductItem/delete-product-item/${id}`, {
+    headers: {
+      Authorization: `${token}`,
+    },
   });
 };
 
@@ -68,13 +68,27 @@ const updateProdItemType = (id, data) => {
   if (!token) {
     throw new Error("No token found! Please log in again.");
   }
-  return axios.put(`ProductItem/update-product-item-type/${id}`,
-    { type: data },{
-      headers:{
-        Authorization: `${token}`
-      }
+  return axios.put(
+    `ProductItem/update-product-item-type/${id}`,
+    { type: data },
+    {
+      headers: {
+        Authorization: `${token}`,
+      },
     }
   );
+};
+
+const fetchAllBatchProdItems = () => {
+  return axios.get("ProductItem/get-all-batch-product-items");
+};
+
+const getBatchProdItem = (id) => {
+  return axios.get(`ProductItem/get-batch-product-item/${id}`);
+};
+
+const getProdItemByBatch = (batchId) => {
+  return axios.get(`ProductItem/get-product-item-by-batch/${batchId}`);
 };
 
 export {
@@ -87,4 +101,7 @@ export {
   deleteProdItem,
   getNameOfProdItem,
   updateProdItemType,
+  fetchAllBatchProdItems,
+  getBatchProdItem,
+  getProdItemByBatch,
 };

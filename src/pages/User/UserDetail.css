@@ -357,6 +357,11 @@
   color: var(--primary-white);
 }
 
+.user-order-badge.failed {
+  background-color: var(--primary-black);
+  color: var(--primary-white);
+}
+
 .user-auth-badge {
   padding: 5px 10px;
   border-radius: 20px;

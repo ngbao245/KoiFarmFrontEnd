@@ -14,6 +14,8 @@ import FishSpinner from "../../components/FishSpinner";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import HintBox from "../../components/HintBox";
+import { createPayment } from "../../services/PaymentService";
+import { fetchBatchById } from "../../services/BatchService";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -45,6 +47,8 @@ const UserDetail = () => {
   const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false);
 
   const [showCheckoutHint, setShowCheckoutHint] = useState(false);
+
+  const [batchDetails, setBatchDetails] = useState({});
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -82,6 +86,8 @@ const UserDetail = () => {
           const paymentsResponse = await fetchAllPayment();
           setPayments(paymentsResponse.data?.data || []);
         } else {
+          const paymentsResponse = await fetchAllPayment();
+          setPayments(paymentsResponse?.data?.data || paymentsResponse?.data || []);
           const ordersResponse = await getOrderByUser();
           const allOrders = Array.isArray(ordersResponse.data)
             ? ordersResponse.data
@@ -90,7 +96,7 @@ const UserDetail = () => {
           const sortedOrders = allOrders.sort(
             (a, b) => new Date(b.createdTime) - new Date(a.createdTime)
           );
-          // Filter out orders that contain a consignmentId
+
           const nonConsignmentOrders = sortedOrders.filter(
             (order) => !order.consignmentId
           );
@@ -115,7 +121,32 @@ const UserDetail = () => {
               names[response.id] = response.name || "Unknown Product";
             }
           });
+
+          // Fetch batch details for items with batchId
+          const uniqueBatchIds = [
+            ...new Set(
+              nonConsignmentOrders.flatMap((order) =>
+                order.items
+                  .filter((item) => item.batchId)
+                  .map((item) => item.batchId)
+              )
+            ),
+          ];
+
+          const batchDetailPromises = uniqueBatchIds.map((id) =>
+            fetchBatchById(id)
+          );
+          const batchDetailsResponses = await Promise.all(batchDetailPromises);
+
+          const batchDetails = {};
+          batchDetailsResponses.forEach((response) => {
+            if (response?.data?.id) {
+              batchDetails[response.data.id] = response.data;
+            }
+          });
+
           setProductNames(names);
+          setBatchDetails(batchDetails);
         }
 
         setLoading(false);
@@ -130,6 +161,7 @@ const UserDetail = () => {
       fetchData();
     }
   }, [user, isPaymentPage]);
+
 
   const handleNavigateToPayments = () => {
     navigate(`/${id}/payments`);
@@ -169,19 +201,19 @@ const UserDetail = () => {
 
       const response = await updateUserInfo(updatedUser);
       if (response.statusCode === 200) {
-        setUpdatedUser((prev) => ({ 
-          ...prev, 
+        setUpdatedUser((prev) => ({
+          ...prev,
           ...response.data?.data,
-          password: "" 
+          password: ""
         }));
         setEditMode(false);
         toast.success("Cập nhật thông tin thành công!");
 
         // Redirect to cart if coming from cart page and has address/phone
         const searchParams = new URLSearchParams(window.location.search);
-        if (searchParams.get("fromCart") === "true" && 
-            updatedUser.address?.trim() && 
-            updatedUser.phone?.trim()) {
+        if (searchParams.get("fromCart") === "true" &&
+          updatedUser.address?.trim() &&
+          updatedUser.phone?.trim()) {
           navigate("/cart");
         }
       }
@@ -263,6 +295,32 @@ const UserDetail = () => {
       setIsConfirmModalOpen(false);
       setOrderIdToCancel(null);
     }
+  };
+
+  const handleBuyAgain = async (orderId) => {
+    try {
+      // Create the payment URL using the failed order's ID
+      const paymentResponse = await createPayment({
+        orderDescription: "Thanh toán lại đơn hàng thất bại",
+        orderType: "billpayment",
+        name: "Your Name", // Optionally customize with user name
+        orderId: orderId,  // Use the existing failed order's ID
+      });
+
+      // Redirect to the generated payment URL
+      if (paymentResponse && paymentResponse.data) {
+        window.location.href = paymentResponse.data;
+      } else {
+        toast.error("Không thể tạo URL thanh toán.");
+      }
+    } catch (error) {
+      console.error("Error creating payment URL:", error);
+      toast.error("Lỗi tạo URL thanh toán.");
+    }
+  };
+
+  const isOrderPaid = (orderId) => {
+    return Array.isArray(payments) && payments.some(payment => payment?.orderId === orderId);
   };
 
   if (!user.auth) {
@@ -408,9 +466,8 @@ const UserDetail = () => {
                     <div className="user-info-item">
                       <strong>Trạng thái:</strong>
                       <div
-                        className={`user-auth-badge ${
-                          user.auth ? "verified" : "unverified"
-                        }`}
+                        className={`user-auth-badge ${user.auth ? "verified" : "unverified"
+                          }`}
                       >
                         {user.auth ? "Đã xác thực" : "Chưa xác thực"}
                       </div>
@@ -481,36 +538,39 @@ const UserDetail = () => {
               <>
                 <div className="order-tabs">
                   <button
-                    className={`order-tab-button ${
-                      activeTab === "Pending" ? "active" : ""
-                    }`}
+                    className={`order-tab-button ${activeTab === "Pending" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("Pending")}
                   >
                     Đang xử lý
                   </button>
                   <button
-                    className={`order-tab-button ${
-                      activeTab === "Delivering" ? "active" : ""
-                    }`}
+                    className={`order-tab-button ${activeTab === "Delivering" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("Delivering")}
                   >
                     Đang giao hàng
                   </button>
                   <button
-                    className={`order-tab-button ${
-                      activeTab === "Completed" ? "active" : ""
-                    }`}
+                    className={`order-tab-button ${activeTab === "Completed" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("Completed")}
                   >
                     Đã hoàn thành
                   </button>
                   <button
-                    className={`order-tab-button ${
-                      activeTab === "Cancelled" ? "active" : ""
-                    }`}
+                    className={`order-tab-button ${activeTab === "Cancelled" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("Cancelled")}
                   >
                     Đã hủy
+                  </button>
+                  <button
+                    className={`order-tab-button ${activeTab === "Failed" ? "active" : ""
+                      }`}
+                    onClick={() => setActiveTab("Failed")}
+                  >
+                    Thất bại
                   </button>
                 </div>
 
@@ -521,24 +581,61 @@ const UserDetail = () => {
                       <th>Sản Phẩm</th>
                       <th>Tổng Tiền</th>
                       <th>Ngày Mua</th>
+                      {["Pending", "Delivering"].includes(activeTab) && <th>Hình thức</th>}
                       <th>Trạng Thái</th>
+                      <th>Tình trạng thanh toán</th>
                       {activeTab === "Completed" && <th>Xác Nhận Hàng</th>}
-                      {activeTab === "Pending" && <th>Hủy Đơn Hàng</th>}
+                      {(activeTab === "Pending" || activeTab === "Failed") && <th>Hủy Đơn Hàng</th>}
+                      {activeTab === "Failed" && <th>Mua lại</th>}
+
                     </tr>
                   </thead>
                   <tbody>
                     {filterOrdersByStatus(activeTab).map((order) => (
                       <tr key={order.orderId}>
                         <td>{order.orderId}</td>
+                        
                         <td>
-                          {order.items.map((item, index) => (
-                            <div key={`${item.productItemId}-${index}`}>
-                              {productNames[item.productItemId] ||
-                                `Product ${item.productItemId}`}{" "}
-                              x {item.quantity}
-                            </div>
-                          ))}
+                          {(() => {
+                            // Group items by batchId
+                            const groupedItems = order.items.reduce((acc, item) => {
+                              if (item.batchId) {
+                                if (!acc[item.batchId]) {
+                                  acc[item.batchId] = { batchId: item.batchId, items: [] };
+                                }
+                                acc[item.batchId].items.push(item);
+                              } else {
+                                acc[item.productItemId] = { ...item, isIndividual: true };
+                              }
+                              return acc;
+                            }, {});
+
+                            return Object.values(groupedItems).map((group, index) =>
+                              group.isIndividual ? (
+                                // Individual item
+                                <div key={`${group.productItemId}-${index}`}>
+                                  {productNames[group.productItemId] || `Product ${group.productItemId}`}{" "}
+                                  x {group.quantity}
+                                </div>
+                              ) : (
+                                // Batch group
+                                <div key={`batch-${group.batchId}-${index}`}>
+                                  <strong>
+                                    {batchDetails[group.batchId]?.name || `Batch ${group.batchId}`}
+                                  </strong>
+                                  <ul>
+                                    {batchDetails[group.batchId]?.items.map((batchItem, idx) => (
+                                      <li key={`${batchItem.batchItemId}-${idx}`}>
+                                        {batchItem.name}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )
+                            );
+                          })()}
                         </td>
+
                         <td>{order.total.toLocaleString("vi-VN")} VND</td>
                         <td>
                           {new Date(order.createdTime).toLocaleDateString(
@@ -553,6 +650,11 @@ const UserDetail = () => {
                             }
                           )}
                         </td>
+                        {["Pending", "Delivering"].includes(activeTab) && (
+                          <td>
+                            {isOrderPaid(order.orderId) ? "VNPAY" : "COD"}
+                          </td>
+                        )}
                         <td>
                           <span
                             className={`user-order-badge ${order.status.toLowerCase()}`}
@@ -561,7 +663,15 @@ const UserDetail = () => {
                             {order.status === "Delivering" && "Đang giao"}
                             {order.status === "Completed" && "Hoàn thành"}
                             {order.status === "Cancelled" && "Đã hủy"}
+                            {order.status === "Failed" && "Thất bại"}
                           </span>
+                        </td>
+                        <td>
+                          {isOrderPaid(order.orderId) ? (
+                            <span style={{ color: "green" }}>✓</span>
+                          ) : (
+                            <span style={{ color: "red" }}>✕</span>
+                          )}
                         </td>
                         {activeTab === "Completed" && (
                           <td>
@@ -583,13 +693,23 @@ const UserDetail = () => {
                             )}
                           </td>
                         )}
-                        {activeTab === "Pending" && (
+                        {(activeTab === "Pending" || activeTab === "Failed") && (
                           <td>
                             <button
                               className="btn btn-danger"
                               onClick={() => handleCancelOrder(order.orderId)}
                             >
                               Hủy đơn hàng
+                            </button>
+                          </td>
+                        )}
+                        {activeTab === "Failed" && (
+                          <td>
+                            <button
+                              className="btn btn-success"
+                              onClick={() => handleBuyAgain(order.orderId)}
+                            >
+                              Mua lại
                             </button>
                           </td>
                         )}

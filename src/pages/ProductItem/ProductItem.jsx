@@ -11,8 +11,9 @@ const ProductItem = () => {
 
   const navigate = useNavigate();
 
-  const approvedItems =
-    productItems?.filter((item) => item.type === "Approved") || [];
+  const approvedItems = Array.isArray(productItems) 
+    ? productItems.filter((item) => item.type === "Approved")
+    : [];
 
   const handleViewDetails = (productId) => {
     navigate(
@@ -49,15 +50,22 @@ const ProductItem = () => {
     <>
       <Header />
       <div className="koi-product-page">
-        <div className="koi-product-container animated">
-          <h1 className="koi-product-heading">Danh sách {productName}</h1>
+        <div className="koi-product-container animated user-select-none">
+          {approvedItems && approvedItems.length > 0 && (
+            <h1 className="koi-product-heading">Danh sách {productName}</h1>
+          )}
           
           {(!approvedItems || approvedItems.length === 0) ? (
-            <div className="koi-empty-state">
-              <h2>Không tìm thấy sản phẩm nào</h2>
+            <div className="koi-empty-state-container">
+              <div className="koi-empty-state-icon">🎏</div>
+              <h2 className="koi-empty-state-heading">Không tìm thấy sản phẩm nào</h2>
+              <p className="koi-empty-state-message">
+                Hiện tại không có sản phẩm nào trong danh mục này. 
+                Vui lòng quay lại sau hoặc khám phá các sản phẩm khác.
+              </p>
               <button 
                 onClick={() => navigate('/')}
-                className="koi-back-home-btn"
+                className="koi-empty-state-button"
               >
                 Quay về trang chủ
               </button>
@@ -65,8 +73,14 @@ const ProductItem = () => {
           ) : (
             <div className="koi-items-grid">
               {approvedItems.map((item) => (
-                <div key={item.id} className="koi-item-card">
+                <div 
+                  key={item.id} 
+                  className={`koi-item-card ${item.quantity === 0 ? 'sold-out' : ''}`}
+                >
                   <div className="koi-item-image-wrapper">
+                    {item.quantity === 0 && (
+                      <span className="koi-sold-out-label">Hết hàng</span>
+                    )}
                     <img
                       src={item.imageUrl}
                       alt={item.name}

@@ -8,6 +8,10 @@ const getCertificateById = (id) => {
   return axios.get(`Certificate/certificate/${id}`);
 };
 
+const getCertificateByProductItem = (productItemId) => {
+  return axios.get(`Certificate/get-certificates-by-productItem/${productItemId}`);
+};
+
 const createCertificate = (data) => {
   const token = localStorage.getItem("token");
 
@@ -110,4 +114,5 @@ export {
   addProductCertificate,
   updateProductCertificate,
   deleteProductCertificate,
+  getCertificateByProductItem,
 };

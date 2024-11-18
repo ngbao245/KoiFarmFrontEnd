@@ -33,6 +33,9 @@ import ResetPassword from "../pages/ForgotPassword/ResetPassword.jsx";
 import ProductComparison from "../pages/ProductItemComparison/ProductComparison.jsx";
 import AdminConsignment from "../pages/Consignment/AdminConsignment.jsx";
 import AdminPromotion from "../pages/Promotion/AdminPromotion.jsx";
+import AdminBatch from "../pages/Batch/AdminBatch.jsx";
+import Batches from "../pages/Batches/Batches.jsx";
+import BatchDetail from "../pages/Batches/BatchDetail.jsx";
 
 const AppRoutes = () => {
   return (
@@ -57,12 +60,17 @@ const AppRoutes = () => {
         <Route path="/admin-consignment" element={<AdminConsignment />} />
         <Route path="/admin-order" element={<AdminOrder />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/admin-promotion" element={<AdminPromotion />} />
+        <Route path="/admin-batch" element={<AdminBatch />} />
 
         <Route path="/product" element={<Product />} />
 
         <Route path="/koi/:productName" element={<ProductItem />} />
         <Route path="/koi/:productName/:id" element={<ProductItemDetail />} />
         <Route path="/product-item-search" element={<ProductItemSearch />} />
+
+        <Route path="/batches" element={<Batches />} />
+        <Route path="/batches/:id" element={<BatchDetail />} />
 
         <Route path="/cart" element={<Cart />} />
         <Route path="order" element={<Order />} />
@@ -77,13 +85,10 @@ const AppRoutes = () => {
         <Route path="/consignment" element={<Consignment />} />
         <Route path="/user-consignment" element={<UserConsignment />} />
 
-        <Route path="/forgot-password" element={<ForgotPassword/>} />
-        <Route path="/reset-password" element={<ResetPassword/>} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
-        <Route path="/productItem-comparison" element={<ProductComparison/>} />
-
-        <Route path="/admin-promotion" element={<AdminPromotion/>} />
-
+        <Route path="/productItem-comparison" element={<ProductComparison />} />
 
 
         <Route path="*" element={<NotFoundRoute />} />

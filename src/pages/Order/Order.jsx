@@ -6,6 +6,8 @@ import { createPayment } from "../../services/PaymentService";
 import { useNavigate } from "react-router-dom";
 import { getProdItemById } from "../../services/ProductItemService";
 import { fetchPromotionByCode } from "../../services/PromotionService";
+import { fetchBatchById } from "../../services/BatchService";
+import { getProdItemByBatch } from "../../services/ProductItemService";
 import "./Order.css";
 
 const Order = () => {
@@ -21,37 +23,97 @@ const Order = () => {
   const [messageColor, setMessageColor] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
 
+  const [expandedBatches, setExpandedBatches] = useState([]);
+
   useEffect(() => {
     const fetchCartData = async () => {
       try {
         const cartResponse = await getCart();
-        setCartData(cartResponse.data);
+        const { items } = cartResponse.data;
 
-        if (cartResponse.data?.items) {
-          const updatedItems = await Promise.all(
-            cartResponse.data.items.map(async (item) => {
+        // Group items by batchId
+        const groupedItems = items.reduce((acc, item) => {
+          if (item.batchId) {
+            if (!acc[item.batchId]) acc[item.batchId] = [];
+            acc[item.batchId].push(item);
+          } else {
+            acc[item.productItemId] = [item];
+          }
+          return acc;
+        }, {});
+
+        const updatedItems = await Promise.all(
+          Object.entries(groupedItems).map(async ([key, group]) => {
+            if (group[0].batchId) {
               try {
-                const productResponse = await getProdItemById(
-                  item.productItemId
+                // Fetch batch details
+                const batchResponse = await fetchBatchById(group[0].batchId);
+                // Fetch product items in batch
+                const batchItemsResponse = await getProdItemByBatch(group[0].batchId);
+                
+                // Map batch items with their details
+                const batchItemsWithDetails = await Promise.all(
+                  batchItemsResponse.data.map(async (item) => {
+                    try {
+                      const productResponse = await getProdItemById(item.id);
+                      return {
+                        productItemId: item.id,
+                        name: item.name || 'Unknown',
+                        imageUrl: item.imageUrl || productResponse.data?.imageUrl || '/default-product-image.png',
+                        sex: item.sex || 'N/A',
+                        age: item.age || 'N/A',
+                        size: item.size || 'N/A',
+                        quantity: 1
+                      };
+                    } catch (error) {
+                      console.error(`Error fetching product details for ${item.id}:`, error);
+                      return {
+                        productItemId: item.id,
+                        name: item.name || 'Unknown',
+                        imageUrl: item.imageUrl || '/default-product-image.png',
+                        sex: item.sex || 'N/A',
+                        age: item.age || 'N/A',
+                        size: item.size || 'N/A',
+                        quantity: 1
+                      };
+                    }
+                  })
                 );
+
                 return {
-                  ...item,
-                  imageUrl: productResponse.data.imageUrl,
+                  batchId: group[0].batchId,
+                  batchImage: batchResponse.data.imageUrl || '/default-product-image.png',
+                  batchName: batchResponse.data.name || 'Unknown Batch',
+                  batchPrice: batchResponse.data.price || 0,
+                  batchItems: batchItemsWithDetails,
                 };
               } catch (error) {
-                console.error(
-                  `Error fetching product details for ${item.productItemId}:`,
-                  error
-                );
+                console.error("Error fetching batch details:", error);
+                return null;
+              }
+            } else {
+              // Nếu là sản phẩm đơn lẻ
+              try {
+                const productResponse = await getProdItemById(group[0].productItemId);
                 return {
-                  ...item,
-                  imageUrl: "/default-product-image.png",
+                  ...group[0],
+                  imageUrl: productResponse.data?.imageUrl || '/default-product-image.png',
+                };
+              } catch (error) {
+                console.error("Error fetching product details:", error);
+                return {
+                  ...group[0],
+                  imageUrl: '/default-product-image.png',
                 };
               }
-            })
-          );
-          setCartItemDetails(updatedItems);
-        }
+            }
+          })
+        );
+
+        // Lọc bỏ các item null (do lỗi)
+        const filteredItems = updatedItems.filter(item => item !== null);
+        setCartItemDetails(filteredItems);
+        setCartData(cartResponse.data);
       } catch (error) {
         console.error("Error fetching cart data:", error);
         toast.error("Failed to fetch cart data.");
@@ -156,6 +218,14 @@ const Order = () => {
     return subtotal - discountAmount;
   };
 
+  const toggleBatchExpand = (batchId) => {
+    setExpandedBatches(prev => 
+      prev.includes(batchId) 
+        ? prev.filter(id => id !== batchId)
+        : [...prev, batchId]
+    );
+  };
+
   if (!cartData) {
     return <div>Loading cart data...</div>;
   }
@@ -179,26 +249,78 @@ const Order = () => {
               ></div>
 
               {cartItemDetails.length > 0 ? (
-                cartItemDetails.map((item, index) => (
-                  <div key={index} className="order-item">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.productName}
-                      className="order-product-image"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "/default-product-image.png";
-                      }}
-                    />
-                    <div className="order-item-details">
-                      <h5>{item.productName}</h5>
-                      <p>Số lượng: {item.quantity}</p>
+                cartItemDetails.map((item, index) =>
+                  item.batchId ? (
+                    <React.Fragment key={index}>
+                      <div 
+                        className="order-item"
+                        onClick={() => toggleBatchExpand(item.batchId)}
+                      >
+                        <img
+                          src={item.batchImage}
+                          alt={item.batchName}
+                          className="order-product-image"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "/default-product-image.png";
+                          }}
+                        />
+                        <div className="order-item-details">
+                          <h5>{item.batchName}</h5>
+                          <p>Bao gồm: {item.batchItems.length} sản phẩm</p>
+                        </div>
+                        <div className="item-price">
+                          {item.batchPrice.toLocaleString()} VND
+                        </div>
+                      </div>
+                      {expandedBatches.includes(item.batchId) && (
+                        <div className="order-batch-items">
+                          {item.batchItems.map((batchItem, idx) => (
+                            <div key={`${item.batchId}-${idx}`} className="order-batch-subitem">
+                              <img 
+                                src={batchItem.imageUrl || '/default-product-image.png'} 
+                                alt={batchItem.name}
+                                className="order-product-image"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = "/default-product-image.png";
+                                }}
+                              />
+                              <div className="order-batch-item-details">
+                                <div className="order-batch-item-name">{batchItem.name}</div>
+                                <div className="order-batch-item-specs">
+                                  <span>Giới tính: {batchItem.sex}</span>
+                                  <span>Tuổi: {batchItem.age}</span>
+                                  <span>Size: {batchItem.size}</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </React.Fragment>
+                  ) : (
+                    // Render individual product details
+                    <div key={index} className="order-item">
+                      <img
+                        src={item.imageUrl}
+                        alt={item.productName}
+                        className="order-product-image"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/default-product-image.png";
+                        }}
+                      />
+                      <div className="order-item-details">
+                        <h5>{item.productName}</h5>
+                        <p>Số lượng: {item.quantity}</p>
+                      </div>
+                      <div className="item-price">
+                        {(item.price * item.quantity).toLocaleString()} VND
+                      </div>
                     </div>
-                    <div className="item-price">
-                      {item.price.toLocaleString()} VND
-                    </div>
-                  </div>
-                ))
+                  )
+                )
               ) : (
                 <p>Giỏ hàng của bạn trống</p>
               )}

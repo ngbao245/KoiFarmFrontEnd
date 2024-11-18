@@ -6,7 +6,7 @@ import {
   deleteProductCertificate,
   getCertificateById,
 } from "../services/CertificateService";
-import { fetchAllProdItem } from "../services/ProductItemService";
+import { fetchAllProdItem, getNameOfProdItem } from "../services/ProductItemService";
 import FishSpinner from "./FishSpinner";
 
 const ModalProductCertificate = ({
@@ -20,6 +20,8 @@ const ModalProductCertificate = ({
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const [certificateDetails, setCertificateDetails] = useState(null);
 
+  const [provider, setProvider] = useState("");
+
   useEffect(() => {
     if (isOpen && certificateData?.certificateId) {
       fetchCertificateDetails();
@@ -32,7 +34,19 @@ const ModalProductCertificate = ({
       setIsLoadingProducts(true);
       const response = await getCertificateById(certificateData.certificateId);
       if (response?.statusCode === 200 && response?.data) {
-        setCertificateDetails(response.data);
+        const productCertificates = await Promise.all(
+          response.data.productCertificates.map(async (pc) => {
+            const productName = await getNameOfProdItem(pc.productItemId);
+            return {
+              ...pc,
+              productName: productName?.name,
+            };
+          })
+        );
+        setCertificateDetails({
+          ...response.data,
+          productCertificates,
+        });
       }
     } catch (error) {
       console.error("Error fetching certificate details:", error);
@@ -69,12 +83,14 @@ const ModalProductCertificate = ({
       const data = {
         certificateId: certificateData.certificateId,
         productItemId: productId.toString(),
+        provider: provider.trim() || "N/A",
       };
 
       const response = await addProductCertificate(data);
       if (response?.data) {
         toast.success("Thêm sản phẩm vào chứng chỉ thành công!");
         setProductId("");
+        setProvider("");
         fetchCertificateDetails();
       }
     } catch (error) {
@@ -152,6 +168,18 @@ const ModalProductCertificate = ({
               ))}
             </select>
           </div>
+
+          <div className="mb-3">
+            <label className="form-label">Nhập nhà cung cấp</label>
+            <input
+              type="text"
+              className="form-control"
+              value={provider}
+              onChange={(e) => setProvider(e.target.value)}
+              placeholder="Nhập nhà cung cấp"
+            />
+          </div>
+
           <button
             type="submit"
             className="btn btn-primary"
@@ -171,6 +199,7 @@ const ModalProductCertificate = ({
               <thead>
                 <tr>
                   <th>ID</th>
+                  <th>Tên sản phẩm</th>
                   <th>Nhà cung cấp</th>
                   <th>Ngày phát hành</th>
                   <th>Thao tác</th>
@@ -181,6 +210,7 @@ const ModalProductCertificate = ({
                   certificateDetails.productCertificates.map((pc) => (
                     <tr key={pc.id}>
                       <td>{pc.id}</td>
+                      <td>{pc.productName || "N/A"}</td>
                       <td>{pc.provider}</td>
                       <td>
                         {new Date(pc.publishDate).toLocaleString("vi-VN", {

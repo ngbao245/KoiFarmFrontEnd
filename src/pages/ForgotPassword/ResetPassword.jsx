@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { resetPassword } from '../../services/UserService';
 import { toast } from 'react-toastify';
+import './ResetPassword.css';
 
 const ResetPassword = () => {
   const location = useLocation();
@@ -41,28 +42,44 @@ const ResetPassword = () => {
   };
 
   return (
-    <div>
-      <h2>Reset Password</h2>
-      <form onSubmit={handleSubmit}>
-        <input 
-          type="password" 
-          placeholder="Enter new password" 
-          value={newPassword} 
-          onChange={(e) => setNewPassword(e.target.value)} 
-          required 
-        />
-        <input 
-          type="password" 
-          placeholder="Confirm new password" 
-          value={confirmPassword} 
-          onChange={(e) => setConfirmPassword(e.target.value)} 
-          required 
-        />
-        <button type="submit">Reset Password</button>
-      </form>
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div className="reset-password-container">
+      <div className="reset-password-content">
+        <div className="reset-password-form">
+          <div className="reset-password-title">
+            <h2>Reset Password</h2>
+            <p>Nhập mật khẩu mới của bạn để tiếp tục</p>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="reset-password-input">
+              <label>Mật khẩu mới</label>
+              <input
+                type="password"
+                placeholder="Nhập mật khẩu mới"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="reset-password-input">
+              <label>Xác nhận mật khẩu</label>
+              <input
+                type="password"
+                placeholder="Xác nhận mật khẩu mới"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="reset-password-button">
+              Đặt lại mật khẩu
+            </button>
+          </form>
+          {message && <p className="message success">{message}</p>}
+          {error && <p className="message error">{error}</p>}
+        </div>
+      </div>
     </div>
+
   );
 };
 

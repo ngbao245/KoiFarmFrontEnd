@@ -19,7 +19,7 @@ const AdminHeader = () => {
 
   const handleLogout = () => {
     logout();
-    localStorage.removeItem('compareList');
+    localStorage.removeItem("compareList");
     navigate("/");
     toast.success("Logout Success");
   };
@@ -67,13 +67,21 @@ const AdminHeader = () => {
               className={({ isActive }) =>
                 `navbar-brand ${isActive ? "fw-bold" : ""}`
               }
-              to={userDetails && userDetails.roleId === "1" ? "/admin-dashboard" : "#"}
+              to={
+                userDetails && userDetails.roleId === "1"
+                  ? "/admin-dashboard"
+                  : "#"
+              }
               onClick={(e) => {
                 if (userDetails && userDetails.roleId !== "1") {
                   e.preventDefault();
                 }
               }}
-              style={userDetails && userDetails.roleId !== "1" ? { pointerEvents: 'none', opacity: 0.5 } : {}}
+              style={
+                userDetails && userDetails.roleId !== "1"
+                  ? { pointerEvents: "none", opacity: 0.5 }
+                  : {}
+              }
             >
               <i
                 className="fa-solid fa-user-tie"
@@ -103,6 +111,14 @@ const AdminHeader = () => {
                     >
                       Sản Phẩm
                     </NavLink>
+                    <NavLink
+                      className="nav-link"
+                      to="/admin-batch"
+                      disabled={!user || !user.auth}
+                    >
+                      Lô Cá
+                    </NavLink>
+
                     <NavLink
                       className="nav-link"
                       to="/admin-blog"
