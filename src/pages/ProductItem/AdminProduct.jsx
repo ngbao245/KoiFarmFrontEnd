@@ -4,12 +4,18 @@ import { CSVLink } from "react-csv";
 import ModalAddProductItem from "../../components/ModalAddProductItem";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
-import { fetchAllProdItem, updateProdItemType, deleteProdItem, updateProdItem } from "../../services/ProductItemService";
+import {
+  fetchAllProdItem,
+  updateProdItemType,
+  deleteProdItem,
+  updateProdItem,
+} from "../../services/ProductItemService";
 import { getProductById } from "../../services/ProductService";
 import FishSpinner from "../../components/FishSpinner";
 import ModalUpdateProductItem from "../../components/ModalUpdateProductItem";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { getUserInfo } from "../../services/UserService";
+import "./AdminProduct.css";
 
 const AdminProduct = () => {
   const [dataExport, setDataExport] = useState([]);
@@ -36,6 +42,8 @@ const AdminProduct = () => {
   const [activeTab, setActiveTab] = useState("Pending Approval");
 
   const [userDetails, setUserDetails] = useState(null);
+
+  const [expandedRows, setExpandedRows] = useState([]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -97,7 +105,7 @@ const AdminProduct = () => {
     setPageIndex(1);
   };
 
-  const getProductExport = () => { };
+  const getProductExport = () => {};
 
   const handleImportCSV = (event) => {
     const file = event.target.files[0];
@@ -150,10 +158,10 @@ const AdminProduct = () => {
 
   const filterProductsByStatus = (status) => {
     console.log(listProductItems);
-    return Array.isArray(listProductItems) 
-      ? listProductItems.filter(item => 
-          item.type === status &&
-          item.name.toLowerCase().includes(searchTerm)
+    return Array.isArray(listProductItems)
+      ? listProductItems.filter(
+          (item) =>
+            item.type === status && item.name.toLowerCase().includes(searchTerm)
         )
       : [];
   };
@@ -175,8 +183,8 @@ const AdminProduct = () => {
     try {
       const response = await updateProdItem(selectedProduct.id, updatedData);
       if (response && response.statusCode === 200) {
-        setListProductItems(prevItems =>
-          prevItems.map(item =>
+        setListProductItems((prevItems) =>
+          prevItems.map((item) =>
             item.id === selectedProduct.id ? { ...item, ...updatedData } : item
           )
         );
@@ -195,12 +203,12 @@ const AdminProduct = () => {
 
   const handleDeleteProduct = async () => {
     if (!itemToDelete) return;
-    
+
     try {
       const response = await deleteProdItem(itemToDelete.id);
       if (response.statusCode === 200) {
-        setListProductItems(prevItems => 
-          prevItems.filter(item => item.id !== itemToDelete.id)
+        setListProductItems((prevItems) =>
+          prevItems.filter((item) => item.id !== itemToDelete.id)
         );
         toast.success("Xóa sản phẩm thành công!");
       }
@@ -216,6 +224,14 @@ const AdminProduct = () => {
   const handleDeleteClick = (item) => {
     setItemToDelete(item);
     setIsConfirmModalOpen(true);
+  };
+
+  const toggleExpandedRow = (productId) => {
+    setExpandedRows((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+    );
   };
 
   return (
@@ -275,19 +291,25 @@ const AdminProduct = () => {
 
         <div className="order-tabs">
           <button
-            className={`order-tab-button ${activeTab === "Pending Approval" ? "active" : ""}`}
+            className={`order-tab-button ${
+              activeTab === "Pending Approval" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("Pending Approval")}
           >
             Chờ duyệt
           </button>
           <button
-            className={`order-tab-button ${activeTab === "Approved" ? "active" : ""}`}
+            className={`order-tab-button ${
+              activeTab === "Approved" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("Approved")}
           >
             Đã duyệt
           </button>
           <button
-            className={`order-tab-button ${activeTab === "Rejected" ? "active" : ""}`}
+            className={`order-tab-button ${
+              activeTab === "Rejected" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("Rejected")}
           >
             Đã từ chối
@@ -299,113 +321,181 @@ const AdminProduct = () => {
         <table className="table table-striped text-center">
           <thead>
             <tr>
-              <th>Cá Koi</th>
+              <th></th>
+              <th>Tên cá</th>
               <th>Giá</th>
               <th>Loại</th>
-              <th>Nguồn gốc</th>
-              <th>Giới tính</th>
-              <th>Tuổi</th>
-              <th>Kích thước</th>
-              <th>Loài</th>
-              <th>Tính cách</th>
-              <th>Lượng thức ăn</th>
-              <th>Nhiệt độ nước</th>
-              <th>Khoáng chất</th>
-              <th>pH</th>
               <th>Số lượng</th>
-              <th>Tình trạng sản phẩm</th>
-              <th>Loại cá</th>
-              <th>Ảnh</th>
+              <th>Tình trạng</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filterProductsByStatus(activeTab).length > 0 ? (
               filterProductsByStatus(activeTab).map((item) => (
-                <tr key={item.id}>
-                  <td>{item.name}</td>
-                  <td>{item.price}</td>
-                  <td>{item.category}</td>
-                  <td>{item.origin}</td>
-                  <td>{item.sex}</td>
-                  <td>{item.age}</td>
-                  <td>{item.size}</td>
-                  <td>{item.species}</td>
-                  <td>{item.personality}</td>
-                  <td>{item.foodAmount}</td>
-                  <td>{item.waterTemp}</td>
-                  <td>{item.mineralContent}</td>
-                  <td>{item.ph}</td>
-                  <td>{item.quantity}</td>
-                  <td style={{ color: getTypeColor(item.type) }}>
-                    {item.type === "Pending Approval" && userDetails?.roleId === "1" ? (
-                      editingTypeId === item.id ? (
-                        <select
-                          value={selectedType || item.type}
-                          onChange={(e) => setSelectedType(e.target.value)}
-                          onBlur={() => {
-                            handleTypeChange(item.id, selectedType);
-                            setEditingTypeId(null);
-                          }}
-                        >
-                          <option value="">Select type...</option>
-                          <option value="Approved">Approve</option>
-                          <option value="Rejected">Reject</option>
-                        </select>
+                <React.Fragment key={item.id}>
+                  <tr>
+                    <td>
+                      <button
+                        title="Xem chi tiết"
+                        className="btn btn-sm mr-2"
+                        onClick={() => toggleExpandedRow(item.id)}
+                      >
+                        <i className="fas fa-info-circle"></i>
+                      </button>
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.price?.toLocaleString("vi-VN")} VND</td>
+                    <td>{item.category}</td>
+                    <td>{item.quantity}</td>
+                    <td style={{ color: getTypeColor(item.type) }}>
+                      {item.type === "Pending Approval" &&
+                      userDetails?.roleId === "1" ? (
+                        editingTypeId === item.id ? (
+                          <select
+                            value={selectedType || item.type}
+                            onChange={(e) => setSelectedType(e.target.value)}
+                            onBlur={() => {
+                              handleTypeChange(item.id, selectedType);
+                              setEditingTypeId(null);
+                            }}
+                          >
+                            <option value="">Select type...</option>
+                            <option value="Approved">Approve</option>
+                            <option value="Rejected">Reject</option>
+                          </select>
+                        ) : (
+                          <span
+                            onClick={() => {
+                              setSelectedType(item.type);
+                              setEditingTypeId(item.id);
+                            }}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {item.type}
+                          </span>
+                        )
                       ) : (
-                        <span onClick={() => {
-                          setSelectedType(item.type);
-                          setEditingTypeId(item.id);
-                        }} style={{ cursor: "pointer" }}>
-                          {item.type}
-                        </span>
-                      )
-                    ) : (
-                      item.type
-                    )}
-                  </td>
-                  <td>{item.productName}</td>
-                  <td>
-                    {item.imageUrl ? (
-                      <img
-                        src={item.imageUrl}
-                        alt={item.name}
-                        style={{ width: "50px", height: "50px" }}
-                      />
-                    ) : (
-                      "No Image"
-                    )}
-                  </td>
-                  <td>
-                    <button
-                      title="Edit product"
-                      className="btn btn-warning mx-1"
-                      onClick={() => {
-                        setSelectedProduct(item);
-                        setShowUpdateModal(true);
-                      }}
-                      disabled={isUploading}
-                    >
-                      <i className="fa-solid fa-wrench"></i>
-                    </button>
-                    <button
-                      title="Delete product"
-                      className="btn btn-danger mx-1"
-                      onClick={() => handleDeleteClick(item)}
-                      disabled={isUploading}
-                    >
-                      <i className="fa-solid fa-trash"></i>
-                    </button>
-                  </td>
-                </tr>
+                        item.type
+                      )}
+                    </td>
+                    <td>
+                      <button
+                        title="Edit product"
+                        className="btn btn-warning mx-1"
+                        onClick={() => {
+                          setSelectedProduct(item);
+                          setShowUpdateModal(true);
+                        }}
+                        disabled={isUploading}
+                      >
+                        <i className="fa-solid fa-wrench"></i>
+                      </button>
+                      <button
+                        title="Delete product"
+                        className="btn btn-danger mx-1"
+                        onClick={() => handleDeleteClick(item)}
+                        disabled={isUploading}
+                      >
+                        <i className="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedRows.includes(item.id) && (
+                    <tr>
+                      <td colSpan="7">
+                        <div className="pi-expanded-content">
+                          <div className="pi-info-section">
+                            <div className="pi-image-container">
+                              <img
+                                src={item.imageUrl}
+                                alt={item.name}
+                                className="pi-image"
+                              />
+                            </div>
+
+                            <div className="pi-info-container">
+                              <div className="pi-info-group">
+                                <div className="pi-info-row">
+                                  <span className="pi-label">Tên:</span>
+                                  <span className="pi-value">{item.name}</span>
+                                </div>
+                                <div className="pi-info-row">
+                                  <span className="pi-label">Giá:</span>
+                                  <span className="pi-value">
+                                    {item.price?.toLocaleString("vi-VN")} VND
+                                  </span>
+                                </div>
+                                <div className="pi-info-row">
+                                  <span className="pi-label">Loại:</span>
+                                  <span className="pi-value">
+                                    {item.category}
+                                  </span>
+                                </div>
+                                <div className="pi-info-row">
+                                  <span className="pi-label">Nguồn gốc:</span>
+                                  <span className="pi-value">
+                                    {item.origin}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="pi-info-group">
+                                <div className="pi-info-row">
+                                  <span className="pi-label">Giới tính:</span>
+                                  <span className="pi-value">{item.sex}</span>
+                                </div>
+                                <div className="pi-info-row">
+                                  <span className="pi-label">Tuổi:</span>
+                                  <span className="pi-value">{item.age}</span>
+                                </div>
+                                <div className="pi-info-row">
+                                  <span className="pi-label">Kích thước:</span>
+                                  <span className="pi-value">{item.size}</span>
+                                </div>
+                                <div className="pi-info-row">
+                                  <span className="pi-label">Loài:</span>
+                                  <span className="pi-value">
+                                    {item.species}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="pi-info-group">
+                                <div className="pi-info-row">
+                                  <span className="pi-label">
+                                    Nhiệt độ nước:
+                                  </span>
+                                  <span className="pi-value">
+                                    {item.waterTemp}
+                                  </span>
+                                </div>
+                                <div className="pi-info-row">
+                                  <span className="pi-label">Khoáng chất:</span>
+                                  <span className="pi-value">
+                                    {item.mineralContent}
+                                  </span>
+                                </div>
+                                <div className="pi-info-row">
+                                  <span className="pi-label">pH:</span>
+                                  <span className="pi-value">{item.ph}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))
             ) : (
               <>
                 <tr>
-                  <td colSpan="16">Không tìm thấy sản phẩm nào</td>
+                  <td colSpan="7">Không tìm thấy sản phẩm nào</td>
                 </tr>
                 <tr>
-                  <td colSpan="16">
+                  <td colSpan="7">
                     <i
                       className="fa-regular fa-folder-open"
                       style={{ fontSize: "30px", opacity: 0.2 }}
@@ -419,40 +509,39 @@ const AdminProduct = () => {
       </div>
 
       {/* {activeTab === "Approved" && ( */}
-        <div className="pagination-controls text-center user-select-none">
-          <button
-            className="btn btn-secondary"
-            disabled={pageIndex === 1}
-            onClick={() => handlePageChange(pageIndex - 1)}
-          >
-            Trước
-          </button>
-          <span className="px-3">
-            Trang {pageIndex} / {totalPages}
-          </span>
-          <button
-            className="btn btn-secondary"
-            disabled={pageIndex === totalPages}
-            onClick={() => handlePageChange(pageIndex + 1)}
-          >
-            Sau
-          </button>
+      <div className="pagination-controls text-center user-select-none">
+        <button
+          className="btn btn-secondary"
+          disabled={pageIndex === 1}
+          onClick={() => handlePageChange(pageIndex - 1)}
+        >
+          Trước
+        </button>
+        <span className="px-3">
+          Trang {pageIndex} / {totalPages}
+        </span>
+        <button
+          className="btn btn-secondary"
+          disabled={pageIndex === totalPages}
+          onClick={() => handlePageChange(pageIndex + 1)}
+        >
+          Sau
+        </button>
 
-          <select
-            value={pageSize}
-            onChange={handlePageSizeChange}
-            className="ml-3"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={15}>15</option>
-            <option value={20}>20</option>
-            <option value={25}>25</option>
-            <option value={30}>30</option>
-            <option value={50}>50</option>
-
-          </select>
-        </div>
+        <select
+          value={pageSize}
+          onChange={handlePageSizeChange}
+          className="ml-3"
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={15}>15</option>
+          <option value={20}>20</option>
+          <option value={25}>25</option>
+          <option value={30}>30</option>
+          <option value={50}>50</option>
+        </select>
+      </div>
       {/* )} */}
 
       <ModalAddProductItem

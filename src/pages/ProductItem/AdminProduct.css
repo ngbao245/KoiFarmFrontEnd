@@ -1,0 +1,92 @@
+.pi-expanded-content {
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px 0;
+  animation: piSlideDown 0.3s ease-out;
+}
+
+.pi-info-section {
+  display: flex;
+  gap: 30px;
+}
+
+.pi-image-container {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.pi-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pi-info-container {
+  flex: 1;
+  display: flex;
+  gap: 40px;
+}
+
+.pi-info-group {
+  flex: 1;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.pi-info-row {
+  display: flex;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.pi-info-row:last-child {
+  border-bottom: none;
+}
+
+.pi-label {
+  width: 120px;
+  color: #666;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.pi-value {
+  flex: 1;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+@keyframes piSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1200px) {
+  .pi-info-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pi-info-section {
+    flex-direction: column;
+  }
+
+  .pi-image-container {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}
