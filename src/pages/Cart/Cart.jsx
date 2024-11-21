@@ -29,10 +29,22 @@ const Cart = () => {
     setIsLoading(true);
     try {
       const response = await getCart();
+      
+      if (response.statusCode === 404) {
+        setCart(null);
+        setCartItems([]);
+        return;
+      }
+
       const { items } = response.data;
       setCart(response.data);
 
-      // Group items by batchId
+      // Only process items if they exist
+      if (!items || items.length === 0) {
+        setCartItems([]);
+        return;
+      }
+
       const groupedItems = items.reduce((acc, item) => {
         if (item.batchId) {
           if (!acc[item.batchId]) acc[item.batchId] = [];
@@ -87,6 +99,7 @@ const Cart = () => {
     } catch (error) {
       console.error('Error fetching cart items:', error);
       toast.error("Có lỗi xảy ra khi tải giỏ hàng");
+      setCartItems([]); // Set empty array on error
     } finally {
       setIsLoading(false);
     }
