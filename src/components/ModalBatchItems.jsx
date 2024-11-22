@@ -25,7 +25,12 @@ const ModalBatchItems = ({ isOpen, onClose, batchData, setIsUploading }) => {
       setIsLoadingProducts(true);
       const response = await fetchAllProdItem(1, 1000, "");
       if (response?.data?.entities) {
-        setAllProducts(response.data.entities);
+        const approvedProducts = response.data.entities.filter(
+          product => product.type === "Approved"
+        );
+        console.log(approvedProducts);
+
+        setAllProducts(approvedProducts);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
